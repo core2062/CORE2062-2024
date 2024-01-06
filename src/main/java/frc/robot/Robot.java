@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
   private final SendableChooser<String> m_autoChooser = new SendableChooser<>();
   private final SendableChooser<String> m_driveSpeedchooser = new SendableChooser<>();
 
-  Compressor phCompressor = new Compressor(3, PneumaticsModuleType.REVPH);
+  Compressor phCompressor = new Compressor(3, PneumaticsModuleType.REVPH); //TODO: tune to robot
   public static CTREConfigs ctreConfigs;
 
   private Command m_autonomousCommand;
@@ -52,7 +52,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Auto choices", m_autoChooser);
 
     //setup for drive speed on driver station
-    m_driveSpeedchooser.setDefaultOption("Set Demo Speed", demoSpeed);
+    m_driveSpeedchooser.setDefaultOption("Set Demo Speed", demoSpeed); //TODO: change default based upon speed mod you want
     m_driveSpeedchooser.addOption("Set Comp Speed", compSpeed);
     SmartDashboard.putData("Speed chooser", m_driveSpeedchooser);
   
@@ -129,7 +129,7 @@ public class Robot extends TimedRobot {
     m_speedSelected = m_driveSpeedchooser.getSelected();
     switch (m_speedSelected) {
       case compSpeed:
-        Constants.Swerve.SpeedMod = 0.8;
+        Constants.Swerve.SpeedMod = 0.8; //TODO: tune to robot
         System.out.println("compspeed");
         break;
       case demoSpeed:

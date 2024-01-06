@@ -30,17 +30,9 @@ public final class Constants {
             COTSFalconSwerveConstants.SDSMK4i(COTSFalconSwerveConstants.driveGearRatios.SDSMK4i_L1);
 
         /* Drivetrain Constants */
-        public static final double trackWidth = Units.inchesToMeters(24.5);
-        public static final double wheelBase = Units.inchesToMeters(24.5);
+        public static final double trackWidth = Units.inchesToMeters(24.5); //TODO: tune to robot
+        public static final double wheelBase = Units.inchesToMeters(24.5); //TODO: tune to robot
         public static final double wheelCircumference = chosenModule.wheelCircumference;
-
-        /* Intake Solenoid Constants */
-        public static final class IntakeSolenoidConstants {
-            public static final int kIntakeSolenoidModule = 0;
-            public static final int[] kIntakeSolenoidPorts = new int[] {14, 15};
-            public static final int kIntakeUpperMotorPort = 9;
-            public static final int kIntakeLowerMotorPort = 8;
-        }
 
         /* Swerve Kinematics 
          * No need to ever change this unless you are not doing a traditional rectangular/square 4 module swerve */
