@@ -54,7 +54,7 @@ public class SwerveModule {
     private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop){
         if(isOpenLoop){
             double percentOutput = desiredState.speedMetersPerSecond / Constants.Swerve.maxSpeed;
-            mDriveMotor.set(ControlMode.PercentOutput, (percentOutput * Constants.Swerve.SpeedMod));
+            mDriveMotor.set(ControlMode.PercentOutput, (percentOutput * Constants.Swerve.SpeedMod.get(0.0)));
         }
         else {
             double velocity = Conversions.MPSToFalcon(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio);
@@ -88,7 +88,7 @@ public class SwerveModule {
     }
 
     private void configAngleMotor(){
-        mAngleMotor.configFactoryDefault()
+        mAngleMotor.configFactoryDefault();
         mAngleMotor.configAllSettings(Robot.ctreConfigs.swerveAngleFXConfig);
         mAngleMotor.setInverted(Constants.Swerve.angleMotorInvert);
         mAngleMotor.setNeutralMode(Constants.Swerve.angleNeutralMode);
