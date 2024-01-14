@@ -103,4 +103,12 @@ public class Conversions {
     public static double MetersToFalcon(double meters, double circumference, double gearRatio){
         return meters / (circumference / (gearRatio * 2048.0));
     }
+
+    /**
+     * @param decimal Decimal
+     * @return voltage
+     */
+    public static double PercentageToVoltage(double percentage){
+        return percentage * 12;
+    }
 }

@@ -129,11 +129,11 @@ public class Robot extends TimedRobot {
     m_speedSelected = m_driveSpeedchooser.getSelected();
     switch (m_speedSelected) {
       case compSpeed:
-        Constants.Swerve.SpeedMod = 0.8; //TODO: tune to robot
+        Constants.Swerve.SpeedMod.set(0.8); //TODO: tune to robot
         System.out.println("compspeed");
         break;
       case demoSpeed:
-        Constants.Swerve.SpeedMod = 0.3;
+        Constants.Swerve.SpeedMod.set(0.3);
         System.out.println("demospeed");
         break;
       default:
