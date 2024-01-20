@@ -39,7 +39,7 @@ public class Autos extends SequentialCommandGroup {
     public void movementAuto(Swerve s_Swerve) {
         System.out.println("move auto");  
 
-        String trajectoryJSON = "PathWeaver/output/(name of path).wpilib.json"; //TODO: set path name to auton path
+        String trajectoryJSON = "paths/MoveForward.wpilib.json"; //TODO: set path name to auton path
         Trajectory trajectory = new Trajectory(); 
         try {
             Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
