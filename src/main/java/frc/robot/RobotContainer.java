@@ -47,8 +47,9 @@ public class RobotContainer {
                 () -> robotCentric.getAsBoolean()
             )
         );
-        // Configure the button bindings
-        configureButtonBindings();
+    s_Swerve.gyro.setYaw(0);
+    // Configure the button bindings
+    configureButtonBindings();
   }
 
   /**
