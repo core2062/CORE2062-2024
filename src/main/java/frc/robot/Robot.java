@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
   private final SendableChooser<String> m_autoChooser = new SendableChooser<>();
   private final SendableChooser<String> m_driveSpeedchooser = new SendableChooser<>();
 
-  Compressor phCompressor = new Compressor(3, PneumaticsModuleType.REVPH); //TODO: tune to robot
+  // Compressor phCompressor = new Compressor(3, PneumaticsModuleType.REVPH); //TODO: tune to robot
   public static CTREConfigs ctreConfigs;
 
   private Command m_autonomousCommand;

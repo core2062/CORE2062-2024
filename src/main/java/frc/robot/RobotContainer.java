@@ -23,6 +23,7 @@ import frc.robot.commands.*;
 public class RobotContainer {
   /* Controllers */
   private final Joystick driver = new Joystick(0);
+  private final Joystick operator = new Joystick(1);
 
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -32,9 +33,15 @@ public class RobotContainer {
   /* Drive Buttons */
   private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
   private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+
+  /* Operator Buttons */
+  private final JoystickButton launcherMotors = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
+  private final JoystickButton intakeFeed = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
   
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
+  private final Intake i_Intake = new Intake();
+  private final Launcher l_Launcher = new Launcher();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -63,7 +70,11 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     /* Driver Buttons */
-        zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro())); //TODO: add buttons based upon funstions wanted
+      zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro())); //TODO: add buttons based upon funstions wanted
+
+    /* Operator Buttons */
+      launcherMotors.onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed()));
+      intakeFeed.onTrue(new InstantCommand(() -> i_Intake.setIntakeSpeed()));
   }
 
   /**

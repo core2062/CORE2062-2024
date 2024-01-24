@@ -156,4 +156,24 @@ public final class Constants {
             new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
     }
+
+    public static final class LauncherConstants {
+        public static final int kUpperMotorPort = 1;
+        public static final int kLowerMotorPort = 2;
+        
+        public static final int kLeftSideMotorPort = 3;//TODO: undetermined amount, extra two might not be used
+        public static final int kRightSideMotorPort = 4;
+
+        public static final int kRightRotationMotorPort = 5;
+        public static final int kLeftRotationMotorPort = 6;
+        
+        public static final COREConstants kLaunchSpeed = new COREConstants("launcher Speed", 0.5); //TODO: needs to be tuned
+    }
+
+    public static final class IntakeConstants {
+
+        public static final int kIntakeMotorPort = 6;//TODO: planned on one, may be more
+
+        public static final COREConstants kIntakeSpeed = new COREConstants("intake Speed", 0.5); //TODO: needs to be tuned
+    }
 }
