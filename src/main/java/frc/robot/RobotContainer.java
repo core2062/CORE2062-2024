@@ -30,9 +30,12 @@ public class RobotContainer {
   private final int rotationAxis = XboxController.Axis.kRightX.value;
 
   /* Drive Buttons */
-  private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
+  private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
   private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
   private final JoystickButton aimAtOne = new JoystickButton(driver, XboxController.Button.kA.value);
+  private final JoystickButton aimAtTwo = new JoystickButton(driver, XboxController.Button.kB.value);
+  private final JoystickButton aimAtThree = new JoystickButton(driver, XboxController.Button.kX.value);
+  private final JoystickButton aimAtFour = new JoystickButton(driver, XboxController.Button.kY.value);
   
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
@@ -66,7 +69,10 @@ public class RobotContainer {
   private void configureButtonBindings() {
     /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro())); //TODO: add buttons based upon funstions wanted
-        aimAtOne.whileTrue(s_VisionSubsystem.AimAtApril(s_Swerve,1));
+        aimAtOne.whileTrue(s_VisionSubsystem.AimAtApril(s_Swerve,1,0));
+        aimAtTwo.whileTrue(s_VisionSubsystem.AimAtApril(s_Swerve,2,0));
+        aimAtThree.whileTrue(s_VisionSubsystem.AimAtApril(s_Swerve,3,-10));
+        aimAtFour.whileTrue(s_VisionSubsystem.AimAtApril(s_Swerve,4,5));
   }
 
   /**

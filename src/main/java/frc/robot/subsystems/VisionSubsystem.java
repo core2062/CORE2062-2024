@@ -28,9 +28,10 @@ public class VisionSubsystem extends SubsystemBase {
         id = tid.getDouble(0.0);
          y = ty.getDouble(0.0);
         area = ta.getDouble(0.0);
+        
     }
 
-    public Command AimAtApril(Swerve swerve, int id)
+    public Command AimAtApril(Swerve swerve, int id, int offset)
     {
         Command setPipelineCommand = this.runOnce(
             () -> pipeline.setDouble(id)
@@ -40,8 +41,8 @@ public class VisionSubsystem extends SubsystemBase {
             swerve, 
             () -> 0, //translation
             () -> 0,//strafe
-            () -> x/-50,//rotate
-            () -> true//robotCentric.getAsBoolean()
+            () -> (tx.getDouble(0.0)-offset)/-10,//rotate
+            () -> false//robotCentric.getAsBoolean()
         );
         
         return setPipelineCommand.andThen(rotateSwerveCommand);
