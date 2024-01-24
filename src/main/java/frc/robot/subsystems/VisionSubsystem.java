@@ -39,10 +39,12 @@ public class VisionSubsystem extends SubsystemBase {
         setPipelineCommand.addRequirements(this);
         Command rotateSwerveCommand = new TeleopSwerve(
             swerve, 
+            false, 
             () -> 0, //translation
             () -> 0,//strafe
             () -> (tx.getDouble(0.0)-offset)/-10,//rotate
             () -> false//robotCentric.getAsBoolean()
+            
         );
         
         return setPipelineCommand.andThen(rotateSwerveCommand);

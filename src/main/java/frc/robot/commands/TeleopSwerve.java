@@ -17,23 +17,35 @@ public class TeleopSwerve extends Command {
     private DoubleSupplier strafeSup;
     private DoubleSupplier rotationSup;
     private BooleanSupplier robotCentricSup;
+    private Boolean applyDeadband;
 
-    public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup) {
-        this.s_Swerve = s_Swerve;
+    public TeleopSwerve(Swerve s_Swerve, boolean applyDeadband, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup) {
+        this.s_Swerve = s_Swerve ;
         addRequirements(s_Swerve);
 
         this.translationSup = translationSup;
         this.strafeSup = strafeSup;
         this.rotationSup = rotationSup;
         this.robotCentricSup = robotCentricSup;
+        this.applyDeadband = applyDeadband;
+    }
+    public double applyDeadband(double input){
+        if (applyDeadband){
+            return MathUtil.applyDeadband(input, Constants.stickDeadband);
+        }
+        else{
+            return input;
+        }
+
     }
 
     @Override
     public void execute() {
         /* Get Values, Deadband*/
-        double translationVal = MathUtil.applyDeadband(translationSup.getAsDouble(), Constants.stickDeadband);
-        double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
-        double rotationVal = MathUtil.applyDeadband(rotationSup.getAsDouble(), Constants.stickDeadband);
+        double translationVal = applyDeadband(translationSup.getAsDouble());
+        double strafeVal = applyDeadband(strafeSup.getAsDouble());
+
+        double rotationVal = applyDeadband(rotationSup.getAsDouble());
 
         /* Drive */
         s_Swerve.drive(
