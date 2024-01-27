@@ -21,6 +21,8 @@ public class Autos extends SequentialCommandGroup {
             case 0:
                 movementAuto(s_Swerve);
                 break;
+            case 1:
+                //testAuto(s_Swerve);
             default:
                 doNothingAuto(s_Swerve);
                 break;
@@ -39,7 +41,7 @@ public class Autos extends SequentialCommandGroup {
     public void movementAuto(Swerve s_Swerve) {
         System.out.println("move auto");  
 
-        String trajectoryJSON = "paths/MoveForward.wpilib.json"; //TODO: set path name to auton path
+        String trajectoryJSON = "paths/Unnamed2.wpilib.json"; //TODO: set path name to auton path
         Trajectory trajectory = new Trajectory(); 
         try {
             Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);

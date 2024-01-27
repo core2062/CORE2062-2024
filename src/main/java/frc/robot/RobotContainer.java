@@ -70,10 +70,18 @@ public class RobotContainer {
   private void configureButtonBindings() {
     /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro())); //TODO: add buttons based upon funstions wanted
-        aimAtOne.whileTrue(s_VisionSubsystem.AimAtApril(s_Swerve,1,0));
-        aimAtTwo.whileTrue(s_VisionSubsystem.AimAtApril(s_Swerve,2,0));
+        aimAtOne.whileTrue(s_VisionSubsystem.DriveAndAimAtApril(s_Swerve,2,0,
+          () -> -driver.getRawAxis(translationAxis),
+          () -> -driver.getRawAxis(strafeAxis),
+          () -> robotCentric.getAsBoolean()
+        ));
+        aimAtTwo.whileTrue(s_VisionSubsystem.DriveAndAimAtApril(s_Swerve,3,0,
+          () -> -driver.getRawAxis(translationAxis),
+          () -> -driver.getRawAxis(strafeAxis),
+          () -> robotCentric.getAsBoolean()
+        ));
         aimAtThree.whileTrue(s_VisionSubsystem.DriveToDistanceFromApril(s_Swerve,4,6));
-        aimAtFour.whileTrue(s_VisionSubsystem.DriveAndAimAtApril(s_Swerve,4,5,
+        aimAtFour.whileTrue(s_VisionSubsystem.DriveAndAimAtApril(s_Swerve,4,0,
           () -> -driver.getRawAxis(translationAxis),
           () -> -driver.getRawAxis(strafeAxis),
           () -> robotCentric.getAsBoolean()

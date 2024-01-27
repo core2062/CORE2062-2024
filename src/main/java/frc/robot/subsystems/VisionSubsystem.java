@@ -35,6 +35,10 @@ public class VisionSubsystem extends SubsystemBase {
          y = ty.getDouble(0.0);
         area = ta.getDouble(0.0);
         SmartDashboard.putNumber("distance", getDistance());
+        SmartDashboard.putNumber("limelightx", x);
+        SmartDashboard.putNumber("limelighty", y);
+        SmartDashboard.putNumber("limelighta", area);
+        SmartDashboard.putNumber("limelightid", id);
         
     }
 
@@ -49,7 +53,7 @@ public class VisionSubsystem extends SubsystemBase {
             false, 
             () -> 0, //translation
             () -> 0,//strafe
-            () -> (tx.getDouble(0.0)-offset)/-10,//rotate
+            () -> getRotation(offset),//rotate
             () -> false//robotCentric.getAsBoolean()
             
         );
@@ -72,6 +76,17 @@ public class VisionSubsystem extends SubsystemBase {
             return targetDistance-distance;
         }
     }
+    public double getRotation(double targetAngle){
+        if (id <= 0){
+            return 0;
+        }
+        else{
+        
+        
+        //return (tx.getDouble(0.0)-targetAngle)*-0.1;
+        return (tx.getDouble(0.0)-targetAngle)*-0.04;
+        }
+    }
     public Command DriveToDistanceFromApril(Swerve swerve, int id, int distance)
     
      {
@@ -82,10 +97,10 @@ public class VisionSubsystem extends SubsystemBase {
         Command rotateSwerveCommand = new TeleopSwerve(
             swerve, 
             false, 
-            () -> getTranslation(distance*-1), //translation
+            () -> getTranslation(distance)*-1, //translation
             () -> 0,//strafe
             () -> 0,//rotate
-            () -> false//robotCentric.getAsBoolean()
+            () -> true//robotCentric.getAsBoolean()
             //.8=6ft 1.73=4ft .45=8ft
             
         );
@@ -103,7 +118,7 @@ public class VisionSubsystem extends SubsystemBase {
             false, 
             translationSupplier, 
             strafeSupplier,
-            () -> (tx.getDouble(0.0)-offset)/-10,//rotate
+            () -> getRotation(offset),//rotate
             robotCentricSupplier
             
         );

@@ -22,6 +22,7 @@ public class Robot extends TimedRobot {
 
   private static final String kDefaultAuto = "Do Nothing";
   private static final String kMoveAuto = "Move Auto";
+  private static final String kTestAuto = "Test";
 
   private String m_autoSelected;
   private String m_speedSelected;
@@ -49,11 +50,12 @@ public class Robot extends TimedRobot {
     //setup for auton selection on driver station
     m_autoChooser.setDefaultOption("Do Nothing", kDefaultAuto);
     m_autoChooser.addOption("Move Auto", kMoveAuto);
+    m_autoChooser.addOption("test", kTestAuto);
     SmartDashboard.putData("Auto choices", m_autoChooser);
 
     //setup for drive speed on driver station
-    m_driveSpeedchooser.setDefaultOption("Set Demo Speed", demoSpeed); //TODO: change default based upon speed mod you want
-    m_driveSpeedchooser.addOption("Set Comp Speed", compSpeed);
+    m_driveSpeedchooser.setDefaultOption("Set Comp Speed", compSpeed);
+    m_driveSpeedchooser.addOption("Set Demo Speed", demoSpeed); //TODO: change default based upon speed mod you want
     SmartDashboard.putData("Speed chooser", m_driveSpeedchooser);
   
     ctreConfigs = new CTREConfigs();
@@ -99,6 +101,10 @@ public class Robot extends TimedRobot {
       case kMoveAuto:
         Constants.AutoSelected = 0;
         System.out.println("Movement");
+        break;
+      case kTestAuto:
+        Constants.AutoSelected = 1;
+        System.out.println("Test");
         break;
       default:
         System.out.println("default auto Movement");
