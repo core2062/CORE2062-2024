@@ -82,7 +82,7 @@ public class VisionSubsystem extends SubsystemBase {
         Command rotateSwerveCommand = new TeleopSwerve(
             swerve, 
             false, 
-            () -> getTranslation(distance), //translation
+            () -> getTranslation(distance*-1), //translation
             () -> 0,//strafe
             () -> 0,//rotate
             () -> false//robotCentric.getAsBoolean()
