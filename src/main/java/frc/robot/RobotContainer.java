@@ -95,6 +95,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     //return new Autos(place auto stuff here)
-    return new Autos(Constants.AutoSelected, s_Swerve);
+    return new Autos(Constants.AutoSelected, s_Swerve, s_VisionSubsystem);
   }
 }

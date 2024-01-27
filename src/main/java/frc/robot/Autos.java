@@ -15,11 +15,11 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 public class Autos extends SequentialCommandGroup {    
 
-    public Autos(int cases, Swerve s_Swerve){
+    public Autos(int cases, Swerve s_Swerve, VisionSubsystem s_vision){
         System.out.printf("autos selection: %d\n", cases);
         switch (cases) {
             case 0:
-                movementAuto(s_Swerve);
+                movementAuto(s_Swerve, s_vision);
                 break;
             case 1:
                 //testAuto(s_Swerve);
@@ -38,7 +38,7 @@ public class Autos extends SequentialCommandGroup {
 
 
 
-    public void movementAuto(Swerve s_Swerve) {
+    public void movementAuto(Swerve s_Swerve, VisionSubsystem s_Vision) {
         System.out.println("move auto");  
 
         String trajectoryJSON = "paths/Unnamed2.wpilib.json"; //TODO: set path name to auton path
@@ -71,7 +71,8 @@ public class Autos extends SequentialCommandGroup {
             
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(Trajectory.getInitialPose())),
-            swerveControllerCommand
+            swerveControllerCommand,
+            s_Vision.AimAtApril(s_Swerve, 4,0)
         );
     }
 }
