@@ -168,6 +168,25 @@ public final class Constants {
         public static final int kLeftRotationMotorPort = 6;
         
         public static final COREConstants kLaunchSpeed = new COREConstants("launcher Speed", 0.5); //TODO: needs to be tuned
+
+        /** Launcher Rotation Motor Constants */
+        public static final int kMotorTestPort = 23;
+        public static double MotorPos = 0;
+
+        public static final int motorContinuousCurrentLimit = 25;
+        public static final int motorPeakCurrentLimit = 40;
+        public static final int motorPeakCurrentDuration = 100;
+        public static final boolean motorEnableCurrentLimit = true;
+  
+        public static final double kP = 4.0;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
+        public static final double kF = 0.0;
+
+        public static final double motorOpenloopRamp = 0.25;
+        public static final double motorClosedloopRamp = 0.55;
+
+        public static LauncherRotationMotorConfigs motorConfigs = new LauncherRotationMotorConfigs();
     }
 
     public static final class IntakeConstants {

@@ -1,10 +1,12 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -18,6 +20,8 @@ public class Launcher extends SubsystemBase{
     private TalonSRX leftRotationMotor = new TalonSRX(Constants.LauncherConstants.kLeftRotationMotorPort);
     private TalonSRX rightRotationMotor = new TalonSRX(Constants.LauncherConstants.kRightRotationMotorPort);
 
+    private DigitalInput photoeye = new DigitalInput(0);
+    
     private boolean launcherOn = true;
 
     public void setLauncherSpeed(){
@@ -47,5 +51,27 @@ public class Launcher extends SubsystemBase{
     public void setAngle(){
         leftRotationMotor.set(ControlMode.Position, 0.0);
         rightRotationMotor.set(ControlMode.Position, 0.0);
+    }
+
+    public void configMotor(){
+        leftRotationMotor.configFactoryDefault();
+        leftRotationMotor.configAllSettings(Constants.LauncherConstants.motorConfigs.motorConfig);
+        leftRotationMotor.setInverted(false);
+        leftRotationMotor.setNeutralMode(NeutralMode.Brake);
+        leftRotationMotor.setSelectedSensorPosition(0);
+        leftRotationMotor.setSensorPhase(true);
+    }
+
+    public void checkForNote(){
+        if (photoeye.get() == true) {
+            System.out.println("true");
+        } else {
+            System.out.println("false");
+        }
+    }
+
+    @Override
+    public void periodic(){
+        checkForNote();
     }
 }
