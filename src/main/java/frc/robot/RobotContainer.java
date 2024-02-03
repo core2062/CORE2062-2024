@@ -4,8 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -69,6 +71,17 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     /* Driver Buttons */
+        var alliance = DriverStation.getAlliance();
+        int aimPipelineChange = 0;
+        int redSpeaker = 4;
+        int blueSpeaker = 12;
+        if (alliance.get()==Alliance.Red){
+          aimPipelineChange = redSpeaker;
+        }
+        else{
+          aimPipelineChange = blueSpeaker;
+        }
+
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro())); //TODO: add buttons based upon funstions wanted
         aimAtOne.whileTrue(s_VisionSubsystem.DriveAndAimAtApril(s_Swerve,2,0,
           () -> -driver.getRawAxis(translationAxis),
@@ -81,7 +94,7 @@ public class RobotContainer {
           () -> robotCentric.getAsBoolean()
         ));
         aimAtThree.whileTrue(s_VisionSubsystem.DriveToDistanceFromApril(s_Swerve,4,6));
-        aimAtFour.whileTrue(s_VisionSubsystem.DriveAndAimAtApril(s_Swerve,4,0,
+        aimAtFour.whileTrue(s_VisionSubsystem.DriveAndAimAtApril(s_Swerve,aimPipelineChange,0,
           () -> -driver.getRawAxis(translationAxis),
           () -> -driver.getRawAxis(strafeAxis),
           () -> robotCentric.getAsBoolean()
