@@ -38,11 +38,14 @@ public class RobotContainer {
   private final JoystickButton launcherMotors = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
   private final JoystickButton intakeFeed = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
   
+  private final JoystickButton ScoreAssembly1 = new JoystickButton(operator, XboxController.Button.kA.value);
+  private final JoystickButton ScoreAssembly2 = new JoystickButton(operator, XboxController.Button.kB.value);
   
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
   private final Intake i_Intake = new Intake();
   private final Launcher l_Launcher = new Launcher();
+  private final ScoreAssembly c_ScoreAssembly = new ScoreAssembly();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -74,8 +77,11 @@ public class RobotContainer {
       zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro())); //TODO: add buttons based upon funstions wanted
 
     /* Operator Buttons */
-      launcherMotors.onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed()));
-      intakeFeed.onTrue(new InstantCommand(() -> i_Intake.setIntakeSpeed()));
+      // launcherMotors.onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed()));
+      // intakeFeed.onTrue(new InstantCommand(() -> i_Intake.setIntakeSpeed()));
+
+      ScoreAssembly1.whileTrue(c_ScoreAssembly.pickUpPiece(l_Launcher, i_Intake, 0.8, 0.4));
+      ScoreAssembly2.whileTrue(c_ScoreAssembly.launchPiece(l_Launcher, 0.4)).onFalse(new InstantCommand(() ->Constants.assemblyDone = true));
   }
 
   /**

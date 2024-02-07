@@ -21,6 +21,8 @@ public final class Constants {
 
     public static int AutoSelected = 0;
 
+    public static boolean assemblyDone = false;
+
     public static final class Swerve {
         public static final int PigeonId = 0;
         public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
@@ -194,5 +196,11 @@ public final class Constants {
         public static final int kIntakeMotorPort = 6;//TODO: planned on one, may be more
 
         public static final COREConstants kIntakeSpeed = new COREConstants("intake Speed", 0.5); //TODO: needs to be tuned
+    }
+
+    public static class VisionConstants{
+        public static int SpeakerID = 0;
+        public static int farSpeakerID = 0;
+        public static int AmpID = 0;
     }
 }
