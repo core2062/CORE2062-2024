@@ -12,11 +12,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.LaunchdrAimCommand;
+import frc.robot.commands.LauncherAimCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.constants.Constants;
 
-public class VisionSubsystem extends SubsystemBase {
+public class IntakeVisionSubsystem extends SubsystemBase {
     // double angle;
     double x ;
     double id ;
@@ -26,9 +26,9 @@ public class VisionSubsystem extends SubsystemBase {
     NetworkTableEntry tx = table.getEntry("tx");
     NetworkTableEntry ty = table.getEntry("ty");
     NetworkTableEntry ta = table.getEntry("ta");
-    NetworkTableEntry tid = table.getEntry("tid");
+    public NetworkTableEntry tid = table.getEntry("tid");
     NetworkTableEntry pipeline = table.getEntry("pipeline");
-    public VisionSubsystem(){
+    public IntakeVisionSubsystem(){
 
     }
     @Override
@@ -37,70 +37,27 @@ public class VisionSubsystem extends SubsystemBase {
         id = tid.getDouble(0.0);
         y = ty.getDouble(0.0);
         area = ta.getDouble(0.0);
-        SmartDashboard.putNumber("distance", getDistance());
+        SmartDashboard.putNumber("Note distance", getDistance());
         SmartDashboard.putNumber("limelightx", x);
         SmartDashboard.putNumber("limelighty", y);
         SmartDashboard.putNumber("limelighta", area);
         SmartDashboard.putNumber("limelightid", id);
-        if (getDistance() > 7){
-            if (Constants.VisionConstants.SpeakerID == 4){
-                Constants.VisionConstants.SpeakerID = 1;
-            } else if (Constants.VisionConstants.SpeakerID == 7) {
-                Constants.VisionConstants.SpeakerID = 2;
-            }
-        } else if (getDistance() < 7){
-            if (Constants.VisionConstants.SpeakerID == 1){
-                Constants.VisionConstants.SpeakerID = 4;
-            } else  if (Constants.VisionConstants.SpeakerID == 2) {
-                Constants.VisionConstants.SpeakerID = 7;
-            }
-
-        }
     }
-    
-    public Command AimAtSpeaker(LauncherSubsystem l_Launcher, Swerve s_Swerve, int id, int offset, DoubleSupplier translationSup, DoubleSupplier strafeSup, BooleanSupplier robotCentricSup)    
-    {
-        
+
+    public Command swerveRotateCommand(Swerve s_Swerve, int id, int offset){
         Command setPipelineCommand = this.run(
             () -> pipeline.setDouble(Constants.VisionConstants.SpeakerID)
             );
-            setPipelineCommand.addRequirements(this);
-            // angle = getRotation(offset);
-        Command rotateMotorCommand = new LaunchdrAimCommand(l_Launcher, () -> getRotation(offset));
         Command rotateSwerveCommand = new TeleopSwerve(
-            s_Swerve,
-            false,
-            translationSup,
-            strafeSup,
-            () -> getRotation(offset),
-            robotCentricSup 
-            );
-        
-        // System.out.println("Rotation: " + getRotation(offset));
-        return setPipelineCommand.alongWith(rotateMotorCommand).alongWith(rotateSwerveCommand);
+                                            s_Swerve, 
+                                            false, 
+                                            () -> 0, 
+                                            () -> 0, 
+                                            () -> getRotation(offset), 
+                                            () -> false);
+        return setPipelineCommand.andThen(rotateSwerveCommand);
     }
 
-    public Command AimAtAmp(LauncherSubsystem l_Launcher, Swerve s_Swerve, int id, int offset, DoubleSupplier translationSup, DoubleSupplier strafeSup, BooleanSupplier robotCentricSup)
-    {
-        
-        Command setPipelineCommand = this.run(
-            () -> pipeline.setDouble(Constants.VisionConstants.SpeakerID)
-            );
-            setPipelineCommand.addRequirements(this);
-            // angle = getRotation(offset);
-        Command rotateMotorCommand = new LaunchdrAimCommand(l_Launcher, () -> getRotation(offset));
-        Command rotateSwerveCommand = new TeleopSwerve(
-            s_Swerve,
-            false,
-            translationSup,
-            strafeSup,
-            () -> getRotation(offset),
-            robotCentricSup 
-            );
-        // System.out.println("Rotation: " + getRotation(offset));
-        return setPipelineCommand.alongWith(rotateMotorCommand).alongWith(rotateSwerveCommand);
-    }
-    
     public double getDistance(){
         double area = ta.getDouble(0.0);
         double oneSide = Math.sqrt(area);
@@ -144,10 +101,5 @@ public class VisionSubsystem extends SubsystemBase {
         double rate = distance * increaseRate;
 
         return rate;
-    }
-
-    public Command rotateSwerve(){
-        
-        return null;
     }
 }

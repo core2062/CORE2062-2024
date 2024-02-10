@@ -1,11 +1,14 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
@@ -19,6 +22,8 @@ public class LauncherSubsystem extends SubsystemBase{
 
     private TalonSRX leftRotationMotor = new TalonSRX(Constants.LauncherConstants.kLeftRotationMotorPort);
     private TalonSRX rightRotationMotor = new TalonSRX(Constants.LauncherConstants.kRightRotationMotorPort);
+
+    private Encoder launcherRotationEncoder = new Encoder(null, null);
 
     private double Pose = 0.0;
 
@@ -62,6 +67,9 @@ public class LauncherSubsystem extends SubsystemBase{
         rightRotationMotor.setNeutralMode(NeutralMode.Brake);
         rightRotationMotor.setSelectedSensorPosition(0);
         rightRotationMotor.setSensorPhase(true);
+
+        rightRotationMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);//TODO: change to left depending on motor limit switchs are put in
+        rightRotationMotor.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
     }
 
     void resetEncoder(){

@@ -51,7 +51,7 @@ public class RobotContainer {
   private final IntakeSubsystem i_Intake = new IntakeSubsystem();
   private final LauncherSubsystem l_Launcher = new LauncherSubsystem();
   private final ScoreAssembly c_ScoreAssembly = new ScoreAssembly();
-  private final VisionSubsystem v_VisionSubsystem = new VisionSubsystem();
+  private final LauncherVisionSubsystem v_VisionSubsystem = new LauncherVisionSubsystem();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
