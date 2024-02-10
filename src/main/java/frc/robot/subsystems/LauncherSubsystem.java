@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 
-public class Launcher extends SubsystemBase{
+public class LauncherSubsystem extends SubsystemBase{
     private TalonFX upperLaunchMotor = new TalonFX(Constants.LauncherConstants.kUpperMotorPort);
     private TalonFX lowerLaunchMotor = new TalonFX(Constants.LauncherConstants.kLowerMotorPort);
 
@@ -44,7 +44,7 @@ public class Launcher extends SubsystemBase{
         return (angle / 360) * 4096;
     }
 
-    double falconToDegrees(double ticks){
+    double falconToDegrees(double ticks){ 
         return (ticks/4096) * 360;
     }
 

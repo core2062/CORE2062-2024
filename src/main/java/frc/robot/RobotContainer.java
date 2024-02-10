@@ -48,8 +48,8 @@ public class RobotContainer {
   
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
-  private final Intake i_Intake = new Intake();
-  private final Launcher l_Launcher = new Launcher();
+  private final IntakeSubsystem i_Intake = new IntakeSubsystem();
+  private final LauncherSubsystem l_Launcher = new LauncherSubsystem();
   private final ScoreAssembly c_ScoreAssembly = new ScoreAssembly();
   private final VisionSubsystem v_VisionSubsystem = new VisionSubsystem();
 
@@ -82,10 +82,6 @@ public class RobotContainer {
   private void configureButtonBindings() {
     /* Driver Buttons */
       zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro())); //TODO: add buttons based upon funstions wanted
-
-    /* Operator Buttons */
-      launcherMotors.onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.4)));
-      intakeFeed.onTrue(new InstantCommand(() -> i_Intake.setIntakeSpeed()));
       SpeakerTrack.whileTrue(v_VisionSubsystem.AimAtSpeaker(l_Launcher, s_Swerve, Constants.VisionConstants.SpeakerID, 0,
                                                               () -> -driver.getRawAxis(translationAxis),
                                                               () -> -driver.getRawAxis(strafeAxis),
@@ -96,6 +92,10 @@ public class RobotContainer {
                                                               () -> -driver.getRawAxis(strafeAxis),
                                                               () -> robotCentric.getAsBoolean()
                                                               ));
+
+    /* Operator Buttons */
+      launcherMotors.onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.4)));
+      intakeFeed.onTrue(new InstantCommand(() -> i_Intake.setIntakeSpeed()));
 
       ScoreAssembly1.whileTrue(c_ScoreAssembly.pickUpPiece(l_Launcher, i_Intake, 0.8, 0.4));
       ScoreAssembly2.whileTrue(c_ScoreAssembly.launchPiece(l_Launcher, 0.4)).onFalse(new InstantCommand(() ->Constants.assemblyDone = true));

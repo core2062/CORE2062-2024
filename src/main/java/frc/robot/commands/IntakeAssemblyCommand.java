@@ -3,15 +3,15 @@ package frc.robot.commands;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ScoreAssembly;
 
-public class IntakeAssembly extends Command{
+public class IntakeAssemblyCommand extends Command{
     private ScoreAssembly score = new ScoreAssembly();
-    private Intake i_Intake;
+    private IntakeSubsystem i_Intake;
     private double speed;
 
-    public IntakeAssembly(Intake i_Intake, double speed){
+    public IntakeAssemblyCommand(IntakeSubsystem i_Intake, double speed){
         this.i_Intake = i_Intake;
         addRequirements(i_Intake);
 

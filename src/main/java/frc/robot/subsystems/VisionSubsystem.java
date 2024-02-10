@@ -58,7 +58,7 @@ public class VisionSubsystem extends SubsystemBase {
         }
     }
     
-    public Command AimAtSpeaker(Launcher l_Launcher, Swerve s_Swerve, int id, int offset, DoubleSupplier translationSup, DoubleSupplier strafeSup, BooleanSupplier robotCentricSup)    
+    public Command AimAtSpeaker(LauncherSubsystem l_Launcher, Swerve s_Swerve, int id, int offset, DoubleSupplier translationSup, DoubleSupplier strafeSup, BooleanSupplier robotCentricSup)    
     {
         
         Command setPipelineCommand = this.run(
@@ -80,7 +80,7 @@ public class VisionSubsystem extends SubsystemBase {
         return setPipelineCommand.alongWith(rotateMotorCommand).alongWith(rotateSwerveCommand);
     }
 
-    public Command AimAtAmp(Launcher l_Launcher, Swerve s_Swerve, int id, int offset, DoubleSupplier translationSup, DoubleSupplier strafeSup, BooleanSupplier robotCentricSup)
+    public Command AimAtAmp(LauncherSubsystem l_Launcher, Swerve s_Swerve, int id, int offset, DoubleSupplier translationSup, DoubleSupplier strafeSup, BooleanSupplier robotCentricSup)
     {
         
         Command setPipelineCommand = this.run(
@@ -144,5 +144,10 @@ public class VisionSubsystem extends SubsystemBase {
         double rate = distance * increaseRate;
 
         return rate;
+    }
+
+    public Command rotateSwerve(){
+        
+        return null;
     }
 }

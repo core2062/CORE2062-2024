@@ -4,14 +4,14 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.Launcher;
+import frc.robot.subsystems.LauncherSubsystem;
 
-public class LauncherAssembly extends Command{
-    private Launcher l_Launcher;
+public class LauncherAssemblyCommand extends Command{
+    private LauncherSubsystem l_Launcher;
     private double speed;
     private int stage;
 
-    public LauncherAssembly(Launcher l_Launcher, double speed, int stage){
+    public LauncherAssemblyCommand(LauncherSubsystem l_Launcher, double speed, int stage){
         this.l_Launcher = l_Launcher;
         addRequirements(l_Launcher);
 
