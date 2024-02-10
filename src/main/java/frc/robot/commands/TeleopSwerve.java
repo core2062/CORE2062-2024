@@ -44,7 +44,6 @@ public class TeleopSwerve extends Command {
         /* Get Values, Deadband*/
         double translationVal = applyDeadband(translationSup.getAsDouble());
         double strafeVal = applyDeadband(strafeSup.getAsDouble());
-
         double rotationVal = applyDeadband(rotationSup.getAsDouble());
 
         /* Drive */

@@ -10,6 +10,8 @@ import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -25,8 +27,10 @@ public class VisionSubsystem extends SubsystemBase {
     NetworkTableEntry tx = table.getEntry("tx");
     NetworkTableEntry ty = table.getEntry("ty");
     NetworkTableEntry ta = table.getEntry("ta");
-     NetworkTableEntry tid = table.getEntry("tid");
+    NetworkTableEntry tid = table.getEntry("tid");
     NetworkTableEntry pipeline = table.getEntry("pipeline");
+    DataLog log = DataLogManager.getLog();
+    DoubleLogEntry myDoubleLog = new DoubleLogEntry(log, "/my/double");
     public VisionSubsystem(){
 
     }
@@ -42,6 +46,10 @@ public class VisionSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("limelighty", y);
         SmartDashboard.putNumber("limelighta", area);
         SmartDashboard.putNumber("limelightid", id);
+        SmartDashboard.putNumber("rotation", XboxController.Axis.kRightX.value);
+        SmartDashboard.putNumber("strafe", XboxController.Axis.kLeftX.value);
+        SmartDashboard.putNumber("translational", XboxController.Axis.kLeftY.value);
+         myDoubleLog.append((tx.getDouble(0.0))*-0.04);
     }
     public Command AimAtApril(Swerve swerve, int id, int offset)
     {
@@ -79,10 +87,10 @@ public class VisionSubsystem extends SubsystemBase {
     }
     public double getRotation(double targetAngle){
         if (id <= 0){
+           
             return 0;
         }
         else{
-        
         
         //return (tx.getDouble(0.0)-targetAngle)*-0.1;
         return (tx.getDouble(0.0)-targetAngle)*-0.04;

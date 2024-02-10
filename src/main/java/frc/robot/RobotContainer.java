@@ -24,13 +24,12 @@ import frc.robot.commands.*;
  */
 public class RobotContainer {
   /* Controllers */
-  private final Joystick driver = new Joystick(0);
-
+  private final Joystick driver = new Joystick(0); //sets up controller
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
   private final int strafeAxis = XboxController.Axis.kLeftX.value;
   private final int rotationAxis = XboxController.Axis.kRightX.value;
-
+//sets up controller joysticks
   /* Drive Buttons */
   private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
   private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
@@ -38,13 +37,17 @@ public class RobotContainer {
   private final JoystickButton aimAtTwo = new JoystickButton(driver, XboxController.Button.kB.value);
   private final JoystickButton aimAtThree = new JoystickButton(driver, XboxController.Button.kX.value);
   private final JoystickButton aimAtFour = new JoystickButton(driver, XboxController.Button.kY.value);
+  //sets up controller buttons
   
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
   private final VisionSubsystem s_VisionSubsystem = new VisionSubsystem();
+  //makes the subsystems start working
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+
     s_Swerve.setDefaultCommand(
             new TeleopSwerve(
                 s_Swerve, 
@@ -55,9 +58,15 @@ public class RobotContainer {
                 () -> robotCentric.getAsBoolean()
             )
         );
+      //is a command that makes the robot move.
+
     s_Swerve.gyro.setYaw(0);
+
+
     // Configure the button bindings
     configureButtonBindings();
+  
+  
   }
 
   /**
@@ -71,10 +80,12 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     /* Driver Buttons */
+    //tells us what alliance we're on.
         var alliance = DriverStation.getAlliance();
         int aimPipelineChange = 0;
         int redSpeaker = 4;
         int blueSpeaker = 12;
+        //changes pipeline based off of alliance.
         if (alliance.get()==Alliance.Red){
           aimPipelineChange = redSpeaker;
         }
@@ -88,17 +99,21 @@ public class RobotContainer {
           () -> -driver.getRawAxis(strafeAxis),
           () -> robotCentric.getAsBoolean()
         ));
+
         aimAtTwo.whileTrue(s_VisionSubsystem.DriveAndAimAtApril(s_Swerve,3,0,
           () -> -driver.getRawAxis(translationAxis),
           () -> -driver.getRawAxis(strafeAxis),
           () -> robotCentric.getAsBoolean()
         ));
+
         aimAtThree.whileTrue(s_VisionSubsystem.DriveToDistanceFromApril(s_Swerve,4,6));
+        
         aimAtFour.whileTrue(s_VisionSubsystem.DriveAndAimAtApril(s_Swerve,aimPipelineChange,0,
           () -> -driver.getRawAxis(translationAxis),
           () -> -driver.getRawAxis(strafeAxis),
           () -> robotCentric.getAsBoolean()
         ));
+        //sets up what the buttons can do
   }
 
   /**
