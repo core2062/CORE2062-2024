@@ -19,7 +19,7 @@ public class AimCommand extends Command{
     @Override
     public void execute() {
         l_Launcher.setAngle(targetAngle.getAsDouble());
-        System.out.println("Target angle" + targetAngle);
+        System.out.println("Target angle: " + targetAngle);
     }
 
     @Override

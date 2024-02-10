@@ -57,7 +57,7 @@ public class VisionSubsystem extends SubsystemBase {
         }
     }
     
-    public Command AimAtSpeaker(Launcher l_Launcher, int id, int offset)
+    public Command AimAtSpeaker(Launcher l_Launcher, Swerve s_Swerve, int id, int offset)
     {
         
         Command setPipelineCommand = this.run(
@@ -72,7 +72,7 @@ public class VisionSubsystem extends SubsystemBase {
         return setPipelineCommand.alongWith(rotateMotorCommand);
     }
 
-    public Command AimAtAmp(Launcher l_Launcher, int id, int offset)
+    public Command AimAtAmp(Launcher l_Launcher, Swerve s_Swerve, int id, int offset)
     {
         
         Command setPipelineCommand = this.run(

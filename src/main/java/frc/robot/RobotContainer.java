@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.subsystems.*;
+import frc.lib.util.COREConstants.constantType;
 import frc.robot.commands.*;
 
 
@@ -40,12 +41,16 @@ public class RobotContainer {
   
   private final JoystickButton ScoreAssembly1 = new JoystickButton(operator, XboxController.Button.kA.value);
   private final JoystickButton ScoreAssembly2 = new JoystickButton(operator, XboxController.Button.kB.value);
+
+  private final JoystickButton SpeakerTrack = new JoystickButton(operator, XboxController.Button.kY.value);
+  private final JoystickButton AmpTrack = new JoystickButton(operator, XboxController.Button.kX.value);
   
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
   private final Intake i_Intake = new Intake();
   private final Launcher l_Launcher = new Launcher();
   private final ScoreAssembly c_ScoreAssembly = new ScoreAssembly();
+  private final VisionSubsystem v_VisionSubsystem = new VisionSubsystem();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -77,11 +82,14 @@ public class RobotContainer {
       zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro())); //TODO: add buttons based upon funstions wanted
 
     /* Operator Buttons */
-      // launcherMotors.onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed()));
-      // intakeFeed.onTrue(new InstantCommand(() -> i_Intake.setIntakeSpeed()));
+      launcherMotors.onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.4)));
+      intakeFeed.onTrue(new InstantCommand(() -> i_Intake.setIntakeSpeed()));
 
       ScoreAssembly1.whileTrue(c_ScoreAssembly.pickUpPiece(l_Launcher, i_Intake, 0.8, 0.4));
       ScoreAssembly2.whileTrue(c_ScoreAssembly.launchPiece(l_Launcher, 0.4)).onFalse(new InstantCommand(() ->Constants.assemblyDone = true));
+
+      SpeakerTrack.whileTrue(v_VisionSubsystem.AimAtSpeaker(l_Launcher, s_Swerve, Constants.VisionConstants.SpeakerID,0));
+      AmpTrack.whileTrue(v_VisionSubsystem.AimAtSpeaker(l_Launcher, s_Swerve, Constants.VisionConstants.SpeakerID,0));
   }
 
   /**
