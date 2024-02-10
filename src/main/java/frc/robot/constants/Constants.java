@@ -160,14 +160,14 @@ public final class Constants {
     }
 
     public static final class LauncherConstants {
-        public static final int kUpperMotorPort = 1;
-        public static final int kLowerMotorPort = 2;
+        public static final int kUpperMotorPort = 10;
+        public static final int kLowerMotorPort = 20;
         
-        public static final int kLeftSideMotorPort = 3;//TODO: undetermined amount, extra two might not be used
-        public static final int kRightSideMotorPort = 4;
+        public static final int kLeftSideMotorPort = 30;//TODO: undetermined amount, extra two might not be used
+        public static final int kRightSideMotorPort = 40;
 
-        public static final int kRightRotationMotorPort = 5;
-        public static final int kLeftRotationMotorPort = 6;
+        public static final int kRightRotationMotorPort = 50;
+        public static final int kLeftRotationMotorPort = 60;
         
         public static final COREConstants kLaunchSpeed = new COREConstants("launcher Speed", 0.5); //TODO: needs to be tuned
 
