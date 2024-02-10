@@ -1,9 +1,9 @@
-package frc.robot;
+package frc.robot.constants;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 // import com.ctre
 
-import frc.robot.Constants.LauncherConstants;
+import frc.robot.constants.Constants.LauncherConstants;
 
 public final class LauncherRotationMotorConfigs{
 

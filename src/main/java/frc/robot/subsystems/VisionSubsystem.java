@@ -12,8 +12,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Constants;
-import frc.robot.commands.AimCommand;
+import frc.robot.commands.LaunchdrAimCommand;
+import frc.robot.commands.TeleopSwerve;
+import frc.robot.constants.Constants;
 
 public class VisionSubsystem extends SubsystemBase {
     // double angle;
@@ -57,7 +58,7 @@ public class VisionSubsystem extends SubsystemBase {
         }
     }
     
-    public Command AimAtSpeaker(Launcher l_Launcher, Swerve s_Swerve, int id, int offset)
+    public Command AimAtSpeaker(Launcher l_Launcher, Swerve s_Swerve, int id, int offset, DoubleSupplier translationSup, DoubleSupplier strafeSup, BooleanSupplier robotCentricSup)    
     {
         
         Command setPipelineCommand = this.run(
@@ -65,14 +66,21 @@ public class VisionSubsystem extends SubsystemBase {
             );
             setPipelineCommand.addRequirements(this);
             // angle = getRotation(offset);
-        Command rotateMotorCommand = new AimCommand(l_Launcher, () -> getRotation(offset));
-        Command rotateSwerveCommand = new AimCommand(l_Launcher, () -> getRotation(offset));
+        Command rotateMotorCommand = new LaunchdrAimCommand(l_Launcher, () -> getRotation(offset));
+        Command rotateSwerveCommand = new TeleopSwerve(
+            s_Swerve,
+            false,
+            translationSup,
+            strafeSup,
+            () -> getRotation(offset),
+            robotCentricSup 
+            );
         
         // System.out.println("Rotation: " + getRotation(offset));
-        return setPipelineCommand.alongWith(rotateMotorCommand);
+        return setPipelineCommand.alongWith(rotateMotorCommand).alongWith(rotateSwerveCommand);
     }
 
-    public Command AimAtAmp(Launcher l_Launcher, Swerve s_Swerve, int id, int offset)
+    public Command AimAtAmp(Launcher l_Launcher, Swerve s_Swerve, int id, int offset, DoubleSupplier translationSup, DoubleSupplier strafeSup, BooleanSupplier robotCentricSup)
     {
         
         Command setPipelineCommand = this.run(
@@ -80,11 +88,17 @@ public class VisionSubsystem extends SubsystemBase {
             );
             setPipelineCommand.addRequirements(this);
             // angle = getRotation(offset);
-        Command rotateMotorCommand = new AimCommand(l_Launcher, () -> getRotation(offset));
-        Command rotateSwerveCommand = new AimCommand(l_Launcher, () -> getRotation(offset));
-            
+        Command rotateMotorCommand = new LaunchdrAimCommand(l_Launcher, () -> getRotation(offset));
+        Command rotateSwerveCommand = new TeleopSwerve(
+            s_Swerve,
+            false,
+            translationSup,
+            strafeSup,
+            () -> getRotation(offset),
+            robotCentricSup 
+            );
         // System.out.println("Rotation: " + getRotation(offset));
-        return setPipelineCommand.alongWith(rotateMotorCommand);
+        return setPipelineCommand.alongWith(rotateMotorCommand).alongWith(rotateSwerveCommand);
     }
     
     public double getDistance(){

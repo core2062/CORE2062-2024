@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.*;
 import frc.lib.util.COREConstants.constantType;
 import frc.robot.commands.*;
+import frc.robot.constants.Constants;
 
 
 /**
@@ -34,7 +35,9 @@ public class RobotContainer {
   /* Drive Buttons */
   private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
   private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-
+  
+  private final JoystickButton SpeakerTrack = new JoystickButton(driver, XboxController.Button.kY.value);
+  private final JoystickButton AmpTrack = new JoystickButton(driver, XboxController.Button.kX.value);
   /* Operator Buttons */
   private final JoystickButton launcherMotors = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
   private final JoystickButton intakeFeed = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
@@ -42,8 +45,6 @@ public class RobotContainer {
   private final JoystickButton ScoreAssembly1 = new JoystickButton(operator, XboxController.Button.kA.value);
   private final JoystickButton ScoreAssembly2 = new JoystickButton(operator, XboxController.Button.kB.value);
 
-  private final JoystickButton SpeakerTrack = new JoystickButton(operator, XboxController.Button.kY.value);
-  private final JoystickButton AmpTrack = new JoystickButton(operator, XboxController.Button.kX.value);
   
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
@@ -57,6 +58,7 @@ public class RobotContainer {
     s_Swerve.setDefaultCommand(
             new TeleopSwerve(
                 s_Swerve, 
+                true,
                 () -> -driver.getRawAxis(translationAxis), 
                 () -> -driver.getRawAxis(strafeAxis), 
                 () -> -driver.getRawAxis(rotationAxis), 
@@ -84,12 +86,20 @@ public class RobotContainer {
     /* Operator Buttons */
       launcherMotors.onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.4)));
       intakeFeed.onTrue(new InstantCommand(() -> i_Intake.setIntakeSpeed()));
+      SpeakerTrack.whileTrue(v_VisionSubsystem.AimAtSpeaker(l_Launcher, s_Swerve, Constants.VisionConstants.SpeakerID, 0,
+                                                              () -> -driver.getRawAxis(translationAxis),
+                                                              () -> -driver.getRawAxis(strafeAxis),
+                                                              () -> robotCentric.getAsBoolean()
+                                                              ));
+      AmpTrack.whileTrue(v_VisionSubsystem.AimAtSpeaker(l_Launcher, s_Swerve, Constants.VisionConstants.SpeakerID,0,
+                                                              () -> -driver.getRawAxis(translationAxis),
+                                                              () -> -driver.getRawAxis(strafeAxis),
+                                                              () -> robotCentric.getAsBoolean()
+                                                              ));
 
       ScoreAssembly1.whileTrue(c_ScoreAssembly.pickUpPiece(l_Launcher, i_Intake, 0.8, 0.4));
       ScoreAssembly2.whileTrue(c_ScoreAssembly.launchPiece(l_Launcher, 0.4)).onFalse(new InstantCommand(() ->Constants.assemblyDone = true));
 
-      SpeakerTrack.whileTrue(v_VisionSubsystem.AimAtSpeaker(l_Launcher, s_Swerve, Constants.VisionConstants.SpeakerID,0));
-      AmpTrack.whileTrue(v_VisionSubsystem.AimAtSpeaker(l_Launcher, s_Swerve, Constants.VisionConstants.SpeakerID,0));
   }
 
   /**

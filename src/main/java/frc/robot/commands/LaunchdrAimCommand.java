@@ -2,15 +2,15 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
-import frc.robot.Constants;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.Launcher;
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class AimCommand extends Command{
+public class LaunchdrAimCommand extends Command{
     private Launcher l_Launcher;
     private DoubleSupplier targetAngle;
 
-    public AimCommand(Launcher l_Launcher, DoubleSupplier targetAngle){
+    public LaunchdrAimCommand(Launcher l_Launcher, DoubleSupplier targetAngle){
         this.l_Launcher = l_Launcher;
         addRequirements(l_Launcher);
         this.targetAngle = targetAngle;
