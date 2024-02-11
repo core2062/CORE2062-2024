@@ -33,14 +33,20 @@ public class LauncherSubsystem extends SubsystemBase{
     }
 
     public void setAngle(double angle){
-        Pose = Constants.LauncherConstants.MotorPos;
-        Constants.LauncherConstants.MotorPos = Pose;
+        Constants.LauncherConstants.MotorPos = angle;
 
-        leftRotationMotor.set(ControlMode.MotionMagic, 0.0);
-        rightRotationMotor.set(ControlMode.MotionMagic, 0.0);
+        leftRotationMotor.set(ControlMode.MotionMagic, degreesToFalconSRX(angle));
+        rightRotationMotor.set(ControlMode.MotionMagic, degreesToFalconSRX(angle));
     }
 
-    double degreesToFalconSRX(double angle){
+    public void changeAngle(double angle){
+        Constants.LauncherConstants.MotorPos += angle;
+
+        leftRotationMotor.set(ControlMode.MotionMagic, degreesToFalconSRX(Constants.LauncherConstants.MotorPos));
+        rightRotationMotor.set(ControlMode.MotionMagic, degreesToFalconSRX(Constants.LauncherConstants.MotorPos));
+    }
+
+    double degreesToFalconSRX(double angle){ //TODO: change depending on the gear ratio
         return (angle / 360) * 4096;
     }
 
@@ -48,20 +54,22 @@ public class LauncherSubsystem extends SubsystemBase{
         return (ticks/4096) * 360;
     }
 
-    public void configMotor(){
+    public void configMotors(){
         leftRotationMotor.configFactoryDefault();
         leftRotationMotor.configAllSettings(Constants.LauncherConstants.motorConfigs.motorConfig);
-        leftRotationMotor.setInverted(false);
+        leftRotationMotor.setInverted(false);//TODO: determine whither or not to invert
         leftRotationMotor.setNeutralMode(NeutralMode.Brake);
         leftRotationMotor.setSelectedSensorPosition(0);
         leftRotationMotor.setSensorPhase(true);
         
         rightRotationMotor.configFactoryDefault();
         rightRotationMotor.configAllSettings(Constants.LauncherConstants.motorConfigs.motorConfig);
-        rightRotationMotor.setInverted(false);
+        rightRotationMotor.setInverted(false);//TODO: determine whither or not to invert
         rightRotationMotor.setNeutralMode(NeutralMode.Brake);
         rightRotationMotor.setSelectedSensorPosition(0);
         rightRotationMotor.setSensorPhase(true);
+
+        // rightRotationMotor.follow(leftRotationMotor); TODO: change depensing on which side has the encoder
     }
 
     void resetEncoder(){

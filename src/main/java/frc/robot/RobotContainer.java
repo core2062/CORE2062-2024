@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 import frc.robot.subsystems.*;
 import frc.lib.util.COREConstants.constantType;
@@ -39,9 +40,13 @@ public class RobotContainer {
   private final JoystickButton SpeakerTrack = new JoystickButton(driver, XboxController.Button.kY.value);
   private final JoystickButton AmpTrack = new JoystickButton(driver, XboxController.Button.kX.value);
   /* Operator Buttons */
+  /* ----- Manuel overrides ----- */
   private final JoystickButton launcherMotors = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
   private final JoystickButton intakeFeed = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
-  
+
+  private final POVButton increaseLauncherHeading = new POVButton(operator, 0);
+  private final POVButton decreaseLauncherHeading = new POVButton(operator, 180);
+  /* ----- sequences of actions ----- */
   private final JoystickButton ScoreAssembly1 = new JoystickButton(operator, XboxController.Button.kA.value);
   private final JoystickButton ScoreAssembly2 = new JoystickButton(operator, XboxController.Button.kB.value);
 
@@ -96,6 +101,9 @@ public class RobotContainer {
     /* Operator Buttons */
       launcherMotors.onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.4)));
       intakeFeed.onTrue(new InstantCommand(() -> i_Intake.setIntakeSpeed()));
+
+      increaseLauncherHeading.onTrue(new InstantCommand(() -> l_Launcher.changeAngle(10)));
+      decreaseLauncherHeading.onTrue(new InstantCommand(() -> l_Launcher.changeAngle(-10)));
 
       ScoreAssembly1.whileTrue(c_ScoreAssembly.pickUpPiece(l_Launcher, i_Intake, 0.8, 0.4));
       ScoreAssembly2.whileTrue(c_ScoreAssembly.launchPiece(l_Launcher, 0.4)).onFalse(new InstantCommand(() ->Constants.assemblyDone = true));
