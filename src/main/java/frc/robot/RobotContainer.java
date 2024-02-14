@@ -37,15 +37,18 @@ public class RobotContainer {
   private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
   private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
   
-  private final JoystickButton SpeakerTrack = new JoystickButton(driver, XboxController.Button.kY.value);
+  private final JoystickButton SpeakerTrack = new JoystickButton(driver, XboxController.Button.kB.value);
   private final JoystickButton AmpTrack = new JoystickButton(driver, XboxController.Button.kX.value);
   /* Operator Buttons */
   /* ----- Manuel overrides ----- */
   private final JoystickButton launcherMotors = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
   private final JoystickButton intakeFeed = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
+  private final JoystickButton launcherFeed = new JoystickButton(operator, XboxController.Button.kStart.value);
 
-  private final POVButton increaseLauncherHeading = new POVButton(operator, 0);
-  private final POVButton decreaseLauncherHeading = new POVButton(operator, 180);
+  private final JoystickButton increaseLauncherHeading = new JoystickButton(operator, XboxController.Button.kX.value);
+  private final JoystickButton decreaseLauncherHeading = new JoystickButton(operator, XboxController.Button.kY.value);
+
+  private final JoystickButton applyVelocity = new JoystickButton(driver, XboxController.Button.kA.value);
   /* ----- sequences of actions ----- */
   private final JoystickButton ScoreAssembly1 = new JoystickButton(operator, XboxController.Button.kA.value);
   private final JoystickButton ScoreAssembly2 = new JoystickButton(operator, XboxController.Button.kB.value);
@@ -73,6 +76,7 @@ public class RobotContainer {
     s_Swerve.gyro.setYaw(0);
     // Configure the button bindings
     configureButtonBindings();
+    l_Launcher.configMotors();
   }
 
   /**
@@ -87,26 +91,36 @@ public class RobotContainer {
   private void configureButtonBindings() {
     /* Driver Buttons */
       zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro())); //TODO: add buttons based upon funstions wanted
-      SpeakerTrack.whileTrue(v_VisionSubsystem.AimAtSpeaker(l_Launcher, s_Swerve, Constants.VisionConstants.SpeakerID, 0,
-                                                              () -> -driver.getRawAxis(translationAxis),
-                                                              () -> -driver.getRawAxis(strafeAxis),
-                                                              () -> robotCentric.getAsBoolean()
-                                                              ));
-      AmpTrack.whileTrue(v_VisionSubsystem.AimAtSpeaker(l_Launcher, s_Swerve, Constants.VisionConstants.SpeakerID,0,
-                                                              () -> -driver.getRawAxis(translationAxis),
-                                                              () -> -driver.getRawAxis(strafeAxis),
-                                                              () -> robotCentric.getAsBoolean()
-                                                              ));
+    //   SpeakerTrack.whileTrue(v_VisionSubsystem.AimAtSpeaker(l_Launcher, s_Swerve, Constants.VisionConstants.SpeakerID, 0,
+    //                                                           () -> -driver.getRawAxis(translationAxis),
+    //                                                           () -> -driver.getRawAxis(strafeAxis),
+    //                                                           () -> robotCentric.getAsBoolean()
+    //                                                           ));
+    //   AmpTrack.whileTrue(v_VisionSubsystem.AimAtSpeaker(l_Launcher, s_Swerve, Constants.VisionConstants.SpeakerID,0,
+    //                                                           () -> -driver.getRawAxis(translationAxis),
+    //                                                           () -> -driver.getRawAxis(strafeAxis),
+    //                                                           () -> robotCentric.getAsBoolean()
+    //                                                           ));
 
-    /* Operator Buttons */
-      launcherMotors.onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.4)));
-      intakeFeed.onTrue(new InstantCommand(() -> i_Intake.setIntakeSpeed()));
+    // /* Operator Buttons */
+    //   launcherMotors.onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(Constants.LauncherConstants.kLaunchSpeed.get(0.0))))
+    //                 .onFalse(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.0)));
+    //   launcherFeed.onTrue(new InstantCommand(() -> l_Launcher.setFeedSpeed(Constants.LauncherConstants.kFeedSpeed.get(0.0))))
+    //                 .onFalse(new InstantCommand(() -> l_Launcher.setFeedSpeed(0.0)));
+    //   intakeFeed.onTrue(new InstantCommand(() -> i_Intake.setIntakeSpeed(Constants.IntakeConstants.kIntakeSpeed.get(0.0))))
+    //             .onFalse(new InstantCommand(() -> i_Intake.setIntakeSpeed(0.0)));
 
-      increaseLauncherHeading.onTrue(new InstantCommand(() -> l_Launcher.changeAngle(10)));
-      decreaseLauncherHeading.onTrue(new InstantCommand(() -> l_Launcher.changeAngle(-10)));
+    //   // increaseLauncherHeading.onTrue(new InstantCommand(() -> l_Launcher.changeAngle(1))).onFalse(new InstantCommand(() -> l_Launcher.changeAngle(0)));
+    //   // decreaseLauncherHeading.onTrue(new InstantCommand(() -> l_Launcher.changeAngle(-1))).onFalse(new InstantCommand(() -> l_Launcher.changeAngle(0)));
+    //   applyVelocity.onTrue(new InstantCommand(() -> l_Launcher.LauncherRotationPercent(0.1)))
+    //                .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationPercent(0.0)));
 
-      ScoreAssembly1.whileTrue(c_ScoreAssembly.pickUpPiece(l_Launcher, i_Intake, 0.8, 0.4));
-      ScoreAssembly2.whileTrue(c_ScoreAssembly.launchPiece(l_Launcher, 0.4)).onFalse(new InstantCommand(() ->Constants.assemblyDone = true));
+    //   ScoreAssembly1.whileTrue(c_ScoreAssembly.pickUpPiece(l_Launcher, i_Intake, Constants.LauncherConstants.kLaunchSpeed.get(0.0), Constants.IntakeConstants.kIntakeSpeed.get(0.0)))
+    //                 .onTrue(new InstantCommand(() -> Constants.endAssembly1 = false))
+    //                 .onFalse(new InstantCommand(() -> Constants.endAssembly1 = true));
+    //   ScoreAssembly2.whileTrue(c_ScoreAssembly.launchPiece(l_Launcher))
+    //                 .onTrue(new InstantCommand(() -> Constants.assemblyDone = false))
+    //                 .onFalse(new InstantCommand(() ->Constants.assemblyDone = true));
 
   }
 

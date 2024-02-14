@@ -3,11 +3,11 @@ package frc.robot.commands;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ScoreAssembly;
 
 public class IntakeAssemblyCommand extends Command{
-    private ScoreAssembly score = new ScoreAssembly();
     private IntakeSubsystem i_Intake;
     private double speed;
 
@@ -25,9 +25,11 @@ public class IntakeAssemblyCommand extends Command{
 
     @Override
     public boolean isFinished() {
-        if (score.getPhotoeye() == true){
+        if (ScoreAssembly.getPhotoeye() == true){
             return true;
-        } else {
+        } else if (Constants.endAssembly1 == true){
+            return true;
+        }else {
             return false;
         }
     }

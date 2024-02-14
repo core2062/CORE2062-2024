@@ -18,16 +18,17 @@ public class LaunchdrAimCommand extends Command{
 
     @Override
     public void execute() {
-        l_Launcher.setAngle(targetAngle.getAsDouble());
-        System.out.println("Target angle: " + targetAngle);
+        // l_Launcher.setAngle(targetAngle.getAsDouble());
+        // System.out.println("Target angle: " + targetAngle);
     }
 
     @Override
     public boolean isFinished(){
-        if (l_Launcher.getSensorPos() >= Constants.LauncherConstants.MotorPos + 2.5 || l_Launcher.getSensorPos() <= Constants.LauncherConstants.MotorPos - 2.5){
-            return false;
-        } else {
-            return false;
-        }
+        // if (l_Launcher.getSensorPos() >= Constants.LauncherConstants.MotorPos + 2.5 || l_Launcher.getSensorPos() <= Constants.LauncherConstants.MotorPos - 2.5){
+        //     return false;
+        // } else {
+        //     return false;
+        // }
+        return false;
     }
 }

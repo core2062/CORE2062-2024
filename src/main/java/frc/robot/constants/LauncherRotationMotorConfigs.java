@@ -21,8 +21,8 @@ public final class LauncherRotationMotorConfigs{
       motorConfig.peakCurrentLimit = LauncherConstants.motorPeakCurrentLimit;
       motorConfig.openloopRamp = LauncherConstants.motorOpenloopRamp;
       motorConfig.closedloopRamp = LauncherConstants.motorClosedloopRamp;
-      motorConfig.motionAcceleration = 200.4;
-      motorConfig.motionCruiseVelocity = 204.8;
-      motorConfig.motionCurveStrength = 0;
+      motorConfig.motionAcceleration = 20.4;
+      motorConfig.motionCruiseVelocity = 24.8;
+      motorConfig.motionCurveStrength = 9;
     }
   }
