@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+// import java.lang.invoke.ClassSpecializer.SpeciesData;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -34,6 +35,8 @@ public class LauncherSubsystem extends SubsystemBase{
     public double launchSpeed;
     public static double leftRotateSpeed;
     public static double rightRotateSpeed;
+    private static double rotateSpeed;
+    public static double desiredLauncherAngle;
 
     public void setLauncherSpeed(double speed){
         upperLaunchMotor.set(ControlMode.PercentOutput, -speed);
@@ -52,7 +55,7 @@ public class LauncherSubsystem extends SubsystemBase{
     }
 
     public static double calculateSpeed(double desiredAngle, double currentAngle) {
-        final double MAX_SPEED_RPM = 1; // Maximum speed of the motor in RPM
+        final double MAX_SPEED_RPM = 2; // Maximum speed of the motor in RPM
         final double ANGLE_TOLERANCE = 1.0;
         // Calculate the angle difference
         double angleDifference = desiredAngle - currentAngle;
@@ -130,6 +133,7 @@ public class LauncherSubsystem extends SubsystemBase{
         launchSpeed = launcherSpeed.getAsDouble();
         leftRotateSpeed = leftRotationSpeed.getAsDouble();
         rightRotateSpeed = rightRotationSpeed.getAsDouble();
+        rotateSpeed = calculateSpeed(51, encoderValue);
     }
 
     void resetEncoder(){

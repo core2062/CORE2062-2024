@@ -57,9 +57,7 @@ public class VisionSubsystem extends SubsystemBase {
         }
     }
     
-    public Command AimAtSpeaker(LauncherSubsystem l_Launcher, Swerve s_Swerve, int id, int offset, DoubleSupplier translationSup, DoubleSupplier strafeSup, BooleanSupplier robotCentricSup)    
-    {
-        
+    public Command AimAtSpeaker(LauncherSubsystem l_Launcher, Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, BooleanSupplier robotCentricSup) {
         Command setPipelineCommand = this.run(
             () -> pipeline.setDouble(Constants.VisionConstants.SpeakerID)
             );
@@ -71,18 +69,15 @@ public class VisionSubsystem extends SubsystemBase {
                 false,
                 translationSup,
                 strafeSup,
-                () -> getRotation(offset),
+                () -> getRotation(0),
                 robotCentricSup 
             );
-        
         return setPipelineCommand.alongWith(rotateSwerveCommand);
     }
 
-    public Command AimAtAmp(LauncherSubsystem l_Launcher, Swerve s_Swerve, int id, int offset, DoubleSupplier translationSup, DoubleSupplier strafeSup, BooleanSupplier robotCentricSup)
-    {
-        
+    public Command AimAtAmp(LauncherSubsystem l_Launcher, Swerve s_Swerve, int id, int offset, DoubleSupplier translationSup, DoubleSupplier strafeSup, BooleanSupplier robotCentricSup) {
         Command setPipelineCommand = this.run(
-            () -> pipeline.setDouble(Constants.VisionConstants.SpeakerID)
+            () -> pipeline.setDouble(Constants.VisionConstants.AmpID)
             );
             setPipelineCommand.addRequirements(this);
             // angle = getRotation(offset);

@@ -48,7 +48,7 @@ public class ScoreAssembly extends SubsystemBase{
     
     public Command launchPiece(LauncherSubsystem l_Launcher, IntakeSubsystem i_Intake, double launcherSpeed){
         Command runFeed = new FeedAssemblyCommand(i_Intake, Constants.LauncherConstants.kFeedSpeed.get(0.0), 1);
-        Command initiateLauncher = new LauncherAssemblyCommand(l_Launcher, launcherSpeed);
+        Command initiateLauncher = new LauncherAssemblyCommand(l_Launcher, Constants.LauncherConstants.kLaunchSpeed.get(0.0));
 
         Command launchCommand = initiateLauncher.raceWith(runFeed);
         launchCommand.addRequirements(l_Launcher, this);

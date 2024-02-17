@@ -50,10 +50,11 @@ public class RobotContainer {
   // private final JoystickButton intakeFeed = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
   // private final JoystickButton launcherFeed = new JoystickButton(operator, XboxController.Button.kStart.value);
   private final JoystickButton ScoreAssembly1 = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
+  private final JoystickButton stopScoreAssenly = new JoystickButton(operator, XboxController.Button.kB.value);
   private final JoystickButton ScoreAssembly2 = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
 
-  private final JoystickButton increaseLauncherHeading = new JoystickButton(operator, XboxController.Button.kX.value);
-  private final JoystickButton decreaseLauncherHeading = new JoystickButton(operator, XboxController.Button.kY.value);
+  private final JoystickButton increaseLauncherHeading = new JoystickButton(operator, XboxController.Button.kY.value);
+  private final JoystickButton decreaseLauncherHeading = new JoystickButton(operator, XboxController.Button.kX.value);
 
   private final JoystickButton goTo51Deg = new JoystickButton(operator, XboxController.Button.kA.value);
   
@@ -99,7 +100,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     /* Driver Buttons */
       zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
-      SpeakerTrack.whileTrue(v_VisionSubsystem.AimAtSpeaker(l_Launcher, s_Swerve, Constants.VisionConstants.SpeakerID, 0,
+      SpeakerTrack.whileTrue(v_VisionSubsystem.AimAtSpeaker(l_Launcher, s_Swerve, 
                                                               () -> -driver.getRawAxis(translationAxis),
                                                               () -> -driver.getRawAxis(strafeAxis),
                                                               () -> robotCentric.getAsBoolean()
