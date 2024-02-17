@@ -9,28 +9,25 @@ import frc.robot.subsystems.ScoreAssembly;
 
 public class IntakeAssemblyCommand extends Command{
     private IntakeSubsystem i_Intake;
-    private double speed;
+    private double intakeSpeed, feedSpeed;
 
-    public IntakeAssemblyCommand(IntakeSubsystem i_Intake, double speed){
+    public IntakeAssemblyCommand(IntakeSubsystem i_Intake, double intakeSpeed, double feedSpeed){
         this.i_Intake = i_Intake;
         addRequirements(i_Intake);
 
-        this.speed = speed;
+        this.intakeSpeed = intakeSpeed;
+        this.feedSpeed = feedSpeed;
     }
 
     @Override
     public void execute() {
-        i_Intake.setIntakeSpeed(speed);
+        i_Intake.setFeedAndIntakeSpeed(intakeSpeed, feedSpeed);
     }
 
     @Override
     public boolean isFinished() {
-        if (ScoreAssembly.getPhotoeye() == true){
-            return true;
-        } else if (Constants.endAssembly1 == true){
-            return true;
-        }else {
-            return false;
-        }
+        boolean finished = ScoreAssembly.getPhotoeye();
+        finished = !finished;
+        return finished;
     }
 }

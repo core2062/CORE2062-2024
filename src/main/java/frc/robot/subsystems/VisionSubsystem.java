@@ -29,7 +29,6 @@ public class VisionSubsystem extends SubsystemBase {
     NetworkTableEntry tid = table.getEntry("tid");
     NetworkTableEntry pipeline = table.getEntry("pipeline");
     public VisionSubsystem(){
-
     }
     @Override
     public void periodic() {
@@ -66,18 +65,17 @@ public class VisionSubsystem extends SubsystemBase {
             );
             setPipelineCommand.addRequirements(this);
             // angle = getRotation(offset);
-        Command rotateMotorCommand = new LaunchdrAimCommand(l_Launcher, () -> getRotation(offset));
-        Command rotateSwerveCommand = new TeleopSwerve(
-            s_Swerve,
-            false,
-            translationSup,
-            strafeSup,
-            () -> getRotation(offset),
-            robotCentricSup 
+            // Command rotateMotorCommand = new LaunchdrAimCommand(l_Launcher, () -> getRotation(offset));
+            Command rotateSwerveCommand = new TeleopSwerve(
+                s_Swerve,
+                false,
+                translationSup,
+                strafeSup,
+                () -> getRotation(offset),
+                robotCentricSup 
             );
         
-        // System.out.println("Rotation: " + getRotation(offset));
-        return setPipelineCommand.alongWith(rotateMotorCommand).alongWith(rotateSwerveCommand);
+        return setPipelineCommand.alongWith(rotateSwerveCommand);
     }
 
     public Command AimAtAmp(LauncherSubsystem l_Launcher, Swerve s_Swerve, int id, int offset, DoubleSupplier translationSup, DoubleSupplier strafeSup, BooleanSupplier robotCentricSup)

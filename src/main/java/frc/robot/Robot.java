@@ -4,7 +4,11 @@
 
 package frc.robot;
 
+import java.util.Optional;
+
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -152,6 +156,22 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+    Optional<Alliance> ally = DriverStation.getAlliance();
+    if (ally.isPresent()) {
+      if (ally.get() == Alliance.Red) {
+        Constants.VisionConstants.SpeakerID = 4;
+        Constants.VisionConstants.farSpeakerID = 1;
+        Constants.VisionConstants.AmpID = 5;
+      }
+      if (ally.get() == Alliance.Blue) {
+        Constants.VisionConstants.SpeakerID = 7;
+        Constants.VisionConstants.farSpeakerID = 2;
+        Constants.VisionConstants.AmpID = 6;
+      }
+    }
+    else {
+
+    }
   }
 
   /** This function is called periodically during test mode. */

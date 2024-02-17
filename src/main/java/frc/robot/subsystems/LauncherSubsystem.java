@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
@@ -10,6 +12,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
@@ -17,49 +20,52 @@ import frc.robot.constants.Constants;
 public class LauncherSubsystem extends SubsystemBase{
     private TalonFX upperLaunchMotor = new TalonFX(Constants.LauncherConstants.kUpperMotorPort);
     private TalonFX lowerLaunchMotor = new TalonFX(Constants.LauncherConstants.kLowerMotorPort);
-
-    private TalonSRX leftFeedMotor = new TalonSRX(Constants.LauncherConstants.kLeftSideMotorPort);
-    private TalonSRX rightFeedMotor = new TalonSRX(Constants.LauncherConstants.kRightSideMotorPort);
-
+    
     private TalonSRX leftRotationMotor = new TalonSRX(Constants.LauncherConstants.kLeftRotationMotorPort);
     private TalonSRX rightRotationMotor = new TalonSRX(Constants.LauncherConstants.kRightRotationMotorPort);
-
+    
     private DutyCycleEncoder launcherPitchEncoder = new DutyCycleEncoder(1);
-    private double encoderValue = 0.0;
+    public double encoderValue = 0.0;
+    
+    public static DoubleSupplier launcherSpeed = () -> Constants.LauncherConstants.kLaunchSpeed.get(0.0);
+    public static DoubleSupplier leftRotationSpeed = () -> Constants.LauncherConstants.kLeftRotationSpeed.get(0.0);
+    public static DoubleSupplier rightRotationSpeed = () -> Constants.LauncherConstants.kRightRotationSpeed.get(0.0);
+
+    public double launchSpeed;
+    public static double leftRotateSpeed;
+    public static double rightRotateSpeed;
 
     public void setLauncherSpeed(double speed){
         upperLaunchMotor.set(ControlMode.PercentOutput, -speed);
         lowerLaunchMotor.set(ControlMode.PercentOutput, -speed);
     }    
     
-    public void setFeedSpeed(double speed){
-        leftFeedMotor.set(ControlMode.PercentOutput, speed);
-        rightFeedMotor.set(ControlMode.PercentOutput, -speed);
-    }
-    
-    public void LauncherRotationPercent(double speed){
-        leftRotationMotor.set(ControlMode.PercentOutput, speed);
+    public void LauncherRotationPercent(double leftSpeed, double rightSpeed){
+        leftRotationMotor.set(ControlMode.PercentOutput, leftSpeed);
+        rightRotationMotor.set(ControlMode.PercentOutput, rightSpeed);
     }
 
     public void LauncherRotationAngle(double angle){
-        // leftRotationMotor.set(ControlMode.PercentOutput, calculateSpeed(angle, encoderValue));
+        leftRotationMotor.set(ControlMode.PercentOutput, -calculateSpeed(angle, encoderValue));
+        rightRotationMotor.set(ControlMode.PercentOutput, -calculateSpeed(angle, encoderValue));
         System.out.println(calculateSpeed(angle, encoderValue));
     }
 
-    public static int calculateSpeed(double desiredAngle, double currentAngle) {
-        final int MAX_SPEED_RPM = 5330; // Maximum speed of the motor in RPM
+    public static double calculateSpeed(double desiredAngle, double currentAngle) {
+        final double MAX_SPEED_RPM = 1; // Maximum speed of the motor in RPM
         final double ANGLE_TOLERANCE = 1.0;
         // Calculate the angle difference
         double angleDifference = desiredAngle - currentAngle;
 
         // If the angle difference is within the tolerance, stop the motor
         if (Math.abs(angleDifference) <= ANGLE_TOLERANCE) {
+            System.out.println("error");
             return 0; // Stop the motor
         }
 
         // Calculate the speed based on the angle difference
         double speedPercentage = angleDifference / 180.0; // Scaling the angle difference to [-1, 1]
-        int speed = (int) (speedPercentage * MAX_SPEED_RPM);
+        double speed = (speedPercentage * MAX_SPEED_RPM);
 
         // Ensure the speed is within the motor's range
         speed = Math.min(MAX_SPEED_RPM, Math.max(-MAX_SPEED_RPM, speed));
@@ -106,8 +112,9 @@ public class LauncherSubsystem extends SubsystemBase{
         rightRotationMotor.setNeutralMode(NeutralMode.Brake);
         // rightRotationMotor.setSelectedSensorPosition(0);
         // rightRotationMotor.setSensorPhase(true);
+        rightRotationMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
 
-        rightRotationMotor.follow(leftRotationMotor); //TODO: change depensing on which side has the limitswitch
+        // rightRotationMotor.follow(leftRotationMotor); //TODO: change depensing on which side has the limitswitch
 
         launcherPitchEncoder.setDistancePerRotation(360);
     }
@@ -119,6 +126,10 @@ public class LauncherSubsystem extends SubsystemBase{
         if (leftRotationMotor.isFwdLimitSwitchClosed() == 1){
             launcherPitchEncoder.reset();
         }
+        SmartDashboard.putNumber("Encoder Value", encoderValue);
+        launchSpeed = launcherSpeed.getAsDouble();
+        leftRotateSpeed = leftRotationSpeed.getAsDouble();
+        rightRotateSpeed = rightRotationSpeed.getAsDouble();
     }
 
     void resetEncoder(){

@@ -175,6 +175,9 @@ public final class Constants {
         public static final COREConstants kLaunchSpeed = new COREConstants("launcher Speed", 0.5); //TODO: needs to be tuned
         public static final COREConstants kFeedSpeed = new COREConstants("feed Speed", 0.5); //TODO: needs to be tuned
 
+        public static final COREConstants kLeftRotationSpeed = new COREConstants("Left Rotation Speed", 0.2); //TODO: needs to be tuned
+        public static final COREConstants kRightRotationSpeed = new COREConstants("Right Rotation Speed", 0.22); //TODO: needs to be tuned
+
         /** Launcher Rotation Motor Constants */
         public static double MotorPos = 0;
 
@@ -202,7 +205,7 @@ public final class Constants {
     }
 
     public static class VisionConstants{
-        public static int SpeakerID = 0;
+        public static int SpeakerID = 4;
         public static int farSpeakerID = 0;
         public static int AmpID = 0;
     }

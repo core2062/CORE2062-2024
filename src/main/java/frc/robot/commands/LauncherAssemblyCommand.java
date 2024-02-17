@@ -20,11 +20,12 @@ public class LauncherAssemblyCommand extends Command{
 
     @Override
     public void execute() {
-            l_Launcher.setLauncherSpeed(speed);
+        System.out.println("Laucnher Speed: " + speed);
+        l_Launcher.setLauncherSpeed(speed);
     }
 
     @Override
     public boolean isFinished() {
-            return Constants.assemblyDone;
+        return Constants.assemblyDone;
     }
 }
