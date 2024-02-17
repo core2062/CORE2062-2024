@@ -9,9 +9,9 @@ import frc.robot.subsystems.ScoreAssembly;
 
 public class IntakeAssemblyCommand extends Command{
     private IntakeSubsystem i_Intake;
-    private double intakeSpeed, feedSpeed;
+    private DoubleSupplier intakeSpeed, feedSpeed;
 
-    public IntakeAssemblyCommand(IntakeSubsystem i_Intake, double intakeSpeed, double feedSpeed){
+    public IntakeAssemblyCommand(IntakeSubsystem i_Intake, DoubleSupplier intakeSpeed, DoubleSupplier feedSpeed){
         this.i_Intake = i_Intake;
         addRequirements(i_Intake);
 
@@ -21,7 +21,7 @@ public class IntakeAssemblyCommand extends Command{
 
     @Override
     public void execute() {
-        i_Intake.setFeedAndIntakeSpeed(intakeSpeed, feedSpeed);
+        i_Intake.setFeedAndIntakeSpeed(intakeSpeed.getAsDouble(), feedSpeed.getAsDouble());
     }
 
     @Override

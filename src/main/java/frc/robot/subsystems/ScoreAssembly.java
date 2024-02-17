@@ -35,20 +35,19 @@ public class ScoreAssembly extends SubsystemBase{
         return stopCommand;
     }
 
-    public Command pickUpPiece(LauncherSubsystem l_Launcher, IntakeSubsystem i_Intake, double intakeSpeed){        
-        Command PickUpCommand = new IntakeAssemblyCommand(i_Intake, intakeSpeed, Constants.LauncherConstants.kFeedSpeed.get(0.0));
+    public Command pickUpPiece(LauncherSubsystem l_Launcher, IntakeSubsystem i_Intake, DoubleSupplier intakeSpeed, DoubleSupplier feedSpeed){        
+        Command PickUpCommand = new IntakeAssemblyCommand(i_Intake, intakeSpeed, feedSpeed);
         PickUpCommand.addRequirements(l_Launcher, i_Intake, this);
         return PickUpCommand;
     }
     
     public static boolean getPhotoeye(){
-        System.out.println("photoeye triped: " + !photoeye.get());
         return photoeye.get();
     }
     
-    public Command launchPiece(LauncherSubsystem l_Launcher, IntakeSubsystem i_Intake, double launcherSpeed){
-        Command runFeed = new FeedAssemblyCommand(i_Intake, Constants.LauncherConstants.kFeedSpeed.get(0.0), 1);
-        Command initiateLauncher = new LauncherAssemblyCommand(l_Launcher, Constants.LauncherConstants.kLaunchSpeed.get(0.0));
+    public Command launchPiece(LauncherSubsystem l_Launcher, IntakeSubsystem i_Intake, DoubleSupplier launcherSpeed, DoubleSupplier feedSpeed, DoubleSupplier delay){
+        Command runFeed = new FeedAssemblyCommand(i_Intake, feedSpeed, delay);
+        Command initiateLauncher = new LauncherAssemblyCommand(l_Launcher, launcherSpeed);
 
         Command launchCommand = initiateLauncher.raceWith(runFeed);
         launchCommand.addRequirements(l_Launcher, this);

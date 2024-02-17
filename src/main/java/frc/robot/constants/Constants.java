@@ -172,8 +172,10 @@ public final class Constants {
 
         public static final int kLauncherEncoder = 4;
 
-        public static final COREConstants kLaunchSpeed = new COREConstants("launcher Speed", 0.5); //TODO: needs to be tuned
+        public static final COREConstants kSpeakerLaunchSpeed = new COREConstants("Speaker Launcher Speed", 0.5); //TODO: needs to be tuned
+        public static final COREConstants kAMPLaunchSpeed = new COREConstants("AMP Launcher Speed", 0.1); //TODO: needs to be tuned
         public static final COREConstants kFeedSpeed = new COREConstants("feed Speed", 0.5); //TODO: needs to be tuned
+        public static final COREConstants kDelay = new COREConstants("Laucnher Delay", 0.5); //TODO: needs to be tuned
 
         public static final COREConstants kLeftRotationSpeed = new COREConstants("Left Rotation Speed", 0.2); //TODO: needs to be tuned
         public static final COREConstants kRightRotationSpeed = new COREConstants("Right Rotation Speed", 0.22); //TODO: needs to be tuned

@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
@@ -9,11 +11,11 @@ import frc.robot.subsystems.ScoreAssembly;
 
 public class FeedAssemblyCommand extends Command{
     private IntakeSubsystem i_Intake;
-    private double speed, delay;
+    private DoubleSupplier speed, delay;
     public static Timer feedDelaytime = new Timer();
 
 
-    public FeedAssemblyCommand(IntakeSubsystem i_Intake, double speed, double delay){
+    public FeedAssemblyCommand(IntakeSubsystem i_Intake, DoubleSupplier speed, DoubleSupplier delay){
         this.i_Intake = i_Intake;
         addRequirements(i_Intake);
 
@@ -28,8 +30,8 @@ public class FeedAssemblyCommand extends Command{
 
     @Override
     public void execute() {
-        if (feedDelaytime.get() > delay){
-            i_Intake.setFeedSpeed(speed);
+        if (feedDelaytime.get() > delay.getAsDouble()){
+            i_Intake.setFeedSpeed(speed.getAsDouble());
         }
     }
 

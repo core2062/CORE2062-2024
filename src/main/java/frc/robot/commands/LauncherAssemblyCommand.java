@@ -9,9 +9,9 @@ import frc.robot.subsystems.ScoreAssembly;
 
 public class LauncherAssemblyCommand extends Command{
     private LauncherSubsystem l_Launcher;
-    private double speed;
+    private DoubleSupplier speed;
 
-    public LauncherAssemblyCommand(LauncherSubsystem l_Launcher, double speed){
+    public LauncherAssemblyCommand(LauncherSubsystem l_Launcher, DoubleSupplier speed){
         this.l_Launcher = l_Launcher;
         addRequirements(l_Launcher);
 
@@ -20,8 +20,7 @@ public class LauncherAssemblyCommand extends Command{
 
     @Override
     public void execute() {
-        System.out.println("Laucnher Speed: " + speed);
-        l_Launcher.setLauncherSpeed(speed);
+        l_Launcher.setLauncherSpeed(speed.getAsDouble());
     }
 
     @Override

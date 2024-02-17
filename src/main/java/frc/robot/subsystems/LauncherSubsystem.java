@@ -27,15 +27,11 @@ public class LauncherSubsystem extends SubsystemBase{
     
     private DutyCycleEncoder launcherPitchEncoder = new DutyCycleEncoder(1);
     public double encoderValue = 0.0;
-    
-    public static DoubleSupplier launcherSpeed = () -> Constants.LauncherConstants.kLaunchSpeed.get(0.0);
-    public static DoubleSupplier leftRotationSpeed = () -> Constants.LauncherConstants.kLeftRotationSpeed.get(0.0);
-    public static DoubleSupplier rightRotationSpeed = () -> Constants.LauncherConstants.kRightRotationSpeed.get(0.0);
 
     public double launchSpeed;
     public static double leftRotateSpeed;
     public static double rightRotateSpeed;
-    private static double rotateSpeed;
+    public static DoubleSupplier rotateSpeed;
     public static double desiredLauncherAngle;
 
     public void setLauncherSpeed(double speed){
@@ -48,10 +44,15 @@ public class LauncherSubsystem extends SubsystemBase{
         rightRotationMotor.set(ControlMode.PercentOutput, rightSpeed);
     }
 
-    public void LauncherRotationAngle(double angle){
-        leftRotationMotor.set(ControlMode.PercentOutput, -calculateSpeed(angle, encoderValue));
-        rightRotationMotor.set(ControlMode.PercentOutput, -calculateSpeed(angle, encoderValue));
-        System.out.println(calculateSpeed(angle, encoderValue));
+    public void LauncherRotationAngle(Boolean rotate){
+        if (rotate == true){
+            leftRotationMotor.set(ControlMode.PercentOutput, -rotateSpeed.getAsDouble());
+            rightRotationMotor.set(ControlMode.PercentOutput, -rotateSpeed.getAsDouble());
+            System.out.println("actual Speed: " + -rotateSpeed.getAsDouble());
+        } else {
+            leftRotationMotor.set(ControlMode.PercentOutput, -0);
+            rightRotationMotor.set(ControlMode.PercentOutput, -0);
+        }
     }
 
     public static double calculateSpeed(double desiredAngle, double currentAngle) {
@@ -72,7 +73,7 @@ public class LauncherSubsystem extends SubsystemBase{
 
         // Ensure the speed is within the motor's range
         speed = Math.min(MAX_SPEED_RPM, Math.max(-MAX_SPEED_RPM, speed));
-
+        System.out.println("desired Speed: " + speed);
         return speed;
     }
 
@@ -130,10 +131,7 @@ public class LauncherSubsystem extends SubsystemBase{
             launcherPitchEncoder.reset();
         }
         SmartDashboard.putNumber("Encoder Value", encoderValue);
-        launchSpeed = launcherSpeed.getAsDouble();
-        leftRotateSpeed = leftRotationSpeed.getAsDouble();
-        rightRotateSpeed = rightRotationSpeed.getAsDouble();
-        rotateSpeed = calculateSpeed(51, encoderValue);
+        rotateSpeed = () -> calculateSpeed(51, encoderValue);
     }
 
     void resetEncoder(){
