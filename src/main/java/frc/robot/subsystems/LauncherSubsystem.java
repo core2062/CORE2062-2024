@@ -44,15 +44,9 @@ public class LauncherSubsystem extends SubsystemBase{
         rightRotationMotor.set(ControlMode.PercentOutput, rightSpeed);
     }
 
-    public void LauncherRotationAngle(Boolean rotate){
-        if (rotate == true){
-            leftRotationMotor.set(ControlMode.PercentOutput, -rotateSpeed.getAsDouble());
-            rightRotationMotor.set(ControlMode.PercentOutput, -rotateSpeed.getAsDouble());
-            System.out.println("actual Speed: " + -rotateSpeed.getAsDouble());
-        } else {
-            leftRotationMotor.set(ControlMode.PercentOutput, -0);
-            rightRotationMotor.set(ControlMode.PercentOutput, -0);
-        }
+    public void LauncherRotationAngle(double speed){
+        leftRotationMotor.set(ControlMode.PercentOutput, -speed);
+        rightRotationMotor.set(ControlMode.PercentOutput, -speed);
     }
 
     public static double calculateSpeed(double desiredAngle, double currentAngle) {
@@ -63,7 +57,6 @@ public class LauncherSubsystem extends SubsystemBase{
 
         // If the angle difference is within the tolerance, stop the motor
         if (Math.abs(angleDifference) <= ANGLE_TOLERANCE) {
-            System.out.println("error");
             return 0; // Stop the motor
         }
 
@@ -73,6 +66,19 @@ public class LauncherSubsystem extends SubsystemBase{
 
         // Ensure the speed is within the motor's range
         speed = Math.min(MAX_SPEED_RPM, Math.max(-MAX_SPEED_RPM, speed));
+        if (Math.abs(angleDifference) > 10 && Math.abs(speed) < 0.4){
+            if (speed < 0) {
+                speed = -0.4;
+            } else if (speed > 0){
+                speed = 0.4;
+            }
+        } else if (Math.abs(angleDifference) > 1 && Math.abs(speed) < 0.2){
+            if (speed < 0) {
+                speed = -0.2;
+            } else if (speed > 0){
+                speed = 0.2;
+            }
+        }
         System.out.println("desired Speed: " + speed);
         return speed;
     }
@@ -131,7 +137,15 @@ public class LauncherSubsystem extends SubsystemBase{
             launcherPitchEncoder.reset();
         }
         SmartDashboard.putNumber("Encoder Value", encoderValue);
-        rotateSpeed = () -> calculateSpeed(51, encoderValue);
+        rotateSpeed = () -> calculateSpeed(90, encoderValue);
+        if (Constants.kTarget == true){
+            LauncherRotationAngle(rotateSpeed.getAsDouble());
+        } else  if (Constants.kOverride == true){
+
+        } else {
+            LauncherRotationAngle(0.0);
+        }
+
     }
 
     void resetEncoder(){

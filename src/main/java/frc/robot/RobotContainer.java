@@ -120,10 +120,16 @@ public class RobotContainer {
       // intakeFeed.onTrue(new InstantCommand(() -> i_Intake.setIntakeSpeed(Constants.IntakeConstants.kIntakeSpeed.get(0.0))))
       //           .onFalse(new InstantCommand(() -> i_Intake.setIntakeSpeed(0.0)));
 
-      increaseLauncherHeading.onTrue(new InstantCommand(() -> l_Launcher.LauncherRotationPercent(-leftRotationSpeed.getAsDouble(), -rightRotationSpeed.getAsDouble()))).onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationPercent(0, 0)));
-      decreaseLauncherHeading.onTrue(new InstantCommand(() -> l_Launcher.LauncherRotationPercent(leftRotationSpeed.getAsDouble(), rightRotationSpeed.getAsDouble()))).onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationPercent(0, 0)));
-      goTo51Deg.onTrue(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(true)))
-                   .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(false)));
+      increaseLauncherHeading.onTrue(new InstantCommand(() -> l_Launcher.LauncherRotationPercent(-leftRotationSpeed.getAsDouble(), -rightRotationSpeed.getAsDouble())))
+                             .onTrue(new InstantCommand(() -> Constants.kOverride = true))
+                             .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationPercent(0, 0)))
+                             .onFalse(new InstantCommand(() -> Constants.kOverride = false));
+      decreaseLauncherHeading.onTrue(new InstantCommand(() -> l_Launcher.LauncherRotationPercent(leftRotationSpeed.getAsDouble(), rightRotationSpeed.getAsDouble())))
+                             .onTrue(new InstantCommand(() -> Constants.kOverride = true))
+                             .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationPercent(0, 0)))
+                             .onFalse(new InstantCommand(() -> Constants.kOverride = false));
+      goTo51Deg.onTrue(new InstantCommand(() -> Constants.kTarget = true))
+                   .onFalse(new InstantCommand(() -> Constants.kTarget = false));
 
       ScoreAssembly1.onTrue(c_ScoreAssembly.pickUpPiece(l_Launcher, i_Intake, intakeSpeed, feedSpeed));
       stopScoreAssenly.onTrue(c_ScoreAssembly.defaultCommand(l_Launcher, i_Intake));
