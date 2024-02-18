@@ -43,24 +43,27 @@ public class RobotContainer {
   private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
   
   private final JoystickButton SpeakerTrack = new JoystickButton(driver, XboxController.Button.kB.value);
-  private final JoystickButton AmpTrack = new JoystickButton(driver, XboxController.Button.kX.value);
+  private final JoystickButton NoteTrack = new JoystickButton(driver, XboxController.Button.kX.value);
   /* Operator Buttons */
-  private final JoystickButton ScoreAssembly1 = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
-  private final JoystickButton stopScoreAssenly = new JoystickButton(operator, XboxController.Button.kB.value);
-  private final JoystickButton SpeakerScoreAssembly2 = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
-  private final JoystickButton AmpScoreAssembly2 = new JoystickButton(operator, XboxController.Button.kA.value);
+  private final JoystickButton IntakeAssembly = new JoystickButton(operator, 5);
 
-  private final JoystickButton increaseLauncherHeading = new JoystickButton(operator, XboxController.Button.kY.value);
-  private final JoystickButton decreaseLauncherHeading = new JoystickButton(operator, XboxController.Button.kX.value);
+  private final JoystickButton stopAssemly = new JoystickButton(operator, 3);
+  private final JoystickButton SpeakerLaunch = new JoystickButton(operator, 6);
+  private final JoystickButton AmpLaunch = new JoystickButton(operator, 8);
 
-  private final JoystickButton goTo51Deg = new JoystickButton(operator, XboxController.Button.kStart.value);
-  private final int leftTrigger = XboxController.Axis.kLeftTrigger.value;
+  private final JoystickButton increaseLauncherHeading = new JoystickButton(operator, 4);
+  private final JoystickButton decreaseLauncherHeading = new JoystickButton(operator, 1);
+
+  private final JoystickButton LauncherFeed = new JoystickButton(operator, 2);
+
+  private final POVButton CloseSpeakerAngle = new POVButton(operator, 90);
+  private final JoystickButton ZeroAngle = new JoystickButton(operator, 180);
   
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
   private final IntakeSubsystem i_Intake = new IntakeSubsystem();
   private final LauncherSubsystem l_Launcher = new LauncherSubsystem();
-  private final ScoreAssembly c_ScoreAssembly = new ScoreAssembly(l_Launcher, i_Intake);
+  private final ScoreAssembly c_ScoreAssembly = new ScoreAssembly(i_Intake);
   private final VisionSubsystem v_VisionSubsystem = new VisionSubsystem();
 
   public static DoubleSupplier speakerLauncherSpeed = () -> Constants.LauncherConstants.kSpeakerLaunchSpeed.get(0.0);
@@ -128,17 +131,21 @@ public class RobotContainer {
                              .onTrue(new InstantCommand(() -> Constants.kOverride = true))
                              .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationPercent(0, 0)))
                              .onFalse(new InstantCommand(() -> Constants.kOverride = false));
-      goTo51Deg.onTrue(new InstantCommand(() -> Constants.kTarget = true))
-                   .onFalse(new InstantCommand(() -> Constants.kTarget = false));
+      IntakeAssembly.onTrue(c_ScoreAssembly.pickUpPiece(l_Launcher, i_Intake, intakeSpeed, feedSpeed));
 
-      ScoreAssembly1.onTrue(c_ScoreAssembly.pickUpPiece(l_Launcher, i_Intake, intakeSpeed, feedSpeed));
-      stopScoreAssenly.onTrue(c_ScoreAssembly.defaultCommand(l_Launcher, i_Intake));
-      SpeakerScoreAssembly2.whileTrue(c_ScoreAssembly.launchPiece(l_Launcher, i_Intake, speakerLauncherSpeed, feedSpeed, launchDelay))
-                    .onTrue(new InstantCommand(() -> Constants.assemblyDone = false))
-                    .onFalse(new InstantCommand(() -> Constants.assemblyDone = true));
-      AmpScoreAssembly2.whileTrue(c_ScoreAssembly.launchPiece(l_Launcher, i_Intake, ampLauncherSpeed, feedSpeed, launchDelay))
-                    .onTrue(new InstantCommand(() -> Constants.assemblyDone = false))
-                    .onFalse(new InstantCommand(() -> Constants.assemblyDone = true));
+      stopAssemly.onTrue(c_ScoreAssembly.defaultCommand(i_Intake)).onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.0)));
+
+      SpeakerLaunch.onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(Constants.LauncherConstants.kSpeakerLaunchSpeed.get(0.0))))
+                   .onFalse(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.0)));
+
+      CloseSpeakerAngle.whileTrue(l_Launcher.launcherRotateCommand())
+                       .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));
+
+      AmpLaunch.whileTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(Constants.LauncherConstants.kAMPLaunchSpeed.get(0.0))))
+               .onFalse(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.0)));
+
+      LauncherFeed.onTrue(new InstantCommand(() -> i_Intake.setFeedSpeed(Constants.LauncherConstants.kFeedSpeed.get(0.0))))
+                  .onFalse(new InstantCommand(() -> i_Intake.setFeedSpeed(0.0)));
   }
 
   /**

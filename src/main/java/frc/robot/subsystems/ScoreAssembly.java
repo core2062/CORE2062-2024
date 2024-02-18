@@ -17,21 +17,18 @@ import frc.robot.constants.Constants;
 
 public class ScoreAssembly extends SubsystemBase{
     public static DigitalInput photoeye = new DigitalInput(0);
-
-    // private LauncherSubsystem l_Launcher;
-    // private IntakeSubsystem i_Intake;
-
-    public ScoreAssembly(LauncherSubsystem l_Launcher, IntakeSubsystem i_Intake){
-        setDefaultCommand(defaultCommand(l_Launcher, i_Intake));
+    
+    public ScoreAssembly(IntakeSubsystem i_Intake){
+        setDefaultCommand(defaultCommand(i_Intake));
     }
 
-    public Command defaultCommand(LauncherSubsystem l_Launcher, IntakeSubsystem i_Intake){
+    public Command defaultCommand(IntakeSubsystem i_Intake){
         Command stopIntake = new InstantCommand(() -> i_Intake.setIntakeSpeed(0));
-        Command stopLauncher = new InstantCommand(() -> l_Launcher.setLauncherSpeed(0));
+        // Command stopLauncher = new InstantCommand(() -> l_Launcher.setLauncherSpeed(0));
         Command stopFeed = new InstantCommand(() -> i_Intake.setFeedSpeed(0));
 
-        Command stopCommand = stopIntake.andThen(stopLauncher).andThen(stopFeed);
-        stopCommand.addRequirements(l_Launcher, i_Intake, this);
+        Command stopCommand = stopIntake.andThen(stopFeed);
+        stopCommand.addRequirements(i_Intake, this);
         return stopCommand;
     }
 
@@ -43,14 +40,5 @@ public class ScoreAssembly extends SubsystemBase{
     
     public static boolean getPhotoeye(){
         return photoeye.get();
-    }
-    
-    public Command launchPiece(LauncherSubsystem l_Launcher, IntakeSubsystem i_Intake, DoubleSupplier launcherSpeed, DoubleSupplier feedSpeed, DoubleSupplier delay){
-        Command runFeed = new FeedAssemblyCommand(i_Intake, feedSpeed, delay);
-        Command initiateLauncher = new LauncherAssemblyCommand(l_Launcher, launcherSpeed);
-
-        Command launchCommand = initiateLauncher.raceWith(runFeed);
-        launchCommand.addRequirements(l_Launcher, this);
-        return launchCommand;
     }
 }

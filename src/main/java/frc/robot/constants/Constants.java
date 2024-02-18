@@ -21,6 +21,7 @@ public final class Constants {
 
     public static boolean kTarget = false;
     public static boolean kOverride = false;
+    public static double kDesiredAngle = 0.0;
 
     public static int AutoSelected = 0;
 

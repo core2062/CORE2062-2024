@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.LaunchdrAimCommand;
+import frc.robot.commands.LauncherAimCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.constants.Constants;
 
@@ -81,7 +81,7 @@ public class VisionSubsystem extends SubsystemBase {
             );
             setPipelineCommand.addRequirements(this);
             // angle = getRotation(offset);
-        Command rotateMotorCommand = new LaunchdrAimCommand(l_Launcher, () -> getRotation(offset));
+        // Command rotateMotorCommand = new LaunchdrAimCommand(l_Launcher, () -> getRotation(offset));
         Command rotateSwerveCommand = new TeleopSwerve(
             s_Swerve,
             false,
@@ -91,7 +91,8 @@ public class VisionSubsystem extends SubsystemBase {
             robotCentricSup 
             );
         // System.out.println("Rotation: " + getRotation(offset));
-        return setPipelineCommand.alongWith(rotateMotorCommand).alongWith(rotateSwerveCommand);
+        // return setPipelineCommand.alongWith(rotateMotorCommand).alongWith(rotateSwerveCommand);
+        return null;
     }
     
     public double getDistance(){
@@ -119,7 +120,7 @@ public class VisionSubsystem extends SubsystemBase {
         }
         else{
         //return (tx.getDouble(0.0)-targetAngle)*-0.1;
-        System.out.println(rateOfChange((tx.getDouble(0.0)-targetAngle)*-0.04));
+        // System.out.println(rateOfChange((tx.getDouble(0.0)-targetAngle)*-0.04));
 
         // return rateOfChange((tx.getDouble(0.0) - targetAngle)*-0.04);
         return (tx.getDouble(0.0)-targetAngle)*-0.05;

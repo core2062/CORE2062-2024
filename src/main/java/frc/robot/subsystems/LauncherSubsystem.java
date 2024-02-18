@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.LauncherAimCommand;
 import frc.robot.constants.Constants;
 
 public class LauncherSubsystem extends SubsystemBase{
@@ -37,7 +38,7 @@ public class LauncherSubsystem extends SubsystemBase{
     public void setLauncherSpeed(double speed){
         upperLaunchMotor.set(ControlMode.PercentOutput, -speed);
         lowerLaunchMotor.set(ControlMode.PercentOutput, -speed);
-    }    
+    }
     
     public void LauncherRotationPercent(double leftSpeed, double rightSpeed){
         leftRotationMotor.set(ControlMode.PercentOutput, leftSpeed);
@@ -49,110 +50,38 @@ public class LauncherSubsystem extends SubsystemBase{
         rightRotationMotor.set(ControlMode.PercentOutput, -speed);
     }
 
-    public static double calculateSpeed(double desiredAngle, double currentAngle) {
-        final double MAX_SPEED_RPM = 2; // Maximum speed of the motor in RPM
-        final double ANGLE_TOLERANCE = 1.0;
-        // Calculate the angle difference
-        double angleDifference = desiredAngle - currentAngle;
-
-        // If the angle difference is within the tolerance, stop the motor
-        if (Math.abs(angleDifference) <= ANGLE_TOLERANCE) {
-            return 0; // Stop the motor
-        }
-
-        // Calculate the speed based on the angle difference
-        double speedPercentage = angleDifference / 180.0; // Scaling the angle difference to [-1, 1]
-        double speed = (speedPercentage * MAX_SPEED_RPM);
-
-        // Ensure the speed is within the motor's range
-        speed = Math.min(MAX_SPEED_RPM, Math.max(-MAX_SPEED_RPM, speed));
-        if (Math.abs(angleDifference) > 10 && Math.abs(speed) < 0.4){
-            if (speed < 0) {
-                speed = -0.4;
-            } else if (speed > 0){
-                speed = 0.4;
-            }
-        } else if (Math.abs(angleDifference) > 1 && Math.abs(speed) < 0.2){
-            if (speed < 0) {
-                speed = -0.2;
-            } else if (speed > 0){
-                speed = 0.2;
-            }
-        }
-        System.out.println("desired Speed: " + speed);
-        return speed;
+    public Command launcherRotateCommand(){
+        Command launch = new LauncherAimCommand(this);
+        return launch;
     }
 
-    // public void setAngle(double angle){
-    //     Constants.LauncherConstants.MotorPos = angle;
-
-    //     leftRotationMotor.set(ControlMode.MotionMagic, degreesToFalconSRX(angle));
-    //     rightRotationMotor.set(ControlMode.MotionMagic, degreesToFalconSRX(angle));
-    // }
-
-    // public void changeAngle(double angle){
-    //     Constants.LauncherConstants.MotorPos += angle;
-
-    //     leftRotationMotor.set(ControlMode.MotionMagic, degreesToFalconSRX(Constants.LauncherConstants.MotorPos));
-    //     rightRotationMotor.set(ControlMode.MotionMagic, degreesToFalconSRX(Constants.LauncherConstants.MotorPos));
-    // }
-
-
-    // double degreesToFalconSRX(double angle){
-    //     return (angle / 360) * (4096 * 400);
-    // }
-
-    // double falconToDegrees(double ticks){ 
-    //     return (ticks/(4096 * 400)) * 360;
-    // }
+    public double getEncoderValue(){
+        return launcherPitchEncoder.getDistance();
+    }
 
     public void configMotors(){
         leftRotationMotor.configFactoryDefault();
-        // leftRotationMotor.configAllSettings(Constants.LauncherConstants.motorConfigs.motorConfig);
-        leftRotationMotor.setInverted(false);//TODO: determine whither or not to invert
+        leftRotationMotor.setInverted(false);
         leftRotationMotor.setNeutralMode(NeutralMode.Brake);
-        // leftRotationMotor.setSelectedSensorPosition(0);
-        // leftRotationMotor.setSensorPhase(true);
         leftRotationMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
-        // leftRotationMotor.configLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
         
         rightRotationMotor.configFactoryDefault();
-        // rightRotationMotor.configAllSettings(Constants.LauncherConstants.motorConfigs.motorConfig);
-        rightRotationMotor.setInverted(true);//TODO: determine whither or not to invert
+        rightRotationMotor.setInverted(true);
         rightRotationMotor.setNeutralMode(NeutralMode.Brake);
-        // rightRotationMotor.setSelectedSensorPosition(0);
-        // rightRotationMotor.setSensorPhase(true);
         rightRotationMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
-
-        // rightRotationMotor.follow(leftRotationMotor); //TODO: change depensing on which side has the limitswitch
 
         launcherPitchEncoder.setDistancePerRotation(360);
     }
 
-
     @Override
     public void periodic() {
-        encoderValue = launcherPitchEncoder.getDistance();
         if (leftRotationMotor.isFwdLimitSwitchClosed() == 1){
-            launcherPitchEncoder.reset();
+            resetEncoder();
         }
-        SmartDashboard.putNumber("Encoder Value", encoderValue);
-        rotateSpeed = () -> calculateSpeed(90, encoderValue);
-        if (Constants.kTarget == true){
-            LauncherRotationAngle(rotateSpeed.getAsDouble());
-        } else  if (Constants.kOverride == true){
-
-        } else {
-            LauncherRotationAngle(0.0);
-        }
-
+        SmartDashboard.putNumber("Encoder Value", getEncoderValue());
     }
 
     void resetEncoder(){
         launcherPitchEncoder.reset();
     }
-
-    // public double getSensorPos(){
-    //     return falconToDegrees(leftRotationMotor.getSelectedSensorPosition());
-    // }
 }
