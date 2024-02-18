@@ -22,7 +22,7 @@ public class VisionSubsystem extends SubsystemBase {
     double id ;
     double y ;
     double area ;
-    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight-front");
     NetworkTableEntry tx = table.getEntry("tx");
     NetworkTableEntry ty = table.getEntry("ty");
     NetworkTableEntry ta = table.getEntry("ta");
@@ -57,13 +57,12 @@ public class VisionSubsystem extends SubsystemBase {
         }
     }
     
-    public Command AimAtSpeaker(LauncherSubsystem l_Launcher, Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, BooleanSupplier robotCentricSup) {
+    public Command AimAtSpeaker(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, BooleanSupplier robotCentricSup) {
         Command setPipelineCommand = this.run(
             () -> pipeline.setDouble(Constants.VisionConstants.SpeakerID)
             );
             setPipelineCommand.addRequirements(this);
             // angle = getRotation(offset);
-            // Command rotateMotorCommand = new LaunchdrAimCommand(l_Launcher, () -> getRotation(offset));
             Command rotateSwerveCommand = new TeleopSwerve(
                 s_Swerve,
                 false,
@@ -119,12 +118,7 @@ public class VisionSubsystem extends SubsystemBase {
             return 0;
         }
         else{
-        //return (tx.getDouble(0.0)-targetAngle)*-0.1;
-        // System.out.println(rateOfChange((tx.getDouble(0.0)-targetAngle)*-0.04));
-
-        // return rateOfChange((tx.getDouble(0.0) - targetAngle)*-0.04);
-        return (tx.getDouble(0.0)-targetAngle)*-0.05;
-
+            return (tx.getDouble(0.0)-targetAngle)*-0.04;
         }
     }
 

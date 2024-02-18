@@ -104,7 +104,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     /* Driver Buttons */
       zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
-      SpeakerTrack.whileTrue(v_VisionSubsystem.AimAtSpeaker(l_Launcher, s_Swerve, 
+      SpeakerTrack.whileTrue(v_VisionSubsystem.AimAtSpeaker(s_Swerve, 
                                                               () -> -driver.getRawAxis(translationAxis),
                                                               () -> -driver.getRawAxis(strafeAxis),
                                                               () -> robotCentric.getAsBoolean()
