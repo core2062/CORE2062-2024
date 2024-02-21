@@ -1,5 +1,8 @@
 package frc.robot;
 
+import frc.robot.commands.FeedAssemblyCommand;
+import frc.robot.commands.LauncherAimCommand;
+import frc.robot.commands.LauncherAssemblyCommand;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
 import java.io.IOException;
@@ -16,11 +19,11 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 public class Autos extends SequentialCommandGroup {    
 
-    public Autos(int cases, Swerve s_Swerve){
+    public Autos(int cases, Swerve s_Swerve, IntakeSubsystem i_Intake, LauncherSubsystem l_LauncherSubsystem){
         System.out.printf("autos selection: %d\n", cases);
         switch (cases) {
             case 0:
-                movementAuto(s_Swerve);
+                movementAuto(s_Swerve, i_Intake, l_LauncherSubsystem);
                 break;
             default:
                 doNothingAuto(s_Swerve);
@@ -37,10 +40,10 @@ public class Autos extends SequentialCommandGroup {
 
 
 
-    public void movementAuto(Swerve s_Swerve) {
+    public void movementAuto(Swerve s_Swerve, IntakeSubsystem i_Intake, LauncherSubsystem l_LauncherSubsystem) {
         System.out.println("move auto");  
 
-        String trajectoryJSON = "paths/MoveForward.wpilib.json"; //TODO: set path name to auton path
+        String trajectoryJSON = "paths/MoveBackPickup.wpilib.json"; //TODO: set path name to auton path
         Trajectory trajectory = new Trajectory(); 
         try {
             Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
@@ -70,6 +73,11 @@ public class Autos extends SequentialCommandGroup {
             
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(Trajectory.getInitialPose())),
+            new LauncherAimCommand(l_LauncherSubsystem, 51),
+            new LauncherAssemblyCommand(l_LauncherSubsystem, 0.5),
+            new FeedAssemblyCommand(i_Intake, 0.5, 0.4),
+            new InstantCommand(() -> Constants.assemblyDone = true),
+            new LauncherAimCommand(l_LauncherSubsystem, 0),
             swerveControllerCommand
         );
     }

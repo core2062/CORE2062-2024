@@ -50,8 +50,8 @@ public class LauncherSubsystem extends SubsystemBase{
         rightRotationMotor.set(ControlMode.PercentOutput, -speed);
     }
 
-    public Command launcherRotateCommand(){
-        Command launch = new LauncherAimCommand(this);
+    public Command launcherRotateCommand(double desiredangle){
+        Command launch = new LauncherAimCommand(this, desiredangle);
         return launch;
     }
 

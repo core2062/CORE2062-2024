@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ser.std.NumberSerializers.DoubleSerializer
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -57,13 +58,14 @@ public class RobotContainer {
   private final JoystickButton LauncherFeed = new JoystickButton(operator, 2);
 
   private final POVButton CloseSpeakerAngle = new POVButton(operator, 90);
-  private final JoystickButton ZeroAngle = new JoystickButton(operator, 180);
+  private final POVButton ZeroAngle = new POVButton(operator, 180);
+  private final POVButton AmpAngle = new POVButton(operator, 0);
   
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
   private final IntakeSubsystem i_Intake = new IntakeSubsystem();
   private final LauncherSubsystem l_Launcher = new LauncherSubsystem();
-  private final ScoreAssembly c_ScoreAssembly = new ScoreAssembly(i_Intake);
+  private final ScoreAssembly c_ScoreAssembly = new ScoreAssembly();
   private final VisionSubsystem v_VisionSubsystem = new VisionSubsystem();
 
   public static DoubleSupplier speakerLauncherSpeed = () -> Constants.LauncherConstants.kSpeakerLaunchSpeed.get(0.0);
@@ -132,16 +134,23 @@ public class RobotContainer {
                              .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationPercent(0, 0)))
                              .onFalse(new InstantCommand(() -> Constants.kOverride = false));
       IntakeAssembly.onTrue(c_ScoreAssembly.pickUpPiece(l_Launcher, i_Intake, intakeSpeed, feedSpeed));
+                    // .onFalse(new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0, 0)));
 
-      stopAssemly.onTrue(c_ScoreAssembly.defaultCommand(i_Intake)).onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.0)));
+      stopAssemly.onTrue(new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0, 0)));
 
       SpeakerLaunch.onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(Constants.LauncherConstants.kSpeakerLaunchSpeed.get(0.0))))
                    .onFalse(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.0)));
 
-      CloseSpeakerAngle.whileTrue(l_Launcher.launcherRotateCommand())
+      CloseSpeakerAngle.whileTrue(l_Launcher.launcherRotateCommand(51))
                        .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));
 
-      AmpLaunch.whileTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(Constants.LauncherConstants.kAMPLaunchSpeed.get(0.0))))
+      ZeroAngle.whileTrue(l_Launcher.launcherRotateCommand(0))
+               .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));
+
+      AmpAngle.whileTrue(l_Launcher.launcherRotateCommand(120))
+              .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));              
+
+      AmpLaunch.onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(Constants.LauncherConstants.kAMPLaunchSpeed.get(0.0))))
                .onFalse(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.0)));
 
       LauncherFeed.onTrue(new InstantCommand(() -> i_Intake.setFeedSpeed(Constants.LauncherConstants.kFeedSpeed.get(0.0))))
@@ -155,6 +164,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     //return new Autos(place auto stuff here)
-    return new Autos(Constants.AutoSelected, s_Swerve);
+    return new Autos(Constants.AutoSelected, s_Swerve, i_Intake, l_Launcher);
   }
 }

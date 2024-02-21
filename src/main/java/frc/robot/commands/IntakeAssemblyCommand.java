@@ -25,6 +25,11 @@ public class IntakeAssemblyCommand extends Command{
     }
 
     @Override
+    public void end(boolean interrupted) {
+        i_Intake.setFeedAndIntakeSpeed(0, 0);
+    }
+
+    @Override
     public boolean isFinished() {
         boolean finished = ScoreAssembly.getPhotoeye();
         finished = !finished;

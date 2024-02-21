@@ -11,11 +11,11 @@ import frc.robot.subsystems.ScoreAssembly;
 
 public class FeedAssemblyCommand extends Command{
     private IntakeSubsystem i_Intake;
-    private DoubleSupplier speed, delay;
+    private double speed, delay;
     public static Timer feedDelaytime = new Timer();
 
 
-    public FeedAssemblyCommand(IntakeSubsystem i_Intake, DoubleSupplier speed, DoubleSupplier delay){
+    public FeedAssemblyCommand(IntakeSubsystem i_Intake, double speed, double delay){
         this.i_Intake = i_Intake;
         addRequirements(i_Intake);
 
@@ -30,8 +30,8 @@ public class FeedAssemblyCommand extends Command{
 
     @Override
     public void execute() {
-        if (feedDelaytime.get() > delay.getAsDouble()){
-            i_Intake.setFeedSpeed(speed.getAsDouble());
+        if (feedDelaytime.get() > delay){
+            i_Intake.setFeedSpeed(speed);
         }
     }
 
@@ -39,6 +39,7 @@ public class FeedAssemblyCommand extends Command{
     public void end(boolean interrupted) {
         feedDelaytime.stop();
         feedDelaytime.reset();
+        i_Intake.setFeedSpeed(0);
     }
 
     @Override

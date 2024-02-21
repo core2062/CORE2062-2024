@@ -10,17 +10,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class LauncherAimCommand extends Command{
     private LauncherSubsystem l_Launcher;
     private double DifferenceOfAngle;
+    private double desiredAngle;
 
-    public LauncherAimCommand(LauncherSubsystem l_Launcher){
+    public LauncherAimCommand(LauncherSubsystem l_Launcher, double desiredAngle){
         this.l_Launcher = l_Launcher;
         addRequirements(l_Launcher);
+
+        this.desiredAngle = desiredAngle;
     }
 
     @Override
     public void execute() {
-        double desiredAngle = 51;
         double currentAngle = l_Launcher.getEncoderValue();
-        final double MAX_SPEED_RPM = 2; // Maximum speed of the motor in RPM
+        final double MAX_SPEED_RPM = 3; // Maximum speed of the motor in RPM
         final double ANGLE_TOLERANCE = 1.0;
         // Calculate the angle difference
         double angleDifference = desiredAngle - currentAngle;
@@ -36,17 +38,17 @@ public class LauncherAimCommand extends Command{
         // If the angle difference is within the tolerance, stop the motor
         if (Math.abs(angleDifference) <= ANGLE_TOLERANCE) {
             speed = 0; // Stop the motor
-        } else if (Math.abs(angleDifference) > 10 && Math.abs(speed) < 0.4){
+        } else if (Math.abs(angleDifference) > 10 && Math.abs(speed) < 0.5){
             if (speed < 0) {
-                speed = -0.4;
+                speed = -0.5;
             } else if (speed > 0){
-                speed = 0.4;
+                speed = 0.5;
             }
-        } else if (Math.abs(angleDifference) > 1 && Math.abs(speed) < 0.2){
+        } else if (Math.abs(angleDifference) > 1 && Math.abs(speed) < 0.3){
             if (speed < 0) {
-                speed = -0.2;
+                speed = -0.3;
             } else if (speed > 0){
-                speed = 0.2;
+                speed = 0.3;
             }
         }
         l_Launcher.LauncherRotationAngle(speed);
@@ -54,9 +56,13 @@ public class LauncherAimCommand extends Command{
     }
 
     @Override
+    public void end(boolean interrupted) {
+        l_Launcher.LauncherRotationAngle(0);
+    }
+
+    @Override
     public boolean isFinished(){
         if (Math.abs(DifferenceOfAngle) <= 0.5){
-            l_Launcher.LauncherRotationAngle(0.0);
             return true;
         } else {
             return false;

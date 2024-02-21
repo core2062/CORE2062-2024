@@ -18,9 +18,9 @@ import frc.robot.constants.Constants;
 public class ScoreAssembly extends SubsystemBase{
     public static DigitalInput photoeye = new DigitalInput(0);
     
-    public ScoreAssembly(IntakeSubsystem i_Intake){
-        setDefaultCommand(defaultCommand(i_Intake));
-    }
+    // public ScoreAssembly(IntakeSubsystem i_Intake){
+    //     setDefaultCommand(defaultCommand(i_Intake));
+    // }
 
     public Command defaultCommand(IntakeSubsystem i_Intake){
         Command stopIntake = new InstantCommand(() -> i_Intake.setIntakeSpeed(0));
@@ -39,6 +39,7 @@ public class ScoreAssembly extends SubsystemBase{
     }
     
     public static boolean getPhotoeye(){
+        SmartDashboard.putBoolean("Piece Ready", photoeye.get());
         return photoeye.get();
     }
 }
