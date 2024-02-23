@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ScoreAssembly;
 
@@ -30,6 +31,10 @@ public class IntakeAssemblyCommand extends Command{
     public boolean isFinished() {
         boolean finished = ScoreAssembly.getPhotoeye();
         finished = !finished;
-        return finished;
+        if (Constants.endAssembly1 == true){
+            return true;
+        } else {
+            return finished;
+        }
     }
 }

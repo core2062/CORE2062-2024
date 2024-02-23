@@ -26,9 +26,9 @@ public class ScoreAssembly extends SubsystemBase{
         return stopCommand;
     }
 
-    public Command pickUpPiece(LauncherSubsystem l_Launcher, IntakeSubsystem i_Intake, DoubleSupplier intakeSpeed, DoubleSupplier feedSpeed){        
+    public Command pickUpPiece(IntakeSubsystem i_Intake, DoubleSupplier intakeSpeed, DoubleSupplier feedSpeed){        
         Command PickUpCommand = new IntakeAssemblyCommand(i_Intake, intakeSpeed.getAsDouble(), feedSpeed.getAsDouble());
-        PickUpCommand.addRequirements(l_Launcher, i_Intake, this);
+        PickUpCommand.addRequirements(i_Intake, this);
         return PickUpCommand;
     }
     

@@ -56,6 +56,7 @@ public class RobotContainer {
   private final POVButton CloseSpeakerAngle = new POVButton(operator, 90);
   private final POVButton ZeroAngle = new POVButton(operator, 180);
   private final POVButton AmpAngle = new POVButton(operator, 0);
+  private final POVButton testAngle = new POVButton(operator, 270);
   
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
@@ -114,37 +115,33 @@ public class RobotContainer {
     //                                                           ));
 
     // /* Operator Buttons */
-      // launcherMotors.onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(Constants.LauncherConstants.kLaunchSpeed.get(0.0))))
-      //               .onFalse(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.0)));
-      // launcherFeed.onTrue(new InstantCommand(() -> i_Intake.setFeedSpeed(Constants.LauncherConstants.kFeedSpeed.get(0.0))))
-      //               .onFalse(new InstantCommand(() -> i_Intake.setFeedSpeed(0.0)));
       // intakeFeed.onTrue(new InstantCommand(() -> i_Intake.setIntakeSpeed(Constants.IntakeConstants.kIntakeSpeed.get(0.0))))
       //           .onFalse(new InstantCommand(() -> i_Intake.setIntakeSpeed(0.0)));
 
       increaseLauncherHeading.onTrue(new InstantCommand(() -> l_Launcher.LauncherRotationPercent(-leftRotationSpeed.getAsDouble(), -rightRotationSpeed.getAsDouble())))
-                             .onTrue(new InstantCommand(() -> Constants.kOverride = true))
-                             .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationPercent(0, 0)))
-                             .onFalse(new InstantCommand(() -> Constants.kOverride = false));
+                             .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationPercent(0, 0)));
       decreaseLauncherHeading.onTrue(new InstantCommand(() -> l_Launcher.LauncherRotationPercent(leftRotationSpeed.getAsDouble(), rightRotationSpeed.getAsDouble())))
-                             .onTrue(new InstantCommand(() -> Constants.kOverride = true))
-                             .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationPercent(0, 0)))
-                             .onFalse(new InstantCommand(() -> Constants.kOverride = false));
-      IntakeAssembly.onTrue(c_ScoreAssembly.pickUpPiece(l_Launcher, i_Intake, intakeSpeed, feedSpeed));
-                    // .onFalse(new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0, 0)));
+                             .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationPercent(0, 0)));
+      IntakeAssembly.onTrue(c_ScoreAssembly.pickUpPiece(i_Intake, intakeSpeed, feedSpeed));
 
-      stopAssemly.onTrue(new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0, 0)));
+      stopAssemly.onTrue(new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0, 0)))
+                 .onTrue(new InstantCommand(() -> Constants.endAssembly1 = true))
+                 .onFalse(new InstantCommand(() -> Constants.endAssembly1 = false));
 
       SpeakerLaunch.onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(Constants.LauncherConstants.kSpeakerLaunchSpeed.get(0.0))))
                    .onFalse(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.0)));
 
-      CloseSpeakerAngle.whileTrue(l_Launcher.launcherRotateCommand(51))
+      CloseSpeakerAngle.onTrue(l_Launcher.launcherRotateCommand(51))
                        .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));
 
-      ZeroAngle.whileTrue(l_Launcher.launcherRotateCommand(0))
+      ZeroAngle.onTrue(l_Launcher.launcherRotateCommand(0))
                .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));
 
-      AmpAngle.whileTrue(l_Launcher.launcherRotateCommand(120))
-              .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));              
+      AmpAngle.onTrue(l_Launcher.launcherRotateCommand(120))
+              .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));   
+              
+      testAngle.onTrue(l_Launcher.launcherRotateCommand(33.5))
+               .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));
 
       AmpLaunch.onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(Constants.LauncherConstants.kAMPLaunchSpeed.get(0.0))))
                .onFalse(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.0)));
