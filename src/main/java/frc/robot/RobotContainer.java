@@ -6,11 +6,8 @@ package frc.robot;
 
 import java.util.function.DoubleSupplier;
 
-import com.fasterxml.jackson.databind.ser.std.NumberSerializers.DoubleSerializer;
-
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -18,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.*;
-import frc.lib.util.COREConstants.constantType;
 import frc.robot.commands.*;
 import frc.robot.constants.Constants;
 
@@ -66,7 +62,7 @@ public class RobotContainer {
   private final IntakeSubsystem i_Intake = new IntakeSubsystem();
   private final LauncherSubsystem l_Launcher = new LauncherSubsystem();
   private final ScoreAssembly c_ScoreAssembly = new ScoreAssembly();
-  private final VisionSubsystem v_VisionSubsystem = new VisionSubsystem();
+  private final AprilTagSubsystem v_VisionSubsystem = new AprilTagSubsystem();
 
   public static DoubleSupplier speakerLauncherSpeed = () -> Constants.LauncherConstants.kSpeakerLaunchSpeed.get(0.0);
   public static DoubleSupplier intakeSpeed = () -> Constants.IntakeConstants.kIntakeSpeed.get(0.0);

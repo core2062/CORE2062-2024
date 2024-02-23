@@ -2,18 +2,12 @@ package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 
-import com.fasterxml.jackson.databind.ser.std.NumberSerializers.DoubleSerializer;
-
-import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.FeedAssemblyCommand;
 import frc.robot.commands.IntakeAssemblyCommand;
-import frc.robot.commands.LauncherAssemblyCommand;
-import frc.robot.constants.Constants;
 
 public class ScoreAssembly extends SubsystemBase{
     public static DigitalInput photoeye = new DigitalInput(0);
@@ -33,7 +27,7 @@ public class ScoreAssembly extends SubsystemBase{
     }
 
     public Command pickUpPiece(LauncherSubsystem l_Launcher, IntakeSubsystem i_Intake, DoubleSupplier intakeSpeed, DoubleSupplier feedSpeed){        
-        Command PickUpCommand = new IntakeAssemblyCommand(i_Intake, intakeSpeed, feedSpeed);
+        Command PickUpCommand = new IntakeAssemblyCommand(i_Intake, intakeSpeed.getAsDouble(), feedSpeed.getAsDouble());
         PickUpCommand.addRequirements(l_Launcher, i_Intake, this);
         return PickUpCommand;
     }

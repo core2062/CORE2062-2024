@@ -1,8 +1,8 @@
 package frc.robot;
 
-import frc.robot.commands.FeedAssemblyCommand;
+import frc.robot.commands.AutonShootCommand;
+import frc.robot.commands.IntakeAssemblyCommand;
 import frc.robot.commands.LauncherAimCommand;
-import frc.robot.commands.LauncherAssemblyCommand;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
 import java.io.IOException;
@@ -74,11 +74,14 @@ public class Autos extends SequentialCommandGroup {
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(Trajectory.getInitialPose())),
             new LauncherAimCommand(l_LauncherSubsystem, 51),
-            new LauncherAssemblyCommand(l_LauncherSubsystem, 0.5),
-            new FeedAssemblyCommand(i_Intake, 0.5, 0.4),
-            new InstantCommand(() -> Constants.assemblyDone = true),
+            new AutonShootCommand(i_Intake, l_LauncherSubsystem, 0.5, 0.6, 0.4),
             new LauncherAimCommand(l_LauncherSubsystem, 0),
-            swerveControllerCommand
+            new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0.5, 0.5)),
+            swerveControllerCommand,
+            new IntakeAssemblyCommand(i_Intake, 0.5, 0.5),
+            new LauncherAimCommand(l_LauncherSubsystem, 33.5),
+            new AutonShootCommand(i_Intake, l_LauncherSubsystem, 0.5, 0.6, 0.4),
+            new LauncherAimCommand(l_LauncherSubsystem, 0)
         );
     }
 }

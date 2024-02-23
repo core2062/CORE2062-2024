@@ -1,17 +1,14 @@
 package frc.robot.commands;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.Constants;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ScoreAssembly;
 
 public class IntakeAssemblyCommand extends Command{
     private IntakeSubsystem i_Intake;
-    private DoubleSupplier intakeSpeed, feedSpeed;
+    private double intakeSpeed, feedSpeed;
 
-    public IntakeAssemblyCommand(IntakeSubsystem i_Intake, DoubleSupplier intakeSpeed, DoubleSupplier feedSpeed){
+    public IntakeAssemblyCommand(IntakeSubsystem i_Intake, double intakeSpeed, double feedSpeed){
         this.i_Intake = i_Intake;
         addRequirements(i_Intake);
 
@@ -21,7 +18,7 @@ public class IntakeAssemblyCommand extends Command{
 
     @Override
     public void execute() {
-        i_Intake.setFeedAndIntakeSpeed(intakeSpeed.getAsDouble(), feedSpeed.getAsDouble());
+        i_Intake.setFeedAndIntakeSpeed(intakeSpeed, feedSpeed);
     }
 
     @Override
