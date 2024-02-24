@@ -215,4 +215,10 @@ public final class Constants {
         public static int farSpeakerID = 0;
         public static int AmpID = 0;
     }
+
+    public static class ClimberConstants{
+        public static final int kClimberMotorPort = 26;
+        public static final COREConstants kUpClimberSpeed = new COREConstants("Climber Speed", 0.5);
+        public static final COREConstants kDownClimberSpeed = new COREConstants("Climber Speed", -0.5);
+    }
 }

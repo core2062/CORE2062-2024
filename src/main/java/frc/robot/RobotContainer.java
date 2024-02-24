@@ -41,6 +41,9 @@ public class RobotContainer {
   
   private final JoystickButton SpeakerTrack = new JoystickButton(driver, XboxController.Button.kB.value);
   private final JoystickButton NoteTrack = new JoystickButton(driver, XboxController.Button.kX.value);
+
+  private final POVButton ClimberUp = new POVButton(driver, 0);
+  private final POVButton ClimberDown = new POVButton(driver, 180);
   /* Operator Buttons */
   private final JoystickButton IntakeAssembly = new JoystickButton(operator, 5);
 
@@ -64,6 +67,7 @@ public class RobotContainer {
   private final LauncherSubsystem l_Launcher = new LauncherSubsystem();
   private final ScoreAssembly c_ScoreAssembly = new ScoreAssembly();
   private final AprilTagSubsystem v_VisionSubsystem = new AprilTagSubsystem();
+  private final ClimberSubsystem c_ClimberSubsystem = new ClimberSubsystem();
 
   public static DoubleSupplier speakerLauncherSpeed = () -> Constants.LauncherConstants.kSpeakerLaunchSpeed.get(0.0);
   public static DoubleSupplier intakeSpeed = () -> Constants.IntakeConstants.kIntakeSpeed.get(0.0);
@@ -103,6 +107,10 @@ public class RobotContainer {
   private void configureButtonBindings() {
     /* Driver Buttons */
       zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+      ClimberUp.onTrue(new InstantCommand(() -> c_ClimberSubsystem.setClimberSpeed(Constants.ClimberConstants.kUpClimberSpeed.get(0.0))))
+                .onFalse(new InstantCommand(() -> c_ClimberSubsystem.setClimberSpeed(0.0)));
+      ClimberDown.onTrue(new InstantCommand(() -> c_ClimberSubsystem.setClimberSpeed(Constants.ClimberConstants.kDownClimberSpeed.get(0.0))))
+                .onFalse(new InstantCommand(() -> c_ClimberSubsystem.setClimberSpeed(0.0)));
       SpeakerTrack.whileTrue(v_VisionSubsystem.AimAtSpeaker(s_Swerve, 
                                                               () -> -driver.getRawAxis(translationAxis),
                                                               () -> -driver.getRawAxis(strafeAxis),
