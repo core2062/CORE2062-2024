@@ -56,7 +56,7 @@ public class RobotContainer {
   private final POVButton CloseSpeakerAngle = new POVButton(operator, 90);
   private final POVButton ZeroAngle = new POVButton(operator, 180);
   private final POVButton AmpAngle = new POVButton(operator, 0);
-  private final POVButton testAngle = new POVButton(operator, 270);
+  private final POVButton SafeZoneAngle = new POVButton(operator, 270);
   
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
@@ -140,7 +140,7 @@ public class RobotContainer {
       AmpAngle.onTrue(l_Launcher.launcherRotateCommand(120))
               .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));   
               
-      testAngle.onTrue(l_Launcher.launcherRotateCommand(33.5))
+      SafeZoneAngle.onTrue(l_Launcher.launcherRotateCommand(26.7))
                .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));
 
       AmpLaunch.onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(Constants.LauncherConstants.kAMPLaunchSpeed.get(0.0))))
