@@ -1,15 +1,18 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.LauncherSubsystem;
+
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class LauncherAimCommand extends Command{
     private LauncherSubsystem l_Launcher;
     private double DifferenceOfAngle;
-    private double desiredAngle;
+    private DoubleSupplier desiredAngle;
 
-    public LauncherAimCommand(LauncherSubsystem l_Launcher, double desiredAngle){
+    public LauncherAimCommand(LauncherSubsystem l_Launcher, DoubleSupplier desiredAngle){
         this.l_Launcher = l_Launcher;
         addRequirements(l_Launcher);
 
@@ -18,11 +21,12 @@ public class LauncherAimCommand extends Command{
 
     @Override
     public void execute() {
-        double currentAngle = l_Launcher.getEncoderValue();
+        System.out.println(desiredAngle.getAsDouble());
+        double currentAngle = l_Launcher.getLeftEncoderValue();
         final double MAX_SPEED_RPM = 3; // Maximum speed of the motor in RPM
         final double ANGLE_TOLERANCE = 1.0;
         // Calculate the angle difference
-        double angleDifference = desiredAngle - currentAngle;
+        double angleDifference = desiredAngle.getAsDouble() - currentAngle;
         DifferenceOfAngle = angleDifference;
         // Calculate the speed based on the angle difference
         double speedPercentage = angleDifference / 180.0; // Scaling the angle difference to [-1, 1]
@@ -41,7 +45,7 @@ public class LauncherAimCommand extends Command{
             } else if (speed > 0){
                 speed = 0.5;
             }
-        } else if (Math.abs(angleDifference) > 1 && Math.abs(speed) < 0.3){
+        } else if (Math.abs(angleDifference) > 0.5 && Math.abs(speed) < 0.3){
             if (speed < 0) {
                 speed = -0.3;
             } else if (speed > 0){

@@ -46,6 +46,7 @@ public class RobotContainer {
   private final POVButton ClimberDown = new POVButton(driver, 180);
   /* Operator Buttons */
   private final JoystickButton IntakeAssembly = new JoystickButton(operator, 5);
+  private final JoystickButton reverseIntakeFeed = new JoystickButton(operator, 7);
 
   private final JoystickButton stopAssemly = new JoystickButton(operator, 3);
   private final JoystickButton SpeakerLaunch = new JoystickButton(operator, 6);
@@ -107,15 +108,19 @@ public class RobotContainer {
   private void configureButtonBindings() {
     /* Driver Buttons */
       zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+
       ClimberUp.onTrue(new InstantCommand(() -> c_ClimberSubsystem.setClimberSpeed(Constants.ClimberConstants.kUpClimberSpeed.get(0.0))))
                 .onFalse(new InstantCommand(() -> c_ClimberSubsystem.setClimberSpeed(0.0)));
       ClimberDown.onTrue(new InstantCommand(() -> c_ClimberSubsystem.setClimberSpeed(Constants.ClimberConstants.kDownClimberSpeed.get(0.0))))
                 .onFalse(new InstantCommand(() -> c_ClimberSubsystem.setClimberSpeed(0.0)));
-      SpeakerTrack.whileTrue(v_VisionSubsystem.AimAtSpeaker(s_Swerve, 
-                                                              () -> -driver.getRawAxis(translationAxis),
-                                                              () -> -driver.getRawAxis(strafeAxis),
-                                                              () -> robotCentric.getAsBoolean()
-                                                              ));
+
+      SpeakerTrack.whileTrue(v_VisionSubsystem.TargetCommand(l_Launcher));
+
+      // SpeakerTrack.whileTrue(v_VisionSubsystem.AimAtSpeaker(s_Swerve, 
+      //                                                         () -> -driver.getRawAxis(translationAxis),
+      //                                                         () -> -driver.getRawAxis(strafeAxis),
+      //                                                         () -> robotCentric.getAsBoolean()
+      //                                                         ));
     //   AmpTrack.whileTrue(v_VisionSubsystem.AimAtSpeaker(l_Launcher, s_Swerve, Constants.VisionConstants.SpeakerID,0,
     //                                                           () -> -driver.getRawAxis(translationAxis),
     //                                                           () -> -driver.getRawAxis(strafeAxis),
@@ -123,8 +128,8 @@ public class RobotContainer {
     //                                                           ));
 
     // /* Operator Buttons */
-      // intakeFeed.onTrue(new InstantCommand(() -> i_Intake.setIntakeSpeed(Constants.IntakeConstants.kIntakeSpeed.get(0.0))))
-      //           .onFalse(new InstantCommand(() -> i_Intake.setIntakeSpeed(0.0)));
+      reverseIntakeFeed.onTrue(new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(-Constants.IntakeConstants.kIntakeSpeed.get(0.0), -Constants.LauncherConstants.kFeedSpeed.get(0.0))))
+                .onFalse(new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0.0, 0.0)));
 
       increaseLauncherHeading.onTrue(new InstantCommand(() -> l_Launcher.LauncherRotationPercent(-leftRotationSpeed.getAsDouble(), -rightRotationSpeed.getAsDouble())))
                              .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationPercent(0, 0)));
@@ -139,16 +144,16 @@ public class RobotContainer {
       SpeakerLaunch.onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(Constants.LauncherConstants.kSpeakerLaunchSpeed.get(0.0))))
                    .onFalse(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.0)));
 
-      CloseSpeakerAngle.onTrue(l_Launcher.launcherRotateCommand(51))
+      CloseSpeakerAngle.onTrue(l_Launcher.launcherRotateCommand(() -> 50))
                        .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));
 
-      ZeroAngle.onTrue(l_Launcher.launcherRotateCommand(0))
+      ZeroAngle.onTrue(l_Launcher.launcherRotateCommand(() -> 0))
                .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));
 
-      AmpAngle.onTrue(l_Launcher.launcherRotateCommand(120))
+      AmpAngle.onTrue(l_Launcher.launcherRotateCommand(() -> 125))
               .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));   
               
-      SafeZoneAngle.onTrue(l_Launcher.launcherRotateCommand(26.7))
+      SafeZoneAngle.onTrue(l_Launcher.launcherRotateCommand(() -> 30.5))
                .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));
 
       AmpLaunch.onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(Constants.LauncherConstants.kAMPLaunchSpeed.get(0.0))))

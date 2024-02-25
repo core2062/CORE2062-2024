@@ -24,7 +24,8 @@ public class LauncherSubsystem extends SubsystemBase{
     private TalonSRX leftRotationMotor = new TalonSRX(Constants.LauncherConstants.kLeftRotationMotorPort);
     private TalonSRX rightRotationMotor = new TalonSRX(Constants.LauncherConstants.kRightRotationMotorPort);
     
-    private DutyCycleEncoder launcherPitchEncoder = new DutyCycleEncoder(1);
+    private static DutyCycleEncoder launcherRightPitchEncoder = new DutyCycleEncoder(1);
+    private static DutyCycleEncoder launcherLeftPitchEncoder = new DutyCycleEncoder(2);
     public double encoderValue = 0.0;
 
     public double launchSpeed;
@@ -48,13 +49,17 @@ public class LauncherSubsystem extends SubsystemBase{
         rightRotationMotor.set(ControlMode.PercentOutput, -speed);
     }
 
-    public Command launcherRotateCommand(double desiredangle){
+    public Command launcherRotateCommand(DoubleSupplier desiredangle){
         Command launch = new LauncherAimCommand(this, desiredangle);
         return launch;
     }
 
-    public double getEncoderValue(){
-        return launcherPitchEncoder.getDistance();
+    public static double getRightEncoderValue(){
+        return (launcherRightPitchEncoder.getDistance());
+    }
+    
+    public static double getLeftEncoderValue(){
+        return (-launcherLeftPitchEncoder.getDistance());
     }
 
     public void configMotors(){
@@ -68,7 +73,9 @@ public class LauncherSubsystem extends SubsystemBase{
         rightRotationMotor.setNeutralMode(NeutralMode.Brake);
         rightRotationMotor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
 
-        launcherPitchEncoder.setDistancePerRotation(360);
+        launcherRightPitchEncoder.setDistancePerRotation(360);
+        launcherLeftPitchEncoder.setDistancePerRotation(360);
+
     }
 
     @Override
@@ -76,10 +83,18 @@ public class LauncherSubsystem extends SubsystemBase{
         if (leftRotationMotor.isFwdLimitSwitchClosed() == 1){
             resetEncoder();
         }
-        SmartDashboard.putNumber("Encoder Value", getEncoderValue());
+        SmartDashboard.putNumber("Right Encoder Value", getRightEncoderValue());
+        SmartDashboard.putNumber("Left Encoder Value", getLeftEncoderValue());
+        SmartDashboard.putNumber("Average Encoder Value: ", getAverageEncoderValue());
+    }
+
+    public double getAverageEncoderValue(){
+        double ave = getLeftEncoderValue() + getRightEncoderValue();
+        return ave/2;
     }
 
     void resetEncoder(){
-        launcherPitchEncoder.reset();
+        launcherLeftPitchEncoder.reset();
+        launcherRightPitchEncoder.reset();
     }
 }

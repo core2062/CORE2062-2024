@@ -73,15 +73,15 @@ public class Autos extends SequentialCommandGroup {
             
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(Trajectory.getInitialPose())),
-            new LauncherAimCommand(l_LauncherSubsystem, 51),
+            new LauncherAimCommand(l_LauncherSubsystem, () -> 50),
             new AutonShootCommand(i_Intake, l_LauncherSubsystem, 0.5, 0.6, 0.4),
-            new LauncherAimCommand(l_LauncherSubsystem, 33.5),
+            new LauncherAimCommand(l_LauncherSubsystem, () -> 33.5),
             new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0.5, 0.5)),
             swerveControllerCommand,
             new IntakeAssemblyCommand(i_Intake, 0.5, 0.5),
             // new LauncherAimCommand(l_LauncherSubsystem, 33.5),
             new AutonShootCommand(i_Intake, l_LauncherSubsystem, 0.5, 0.6, 0.4),
-            new LauncherAimCommand(l_LauncherSubsystem, 0)
+            new LauncherAimCommand(l_LauncherSubsystem, () -> 0)
         );
     }
 }
