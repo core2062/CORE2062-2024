@@ -19,8 +19,7 @@ import frc.robot.commands.TrackingLauncherAimCommand;
 import frc.robot.subsystems.LauncherSubsystem;
 import frc.robot.constants.Constants;
 
-public class AprilTagSubsystem extends SubsystemBase {
-    // double angle;
+public class LauncherTrackingSubsystem extends SubsystemBase {
     double x ;
     double id ;
     double y ;
@@ -32,7 +31,7 @@ public class AprilTagSubsystem extends SubsystemBase {
     NetworkTableEntry ta = table.getEntry("ta");
     NetworkTableEntry tid = table.getEntry("tid");
     NetworkTableEntry pipeline = table.getEntry("pipeline");
-    public AprilTagSubsystem(){
+    public LauncherTrackingSubsystem(){
     }
     @Override
     public void periodic() {
@@ -62,29 +61,13 @@ public class AprilTagSubsystem extends SubsystemBase {
         Constants.VisionConstants.DesiredAngle = findAngle();
         SmartDashboard.putNumber("Desired Angle of Launcher: ", Constants.VisionConstants.DesiredAngle);
     }
-    
-    public Command AimAtSpeaker(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, BooleanSupplier robotCentricSup) {
-        Command setPipelineCommand = this.run(
-            () -> pipeline.setDouble(Constants.VisionConstants.SpeakerID)
-            );
-            setPipelineCommand.addRequirements(this);
-            Command rotateSwerveCommand = new TeleopSwerve(
-                s_Swerve,
-                false,
-                translationSup,
-                strafeSup,
-                () -> getRotation(0),
-                robotCentricSup 
-            );
-        return setPipelineCommand.alongWith(rotateSwerveCommand);
-    }
 
     public Command TargetCommand(LauncherSubsystem l_Launcher){
         Command setPipelineCommand = this.run(
             () -> pipeline.setDouble(Constants.VisionConstants.SpeakerID)
             );
         setPipelineCommand.addRequirements(this);
-        Command setAngle = new TrackingLauncherAimCommand(l_Launcher);
+        Command setAngle = new TrackingLauncherAimCommand(l_Launcher, this);
         return setPipelineCommand.alongWith(setAngle);
     }
     
@@ -112,70 +95,14 @@ public class AprilTagSubsystem extends SubsystemBase {
             return 0;
         }
         else{
-            return (tx.getDouble(0.0)-targetAngle)*-0.04;
+            if (tx.getDouble(0.0) > (targetAngle+10)){
+                return (tx.getDouble(0.0)-targetAngle)*-0.03;
+            } else {
+                return (tx.getDouble(0.0)-targetAngle)*-0.04;
+            }
         }
     }
 
-    public static double rateOfChange(double x) {
-        final double increaseRate = 1.1; // Adjust as needed
-
-        // Calculate the distance from origin
-        double distance = Math.abs(x);
-
-        // Calculate rate of change
-        double rate = distance * increaseRate;
-
-        return rate;
-    }
-
-    // public double getDesiredAngle() {
-    //     double angle = LauncherSubsystem.getEncoderValue();
-    //     double LimelightHeight = getHeightOfLimelight();
-    //     double AprilTagHeight = 57.125;
-    //     double angleToGoalDeg = angle + ty.getDouble(0.0);
-    //     double angleToGoalRad = angleToGoalDeg * (Math.PI / 180.0);
-    //     double dist = (AprilTagHeight - LimelightHeight) / Math.tan(angleToGoalRad);
-
-    //     double SpeakerHeight = 78;
-    //     double noteThickness = 2;
-    //     double floorToPivot = 15.44;
-
-    //     double speakerOpening = SpeakerHeight + noteThickness;
-    //     double heightForCalc = speakerOpening - floorToPivot;
-
-    //     double hypotenuse = Math.sqrt((heightForCalc * heightForCalc) + (dist * dist) - (2 * heightForCalc * dist *Math.cos(90)));
-    //     double desiredangle = Math.asin(heightForCalc/(hypotenuse/Math.sin(90)));
-    //     return dist;
-    // }
-
-
-    // public double getHeightOfLimelight(){
-        
-    //     double LimelightAngle = LauncherSubsystem.getEncoderValue();
-
-    //     double angle = 17*(1-Math.cos(LimelightAngle));
-        
-    //     // double angle2 = 90 - LimelightAngle;
-
-    //     // return (17/Math.sin(angle2)) * Math.sin(90);
-    //     return angle;
-    // }
-
-    // public double getDistanceToObject() {
-    //     double Angle = LauncherSubsystem.getEncoderValue();
-    //     double dist = 12 * getDistance();
-    //     double angle2 = 90 - Angle;
-    //     double dist2 = (dist / Math.sin(90)) * Math.sin(angle2);
-    //     return dist2;
-    // }
-
-    // public double findAngle() {
-    //     double dist = getDistanceToObject();
-    //     double SpeakerHeight = 57.125;
-    //     double hypotenuse = Math.sqrt((dist * dist) + (SpeakerHeight * SpeakerHeight));
-    //     double desiredAngle = (SpeakerHeight/(hypotenuse/Math.sin(90)));
-    //     return desiredAngle;
-    // }
     public double findAngle(){
         //formula calulated from dcode.fr/function-equation-finder and data points collected
         double Dist = ((0.985078 * (getDistance() * 12)) + 11.3942) + 19.5;

@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.LauncherSubsystem;
+import frc.robot.subsystems.LauncherTrackingSubsystem;
 
 import java.util.function.DoubleSupplier;
 
@@ -10,17 +11,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 public class TrackingLauncherAimCommand extends Command{
     private LauncherSubsystem l_Launcher;
+    private LauncherTrackingSubsystem lt_LaunchTrack;
     private double DifferenceOfAngle;
     private double lastAngle = 0;
 
-    public TrackingLauncherAimCommand(LauncherSubsystem l_Launcher){
+    public TrackingLauncherAimCommand(LauncherSubsystem l_Launcher,LauncherTrackingSubsystem lt_LaunchTrack){
         this.l_Launcher = l_Launcher;
         addRequirements(l_Launcher);
+
+        this.lt_LaunchTrack = lt_LaunchTrack;
     }
 
     @Override
     public void execute() {
-        System.out.println(Constants.VisionConstants.DesiredAngle);
         double currentAngle = l_Launcher.getLeftEncoderValue();
         final double MAX_SPEED_RPM = 3; // Maximum speed of the motor in RPM
         final double ANGLE_TOLERANCE = 1.0;
@@ -30,7 +33,6 @@ public class TrackingLauncherAimCommand extends Command{
         } else {
             lastAngle = Constants.VisionConstants.DesiredAngle;
         }
-        System.out.println(Constants.VisionConstants.DesiredAngle);
         double angleDifference = Constants.VisionConstants.DesiredAngle - currentAngle;
         DifferenceOfAngle = angleDifference;
         // Calculate the speed based on the angle difference
@@ -59,6 +61,17 @@ public class TrackingLauncherAimCommand extends Command{
         }
 
         double changeINSpeed = 1.21038 - (0.0191341 * Constants.VisionConstants.DesiredAngle);
+
+        double Dist = ((0.985078 * (lt_LaunchTrack.getDistance() * 12)) + 11.3942) + 19.5;
+        double floorToPivot = 15.49;
+        double apriltagHeight = 57.125 - floorToPivot;
+        double xDist = Math.sqrt(Math.pow(Dist, 2) - Math.pow(apriltagHeight, 2));
+
+        if (xDist > 96){
+            changeINSpeed += (changeINSpeed * 0.1);
+        } else if (xDist < 36) {
+            changeINSpeed -= (changeINSpeed * 0.1);
+        }
         Constants.LauncherConstants.kSpeakerLaunchSpeed.set(changeINSpeed); 
 
         l_Launcher.LauncherRotationAngle(speed);

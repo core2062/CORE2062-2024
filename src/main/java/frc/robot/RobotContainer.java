@@ -67,16 +67,15 @@ public class RobotContainer {
   private final IntakeSubsystem i_Intake = new IntakeSubsystem();
   private final LauncherSubsystem l_Launcher = new LauncherSubsystem();
   private final ScoreAssembly c_ScoreAssembly = new ScoreAssembly();
-  private final AprilTagSubsystem v_VisionSubsystem = new AprilTagSubsystem();
+  private final LauncherTrackingSubsystem lt_LaunchTrackSubsystem = new LauncherTrackingSubsystem();
+  private final SwerveTrackingSubsystem st_SwerveTrackSubsystem = new SwerveTrackingSubsystem();
   private final ClimberSubsystem c_ClimberSubsystem = new ClimberSubsystem();
 
-  public static DoubleSupplier speakerLauncherSpeed = () -> Constants.LauncherConstants.kSpeakerLaunchSpeed.get(0.0);
+  /* double Suppliers */
   public static DoubleSupplier intakeSpeed = () -> Constants.IntakeConstants.kIntakeSpeed.get(0.0);
   public static DoubleSupplier leftRotationSpeed = () -> Constants.LauncherConstants.kLeftRotationSpeed.get(0.0);
   public static DoubleSupplier rightRotationSpeed = () -> Constants.LauncherConstants.kRightRotationSpeed.get(0.0);
   public static DoubleSupplier feedSpeed = () -> Constants.LauncherConstants.kFeedSpeed.get(0.0);
-  public static DoubleSupplier ampLauncherSpeed = () -> Constants.LauncherConstants.kAMPLaunchSpeed.get(0.0);
-  public static DoubleSupplier launchDelay = () -> Constants.LauncherConstants.kDelay.get(0.0);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -114,7 +113,7 @@ public class RobotContainer {
       ClimberDown.onTrue(new InstantCommand(() -> c_ClimberSubsystem.setClimberSpeed(Constants.ClimberConstants.kDownClimberSpeed.get(0.0))))
                 .onFalse(new InstantCommand(() -> c_ClimberSubsystem.setClimberSpeed(0.0)));
 
-      SpeakerTrack.whileTrue(v_VisionSubsystem.AimAtSpeaker(s_Swerve, 
+      SpeakerTrack.whileTrue(st_SwerveTrackSubsystem.AimAtSpeaker(s_Swerve, 
                                                               () -> -driver.getRawAxis(translationAxis),
                                                               () -> -driver.getRawAxis(strafeAxis),
                                                               () -> robotCentric.getAsBoolean()
@@ -141,7 +140,9 @@ public class RobotContainer {
 
                  
       CloseSpeakerAngle.onTrue(l_Launcher.launcherRotateCommand(() -> 50))
-                       .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));
+                       .onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(Constants.LauncherConstants.kSpeakerLaunchSpeed.get(0.0))))
+                       .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)))
+                       .onFalse(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.0)));
                  
       ZeroAngle.onTrue(l_Launcher.launcherRotateCommand(() -> 0))
                .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));
@@ -155,7 +156,7 @@ public class RobotContainer {
       // SpeakerLaunch.onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(Constants.LauncherConstants.kSpeakerLaunchSpeed.get(0.0))))
       //              .onFalse(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.0)));
       
-      SpeakerLaunch.whileTrue(v_VisionSubsystem.TargetCommand(l_Launcher))
+      SpeakerLaunch.whileTrue(lt_LaunchTrackSubsystem.TargetCommand(l_Launcher))
                    .onTrue(new InstantCommand(() -> Constants.AimDone = false))
                    .onFalse(new InstantCommand(() -> Constants.AimDone = true));
 

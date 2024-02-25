@@ -220,7 +220,8 @@ public final class Constants {
     }
 
     public static class ClimberConstants{
-        public static final int kClimberMotorPort = 26;
+        public static final int kRightClimberMotorPort = 15;
+        public static final int kLeftClimberMotorPort = 16;
         public static final COREConstants kUpClimberSpeed = new COREConstants("Climber Speed", 0.5);
         public static final COREConstants kDownClimberSpeed = new COREConstants("Climber Speed", -0.5);
     }
