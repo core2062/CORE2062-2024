@@ -27,6 +27,7 @@ public final class Constants {
 
     public static boolean assemblyDone = false;
     public static boolean endAssembly1 = false;
+    public static boolean AimDone = false;
 
     public static final class Swerve {
         public static final int PigeonId = 0;
@@ -214,6 +215,8 @@ public final class Constants {
         public static int SpeakerID = 4;
         public static int farSpeakerID = 0;
         public static int AmpID = 0;
+
+        public static double DesiredAngle = 0.0;
     }
 
     public static class ClimberConstants{

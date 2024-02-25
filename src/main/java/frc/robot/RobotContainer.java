@@ -114,13 +114,11 @@ public class RobotContainer {
       ClimberDown.onTrue(new InstantCommand(() -> c_ClimberSubsystem.setClimberSpeed(Constants.ClimberConstants.kDownClimberSpeed.get(0.0))))
                 .onFalse(new InstantCommand(() -> c_ClimberSubsystem.setClimberSpeed(0.0)));
 
-      SpeakerTrack.whileTrue(v_VisionSubsystem.TargetCommand(l_Launcher));
-
-      // SpeakerTrack.whileTrue(v_VisionSubsystem.AimAtSpeaker(s_Swerve, 
-      //                                                         () -> -driver.getRawAxis(translationAxis),
-      //                                                         () -> -driver.getRawAxis(strafeAxis),
-      //                                                         () -> robotCentric.getAsBoolean()
-      //                                                         ));
+      SpeakerTrack.whileTrue(v_VisionSubsystem.AimAtSpeaker(s_Swerve, 
+                                                              () -> -driver.getRawAxis(translationAxis),
+                                                              () -> -driver.getRawAxis(strafeAxis),
+                                                              () -> robotCentric.getAsBoolean()
+                                                              ));
     //   AmpTrack.whileTrue(v_VisionSubsystem.AimAtSpeaker(l_Launcher, s_Swerve, Constants.VisionConstants.SpeakerID,0,
     //                                                           () -> -driver.getRawAxis(translationAxis),
     //                                                           () -> -driver.getRawAxis(strafeAxis),
@@ -141,20 +139,25 @@ public class RobotContainer {
                  .onTrue(new InstantCommand(() -> Constants.endAssembly1 = true))
                  .onFalse(new InstantCommand(() -> Constants.endAssembly1 = false));
 
-      SpeakerLaunch.onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(Constants.LauncherConstants.kSpeakerLaunchSpeed.get(0.0))))
-                   .onFalse(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.0)));
-
+                 
       CloseSpeakerAngle.onTrue(l_Launcher.launcherRotateCommand(() -> 50))
                        .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));
-
+                 
       ZeroAngle.onTrue(l_Launcher.launcherRotateCommand(() -> 0))
                .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));
-
+                 
       AmpAngle.onTrue(l_Launcher.launcherRotateCommand(() -> 125))
               .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));   
-              
+                 
       SafeZoneAngle.onTrue(l_Launcher.launcherRotateCommand(() -> 30.5))
-               .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));
+                   .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));
+                 
+      // SpeakerLaunch.onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(Constants.LauncherConstants.kSpeakerLaunchSpeed.get(0.0))))
+      //              .onFalse(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.0)));
+      
+      SpeakerLaunch.whileTrue(v_VisionSubsystem.TargetCommand(l_Launcher))
+                   .onTrue(new InstantCommand(() -> Constants.AimDone = false))
+                   .onFalse(new InstantCommand(() -> Constants.AimDone = true));
 
       AmpLaunch.onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(Constants.LauncherConstants.kAMPLaunchSpeed.get(0.0))))
                .onFalse(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.0)));

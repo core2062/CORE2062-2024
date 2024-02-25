@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.LauncherAimCommand;
 import frc.robot.commands.TeleopSwerve;
+import frc.robot.commands.TrackingLauncherAimCommand;
 import frc.robot.subsystems.LauncherSubsystem;
 import frc.robot.constants.Constants;
 
@@ -24,7 +25,6 @@ public class AprilTagSubsystem extends SubsystemBase {
     double id ;
     double y ;
     double area ;
-    double desAngle;
   
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight-front");
     NetworkTableEntry tx = table.getEntry("tx");
@@ -59,8 +59,8 @@ public class AprilTagSubsystem extends SubsystemBase {
             }
 
         }
-        desAngle = findAngle();
-        SmartDashboard.putNumber("Desired Angle of Launcher: ", desAngle);
+        Constants.VisionConstants.DesiredAngle = findAngle();
+        SmartDashboard.putNumber("Desired Angle of Launcher: ", Constants.VisionConstants.DesiredAngle);
     }
     
     public Command AimAtSpeaker(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, BooleanSupplier robotCentricSup) {
@@ -84,7 +84,7 @@ public class AprilTagSubsystem extends SubsystemBase {
             () -> pipeline.setDouble(Constants.VisionConstants.SpeakerID)
             );
         setPipelineCommand.addRequirements(this);
-        Command setAngle = new LauncherAimCommand(l_Launcher, () -> findAngle());
+        Command setAngle = new TrackingLauncherAimCommand(l_Launcher);
         return setPipelineCommand.alongWith(setAngle);
     }
     
@@ -114,11 +114,6 @@ public class AprilTagSubsystem extends SubsystemBase {
         else{
             return (tx.getDouble(0.0)-targetAngle)*-0.04;
         }
-    }
-
-    public double getAngle(){
-        
-        return 0.0;
     }
 
     public static double rateOfChange(double x) {
@@ -182,7 +177,9 @@ public class AprilTagSubsystem extends SubsystemBase {
     //     return desiredAngle;
     // }
     public double findAngle(){
-        double Dist = (getDistance() * 12) + 19.5;
+        //formula calulated from dcode.fr/function-equation-finder and data points collected
+        double Dist = ((0.985078 * (getDistance() * 12)) + 11.3942) + 19.5;
+        // double Dist = (getDistance() * 12) + 19.5;
         // System.out.println(Dist);
 
         //height Offset 
@@ -194,7 +191,14 @@ public class AprilTagSubsystem extends SubsystemBase {
         double xDist = Math.sqrt(Math.pow(Dist, 2) - Math.pow(apriltagHeight, 2));
         // System.out.println("xDist: " + xDist);
         double targetAngle = Math.toDegrees(Math.atan2(targetHeight, xDist));
-        double desiredAngle = (1.0899 * targetAngle) + 2.3724;
+        double desiredAngle = ((1.0899 * targetAngle) + 2.3724);
+        if (desiredAngle < 21){
+            desiredAngle += 3.5;
+        } else if (desiredAngle < 24){
+            desiredAngle += 3;
+        } else if (desiredAngle > 25.5){
+            desiredAngle += 2;
+        }
         return desiredAngle;
     }
 }
