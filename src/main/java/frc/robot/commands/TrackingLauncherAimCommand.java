@@ -68,7 +68,7 @@ public class TrackingLauncherAimCommand extends Command{
         double xDist = Math.sqrt(Math.pow(Dist, 2) - Math.pow(apriltagHeight, 2));
 
         if (xDist > 96){
-            changeINSpeed += (changeINSpeed * 0.1);
+            changeINSpeed += (changeINSpeed * 0.045);
         } else if (xDist < 36) {
             changeINSpeed -= (changeINSpeed * 0.1);
         }

@@ -120,7 +120,7 @@ public class LauncherTrackingSubsystem extends SubsystemBase {
         double targetAngle = Math.toDegrees(Math.atan2(targetHeight, xDist));
         double desiredAngle = ((1.0899 * targetAngle) + 2.3724);
         if (desiredAngle < 21){
-            desiredAngle += 3.5;
+            desiredAngle += 2.75;
         } else if (desiredAngle < 24){
             desiredAngle += 3;
         } else if (desiredAngle > 25.5){

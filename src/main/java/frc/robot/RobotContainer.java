@@ -48,6 +48,8 @@ public class RobotContainer {
   private final JoystickButton IntakeAssembly = new JoystickButton(operator, 5);
   private final JoystickButton reverseIntakeFeed = new JoystickButton(operator, 7);
 
+  private final JoystickButton backwardsLauncherAngle = new JoystickButton(operator, 9);
+
   private final JoystickButton stopAssemly = new JoystickButton(operator, 3);
   private final JoystickButton SpeakerLaunch = new JoystickButton(operator, 6);
   private final JoystickButton AmpLaunch = new JoystickButton(operator, 8);
@@ -133,6 +135,11 @@ public class RobotContainer {
       decreaseLauncherHeading.onTrue(new InstantCommand(() -> l_Launcher.LauncherRotationPercent(leftRotationSpeed.getAsDouble(), rightRotationSpeed.getAsDouble())))
                              .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationPercent(0, 0)));
       IntakeAssembly.onTrue(c_ScoreAssembly.pickUpPiece(i_Intake, intakeSpeed, feedSpeed));
+
+      backwardsLauncherAngle.onTrue(l_Launcher.launcherRotateCommand(() -> 116))
+                        .onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(Constants.LauncherConstants.kSpeakerLaunchSpeed.get(0.0))))
+                        .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)))
+                        .onFalse(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.0)));
 
       stopAssemly.onTrue(new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0, 0)))
                  .onTrue(new InstantCommand(() -> Constants.endAssembly1 = true))
