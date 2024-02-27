@@ -24,6 +24,7 @@ public final class Constants {
     public static double kDesiredAngle = 0.0;
 
     public static int AutoSelected = 0;
+    public static String side = "";
 
     public static boolean assemblyDone = false;
     public static boolean endAssembly1 = false;
@@ -177,7 +178,7 @@ public final class Constants {
 
         public static final int kLauncherEncoder = 4;
 
-        public static final COREConstants kSpeakerLaunchSpeed = new COREConstants("Speaker Launcher Speed", 0.5); //TODO: needs to be tuned
+        public static final COREConstants kSpeakerLaunchSpeed = new COREConstants("Speaker Launcher Speed", 0.6); //TODO: needs to be tuned
         public static final COREConstants kAMPLaunchSpeed = new COREConstants("AMP Launcher Speed", 0.1); //TODO: needs to be tuned
         public static final COREConstants kFeedSpeed = new COREConstants("feed Speed", 0.5); //TODO: needs to be tuned
         public static final COREConstants kDelay = new COREConstants("Laucnher Delay", 0.5); //TODO: needs to be tuned

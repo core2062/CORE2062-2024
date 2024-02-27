@@ -25,7 +25,13 @@ import frc.robot.constants.Constants;
 public class Robot extends TimedRobot {
 
   private static final String kDefaultAuto = "Do Nothing";
-  private static final String kMoveAuto = "Move Auto";
+  private static final String kMidAuto = "Mid Auto";
+  private static final String kBlueLeftPickAuto = "Blue Left Pickup Auto";
+  private static final String kBlueLeftMoveAuto = "Blue Left Move Auto";
+  private static final String kBlueRightAuto = "Blue Right Auto";
+  private static final String kRedRightPickAuto = "Red Right Pickup Auto";
+  private static final String kRedRightMoveAuto = "Red Right Move Auto";
+  private static final String kRedLeftAuto = "Red Left Auto";
 
   private String m_autoSelected;
   private String m_speedSelected;
@@ -49,10 +55,39 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    Optional<Alliance> ally = DriverStation.getAlliance();
+    if (ally.isPresent()) {
+      if (ally.get() == Alliance.Red) {
+        Constants.VisionConstants.SpeakerID = 4;
+        Constants.VisionConstants.farSpeakerID = 1;
+        Constants.VisionConstants.AmpID = 5;
+        Constants.side = "red";
+      }
+      if (ally.get() == Alliance.Blue) {
+        Constants.VisionConstants.SpeakerID = 7;
+        Constants.VisionConstants.farSpeakerID = 2;
+        Constants.VisionConstants.AmpID = 6;
+        Constants.side = "blue";
+      }
+      System.out.println("Selected Side is: " + Constants.side);
+    }
+    else {
+
+    }
     
     //setup for auton selection on driver station
     m_autoChooser.setDefaultOption("Do Nothing", kDefaultAuto);
-    m_autoChooser.addOption("Move Auto", kMoveAuto);
+    if (ally.get() == Alliance.Red){
+      m_autoChooser.addOption("Mid Auto", kMidAuto);
+      m_autoChooser.addOption("Red Left Auto", kRedLeftAuto);
+      m_autoChooser.addOption("Red Right Move Auto", kRedRightMoveAuto);
+      m_autoChooser.addOption("Red Right Pickup Auto", kRedRightPickAuto);
+    } else if (ally.get() == Alliance.Blue){
+      m_autoChooser.addOption("Mid Auto", kMidAuto);
+      m_autoChooser.addOption("Blue Right Auto", kBlueRightAuto);
+      m_autoChooser.addOption("Blue Left Move Auto", kBlueLeftMoveAuto);
+      m_autoChooser.addOption("Blue Left Pickup Auto", kBlueLeftPickAuto);
+    }
     SmartDashboard.putData("Auto choices", m_autoChooser);
 
     //setup for drive speed on driver station
@@ -100,8 +135,32 @@ public class Robot extends TimedRobot {
         Constants.AutoSelected = 100;
         System.out.println("Autos Default");
         break;
-      case kMoveAuto:
+      case kMidAuto:
         Constants.AutoSelected = 0;
+        System.out.println("Movement");
+        break;
+      case kBlueRightAuto:
+        Constants.AutoSelected = 1;
+        System.out.println("Movement");
+        break;
+      case kBlueLeftMoveAuto:
+        Constants.AutoSelected = 3;
+        System.out.println("Movement");
+        break;
+      case kBlueLeftPickAuto:
+        Constants.AutoSelected = 2;
+        System.out.println("Movement");
+        break;
+      case kRedLeftAuto:
+        Constants.AutoSelected = 1;
+        System.out.println("Movement");
+        break;
+      case kRedRightMoveAuto:
+        Constants.AutoSelected = 3;
+        System.out.println("Movement");
+        break;
+      case kRedRightPickAuto:
+        Constants.AutoSelected = 2;
         System.out.println("Movement");
         break;
       default:
@@ -143,6 +202,22 @@ public class Robot extends TimedRobot {
       default:
       System.out.println("default");
         break;
+    }
+    Optional<Alliance> ally = DriverStation.getAlliance();
+    if (ally.isPresent()) {
+      if (ally.get() == Alliance.Red) {
+        Constants.VisionConstants.SpeakerID = 4;
+        Constants.VisionConstants.farSpeakerID = 1;
+        Constants.VisionConstants.AmpID = 5;
+      }
+      if (ally.get() == Alliance.Blue) {
+        Constants.VisionConstants.SpeakerID = 7;
+        Constants.VisionConstants.farSpeakerID = 2;
+        Constants.VisionConstants.AmpID = 6;
+      }
+    }
+    else {
+
     }
   }
 

@@ -174,6 +174,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     //return new Autos(place auto stuff here)
-    return new Autos(Constants.AutoSelected, s_Swerve, i_Intake, l_Launcher);
+    return new Autos(Constants.side, Constants.AutoSelected, s_Swerve, i_Intake, l_Launcher);
   }
 }
