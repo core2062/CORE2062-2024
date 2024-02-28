@@ -1,6 +1,6 @@
 package frc.robot.commands;
 
-import frc.robot.Constants;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.Swerve;
 
 import java.util.function.BooleanSupplier;
@@ -17,18 +17,20 @@ public class TeleopSwerve extends Command {
     private DoubleSupplier strafeSup;
     private DoubleSupplier rotationSup;
     private BooleanSupplier robotCentricSup;
-    private Boolean applyDeadband;
+    private boolean applyDeadband;
 
     public TeleopSwerve(Swerve s_Swerve, boolean applyDeadband, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup) {
-        this.s_Swerve = s_Swerve ;
+        this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
 
+        this.applyDeadband = applyDeadband;
         this.translationSup = translationSup;
         this.strafeSup = strafeSup;
         this.rotationSup = rotationSup;
         this.robotCentricSup = robotCentricSup;
         this.applyDeadband = applyDeadband;
     }
+    
     public double applyDeadband(double input){
         if (applyDeadband){
             return MathUtil.applyDeadband(input, Constants.stickDeadband);

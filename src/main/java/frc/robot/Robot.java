@@ -4,17 +4,17 @@
 
 package frc.robot;
 
-import edu.wpi.first.util.datalog.DataLog;
-import edu.wpi.first.util.datalog.DoubleLogEntry;
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DataLogManager;
+import java.util.Optional;
+
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.constants.CTREConfigs;
+import frc.robot.constants.Constants;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -25,8 +25,13 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
 
   private static final String kDefaultAuto = "Do Nothing";
-  private static final String kMoveAuto = "Move Auto";
-  private static final String kTestAuto = "Test";
+  private static final String kMidAuto = "Mid Auto";
+  private static final String kBlueLeftPickAuto = "Blue Left Pickup Auto";
+  private static final String kBlueLeftMoveAuto = "Blue Left Move Auto";
+  private static final String kBlueRightAuto = "Blue Right Auto";
+  private static final String kRedRightPickAuto = "Red Right Pickup Auto";
+  private static final String kRedRightMoveAuto = "Red Right Move Auto";
+  private static final String kRedLeftAuto = "Red Left Auto";
 
   private String m_autoSelected;
   private String m_speedSelected;
@@ -37,7 +42,7 @@ public class Robot extends TimedRobot {
   private final SendableChooser<String> m_autoChooser = new SendableChooser<>();
   private final SendableChooser<String> m_driveSpeedchooser = new SendableChooser<>();
 
-  Compressor phCompressor = new Compressor(3, PneumaticsModuleType.REVPH); //TODO: tune to robot
+  // Compressor phCompressor = new Compressor(3, PneumaticsModuleType.REVPH); //TODO: tune to robot
   public static CTREConfigs ctreConfigs;
 
   private Command m_autonomousCommand;
@@ -50,13 +55,39 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    DataLogManager.start();
-    DriverStation.startDataLog(DataLogManager.getLog());
+    Optional<Alliance> ally = DriverStation.getAlliance();
+    if (ally.isPresent()) {
+      if (ally.get() == Alliance.Red) {
+        Constants.VisionConstants.SpeakerID = 4;
+        Constants.VisionConstants.farSpeakerID = 1;
+        Constants.VisionConstants.AmpID = 5;
+        Constants.side = "red";
+      }
+      if (ally.get() == Alliance.Blue) {
+        Constants.VisionConstants.SpeakerID = 7;
+        Constants.VisionConstants.farSpeakerID = 2;
+        Constants.VisionConstants.AmpID = 6;
+        Constants.side = "blue";
+      }
+      System.out.println("Selected Side is: " + Constants.side);
+    }
+    else {
+
+    }
     
     //setup for auton selection on driver station
     m_autoChooser.setDefaultOption("Do Nothing", kDefaultAuto);
-    m_autoChooser.addOption("Move Auto", kMoveAuto);
-    m_autoChooser.addOption("test", kTestAuto);
+    if (ally.get() == Alliance.Red){
+      m_autoChooser.addOption("Mid Auto", kMidAuto);
+      m_autoChooser.addOption("Red Left Auto", kRedLeftAuto);
+      m_autoChooser.addOption("Red Right Move Auto", kRedRightMoveAuto);
+      m_autoChooser.addOption("Red Right Pickup Auto", kRedRightPickAuto);
+    } else if (ally.get() == Alliance.Blue){
+      m_autoChooser.addOption("Mid Auto", kMidAuto);
+      m_autoChooser.addOption("Blue Right Auto", kBlueRightAuto);
+      m_autoChooser.addOption("Blue Left Move Auto", kBlueLeftMoveAuto);
+      m_autoChooser.addOption("Blue Left Pickup Auto", kBlueLeftPickAuto);
+    }
     SmartDashboard.putData("Auto choices", m_autoChooser);
 
     //setup for drive speed on driver station
@@ -104,13 +135,33 @@ public class Robot extends TimedRobot {
         Constants.AutoSelected = 100;
         System.out.println("Autos Default");
         break;
-      case kMoveAuto:
+      case kMidAuto:
         Constants.AutoSelected = 0;
         System.out.println("Movement");
         break;
-      case kTestAuto:
+      case kBlueRightAuto:
         Constants.AutoSelected = 1;
-        System.out.println("Test");
+        System.out.println("Movement");
+        break;
+      case kBlueLeftMoveAuto:
+        Constants.AutoSelected = 3;
+        System.out.println("Movement");
+        break;
+      case kBlueLeftPickAuto:
+        Constants.AutoSelected = 2;
+        System.out.println("Movement");
+        break;
+      case kRedLeftAuto:
+        Constants.AutoSelected = 1;
+        System.out.println("Movement");
+        break;
+      case kRedRightMoveAuto:
+        Constants.AutoSelected = 3;
+        System.out.println("Movement");
+        break;
+      case kRedRightPickAuto:
+        Constants.AutoSelected = 2;
+        System.out.println("Movement");
         break;
       default:
         System.out.println("default auto Movement");
@@ -152,6 +203,22 @@ public class Robot extends TimedRobot {
       System.out.println("default");
         break;
     }
+    Optional<Alliance> ally = DriverStation.getAlliance();
+    if (ally.isPresent()) {
+      if (ally.get() == Alliance.Red) {
+        Constants.VisionConstants.SpeakerID = 4;
+        Constants.VisionConstants.farSpeakerID = 1;
+        Constants.VisionConstants.AmpID = 5;
+      }
+      if (ally.get() == Alliance.Blue) {
+        Constants.VisionConstants.SpeakerID = 7;
+        Constants.VisionConstants.farSpeakerID = 2;
+        Constants.VisionConstants.AmpID = 6;
+      }
+    }
+    else {
+
+    }
   }
 
   /** This function is called periodically during operator control. */
@@ -162,6 +229,22 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+    Optional<Alliance> ally = DriverStation.getAlliance();
+    if (ally.isPresent()) {
+      if (ally.get() == Alliance.Red) {
+        Constants.VisionConstants.SpeakerID = 4;
+        Constants.VisionConstants.farSpeakerID = 1;
+        Constants.VisionConstants.AmpID = 5;
+      }
+      if (ally.get() == Alliance.Blue) {
+        Constants.VisionConstants.SpeakerID = 7;
+        Constants.VisionConstants.farSpeakerID = 2;
+        Constants.VisionConstants.AmpID = 6;
+      }
+    }
+    else {
+
+    }
   }
 
   /** This function is called periodically during test mode. */

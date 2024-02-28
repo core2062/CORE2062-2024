@@ -4,16 +4,21 @@
 
 package frc.robot;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-
+import edu.wpi.first.wpilibj2.command.button.POVButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.*;
 import frc.robot.commands.*;
+import frc.robot.constants.Constants;
 
 
 /**
@@ -24,7 +29,9 @@ import frc.robot.commands.*;
  */
 public class RobotContainer {
   /* Controllers */
-  private final Joystick driver = new Joystick(0); //sets up controller
+  private final Joystick driver = new Joystick(0);
+  private final Joystick operator = new Joystick(1);
+
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
   private final int strafeAxis = XboxController.Axis.kLeftX.value;
@@ -33,16 +40,46 @@ public class RobotContainer {
   /* Drive Buttons */
   private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
   private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-  private final JoystickButton aimAtOne = new JoystickButton(driver, XboxController.Button.kA.value);
-  private final JoystickButton aimAtTwo = new JoystickButton(driver, XboxController.Button.kB.value);
-  private final JoystickButton aimAtThree = new JoystickButton(driver, XboxController.Button.kX.value);
-  private final JoystickButton aimAtFour = new JoystickButton(driver, XboxController.Button.kY.value);
-  //sets up controller buttons
+  
+  private final JoystickButton SpeakerTrack = new JoystickButton(driver, XboxController.Button.kB.value);
+  private final JoystickButton NoteTrack = new JoystickButton(driver, XboxController.Button.kX.value);
+
+  private final POVButton ClimberUp = new POVButton(driver, 0);
+  private final POVButton ClimberDown = new POVButton(driver, 180);
+  /* Operator Buttons */
+  private final JoystickButton IntakeAssembly = new JoystickButton(operator, 5);
+  private final JoystickButton reverseIntakeFeed = new JoystickButton(operator, 7);
+
+  private final JoystickButton backwardsLauncherAngle = new JoystickButton(operator, 9);
+
+  private final JoystickButton stopAssemly = new JoystickButton(operator, 3);
+  private final JoystickButton SpeakerLaunch = new JoystickButton(operator, 6);
+  private final JoystickButton AmpLaunch = new JoystickButton(operator, 8);
+
+  private final JoystickButton increaseLauncherHeading = new JoystickButton(operator, 4);
+  private final JoystickButton decreaseLauncherHeading = new JoystickButton(operator, 1);
+
+  private final JoystickButton LauncherFeed = new JoystickButton(operator, 2);
+
+  private final POVButton CloseSpeakerAngle = new POVButton(operator, 90);
+  private final POVButton ZeroAngle = new POVButton(operator, 180);
+  private final POVButton AmpAngle = new POVButton(operator, 0);
+  private final POVButton SafeZoneAngle = new POVButton(operator, 270);
   
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
-  private final VisionSubsystem s_VisionSubsystem = new VisionSubsystem();
-  //makes the subsystems start working
+  private final IntakeSubsystem i_Intake = new IntakeSubsystem();
+  private final LauncherSubsystem l_Launcher = new LauncherSubsystem();
+  private final ScoreAssembly c_ScoreAssembly = new ScoreAssembly();
+  private final LauncherTrackingSubsystem lt_LaunchTrackSubsystem = new LauncherTrackingSubsystem();
+  private final SwerveTrackingSubsystem st_SwerveTrackSubsystem = new SwerveTrackingSubsystem();
+  private final ClimberSubsystem c_ClimberSubsystem = new ClimberSubsystem();
+
+  /* double Suppliers */
+  public static DoubleSupplier intakeSpeed = () -> Constants.IntakeConstants.kIntakeSpeed.get(0.0);
+  public static DoubleSupplier leftRotationSpeed = () -> Constants.LauncherConstants.kLeftRotationSpeed.get(0.0);
+  public static DoubleSupplier rightRotationSpeed = () -> Constants.LauncherConstants.kRightRotationSpeed.get(0.0);
+  public static DoubleSupplier feedSpeed = () -> Constants.LauncherConstants.kFeedSpeed.get(0.0);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -65,8 +102,7 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
-  
-  
+    l_Launcher.configMotors();
   }
 
   /**
@@ -80,40 +116,70 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     /* Driver Buttons */
-    //tells us what alliance we're on.
-        var alliance = DriverStation.getAlliance();
-        int aimPipelineChange = 0;
-        int redSpeaker = 4;
-        int blueSpeaker = 12;
-        //changes pipeline based off of alliance.
-        if (alliance.get()==Alliance.Red){
-          aimPipelineChange = redSpeaker;
-        }
-        else{
-          aimPipelineChange = blueSpeaker;
-        }
+      zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
 
-        zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro())); //TODO: add buttons based upon funstions wanted
-        aimAtOne.whileTrue(s_VisionSubsystem.DriveAndAimAtApril(s_Swerve,2,0,
-          () -> -driver.getRawAxis(translationAxis),
-          () -> -driver.getRawAxis(strafeAxis),
-          () -> robotCentric.getAsBoolean()
-        ));
+      ClimberUp.onTrue(new InstantCommand(() -> c_ClimberSubsystem.setClimberSpeed(Constants.ClimberConstants.kUpClimberSpeed.get(0.0))))
+                .onFalse(new InstantCommand(() -> c_ClimberSubsystem.setClimberSpeed(0.0)));
+      ClimberDown.onTrue(new InstantCommand(() -> c_ClimberSubsystem.setClimberSpeed(Constants.ClimberConstants.kDownClimberSpeed.get(0.0))))
+                .onFalse(new InstantCommand(() -> c_ClimberSubsystem.setClimberSpeed(0.0)));
 
-        aimAtTwo.whileTrue(s_VisionSubsystem.DriveAndAimAtApril(s_Swerve,3,0,
-          () -> -driver.getRawAxis(translationAxis),
-          () -> -driver.getRawAxis(strafeAxis),
-          () -> robotCentric.getAsBoolean()
-        ));
+      SpeakerTrack.whileTrue(st_SwerveTrackSubsystem.AimAtSpeaker(s_Swerve, 
+                                                              () -> -driver.getRawAxis(translationAxis),
+                                                              () -> -driver.getRawAxis(strafeAxis),
+                                                              () -> robotCentric.getAsBoolean()
+                                                              ));
+    //   AmpTrack.whileTrue(v_VisionSubsystem.AimAtSpeaker(l_Launcher, s_Swerve, Constants.VisionConstants.SpeakerID,0,
+    //                                                           () -> -driver.getRawAxis(translationAxis),
+    //                                                           () -> -driver.getRawAxis(strafeAxis),
+    //                                                           () -> robotCentric.getAsBoolean()
+    //                                                           ));
 
-        aimAtThree.whileTrue(s_VisionSubsystem.DriveToDistanceFromApril(s_Swerve,4,6));
-        
-        aimAtFour.whileTrue(s_VisionSubsystem.DriveAndAimAtApril(s_Swerve,aimPipelineChange,0,
-          () -> -driver.getRawAxis(translationAxis),
-          () -> -driver.getRawAxis(strafeAxis),
-          () -> robotCentric.getAsBoolean()
-        ));
-        //sets up what the buttons can do
+    // /* Operator Buttons */
+      reverseIntakeFeed.onTrue(new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(-Constants.IntakeConstants.kIntakeSpeed.get(0.0), -Constants.LauncherConstants.kFeedSpeed.get(0.0))))
+                .onFalse(new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0.0, 0.0)));
+
+      increaseLauncherHeading.onTrue(new InstantCommand(() -> l_Launcher.LauncherRotationPercent(-leftRotationSpeed.getAsDouble(), -rightRotationSpeed.getAsDouble())))
+                             .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationPercent(0, 0)));
+      decreaseLauncherHeading.onTrue(new InstantCommand(() -> l_Launcher.LauncherRotationPercent(leftRotationSpeed.getAsDouble(), rightRotationSpeed.getAsDouble())))
+                             .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationPercent(0, 0)));
+      IntakeAssembly.onTrue(c_ScoreAssembly.pickUpPiece(i_Intake, intakeSpeed, feedSpeed));
+
+      backwardsLauncherAngle.onTrue(l_Launcher.launcherRotateCommand(() -> 116))
+                        .onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(Constants.LauncherConstants.kSpeakerLaunchSpeed.get(0.0))))
+                        .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)))
+                        .onFalse(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.0)));
+
+      stopAssemly.onTrue(new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0, 0)))
+                 .onTrue(new InstantCommand(() -> Constants.endAssembly1 = true))
+                 .onFalse(new InstantCommand(() -> Constants.endAssembly1 = false));
+
+                 
+      CloseSpeakerAngle.onTrue(l_Launcher.launcherRotateCommand(() -> 50))
+                       .onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(Constants.LauncherConstants.kSpeakerLaunchSpeed.get(0.0))))
+                       .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)))
+                       .onFalse(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.0)));
+                 
+      ZeroAngle.onTrue(l_Launcher.launcherRotateCommand(() -> 0))
+               .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));
+                 
+      AmpAngle.onTrue(l_Launcher.launcherRotateCommand(() -> 125))
+              .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));   
+                 
+      SafeZoneAngle.onTrue(l_Launcher.launcherRotateCommand(() -> 30.5))
+                   .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));
+                 
+      // SpeakerLaunch.onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(Constants.LauncherConstants.kSpeakerLaunchSpeed.get(0.0))))
+      //              .onFalse(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.0)));
+      
+      SpeakerLaunch.whileTrue(lt_LaunchTrackSubsystem.TargetCommand(l_Launcher))
+                   .onTrue(new InstantCommand(() -> Constants.AimDone = false))
+                   .onFalse(new InstantCommand(() -> Constants.AimDone = true));
+
+      AmpLaunch.onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(Constants.LauncherConstants.kAMPLaunchSpeed.get(0.0))))
+               .onFalse(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.0)));
+
+      LauncherFeed.onTrue(new InstantCommand(() -> i_Intake.setFeedSpeed(Constants.LauncherConstants.kFeedSpeed.get(0.0))))
+                  .onFalse(new InstantCommand(() -> i_Intake.setFeedSpeed(0.0)));
   }
 
   /**
@@ -123,6 +189,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     //return new Autos(place auto stuff here)
-    return new Autos(Constants.AutoSelected, s_Swerve, s_VisionSubsystem);
+    return new Autos(Constants.side, Constants.AutoSelected, s_Swerve, i_Intake, l_Launcher);
   }
 }

@@ -1,5 +1,9 @@
 package frc.robot;
 
+import frc.robot.commands.AutonShootCommand;
+import frc.robot.commands.IntakeAssemblyCommand;
+import frc.robot.commands.LauncherAimCommand;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -15,11 +19,47 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 public class Autos extends SequentialCommandGroup {    
 
-    public Autos(int cases, Swerve s_Swerve, VisionSubsystem s_vision){
+    public Autos(String side, int cases, Swerve s_Swerve, IntakeSubsystem i_Intake, LauncherSubsystem l_LauncherSubsystem){
         System.out.printf("autos selection: %d\n", cases);
-        switch (cases) {
-            case 0:
-                movementAuto(s_Swerve, s_vision);
+        System.out.println("Selecte Side: " + side);
+        switch(side) {
+            case "red":
+                switch (cases) {
+                    case 0:
+                        MidAuto(s_Swerve, i_Intake, l_LauncherSubsystem);
+                        break;
+                    case 1:
+                        RedLeftAuto(s_Swerve, i_Intake, l_LauncherSubsystem);
+                        break;
+                    case 2:
+                        RedRightPickupAuto(s_Swerve, i_Intake, l_LauncherSubsystem);
+                        break;
+                    case 3:
+                        RedRightMovementAuto(s_Swerve, i_Intake, l_LauncherSubsystem);
+                        break;
+                    default:
+                        doNothingAuto(s_Swerve);
+                        break;
+                }
+                break;
+            case "blue":
+                switch (cases) {
+                    case 0:
+                        MidAuto(s_Swerve, i_Intake, l_LauncherSubsystem);
+                        break;
+                    case 1:
+                        BlueRightAuto(s_Swerve, i_Intake, l_LauncherSubsystem);
+                        break;
+                    case 2:
+                        BlueLeftPickupAuto(s_Swerve, i_Intake, l_LauncherSubsystem);
+                        break;
+                    case 3:
+                        BlueLeftMovementAuto(s_Swerve, i_Intake, l_LauncherSubsystem);
+                        break;
+                    default:
+                        doNothingAuto(s_Swerve);
+                        break;
+                }
                 break;
             case 1:
                 //testAuto(s_Swerve);
@@ -29,19 +69,12 @@ public class Autos extends SequentialCommandGroup {
         }
     }
 
-
-
-
     public void doNothingAuto(Swerve s_Swerve) {}
                     
-        
-
-
-
-    public void movementAuto(Swerve s_Swerve, VisionSubsystem s_Vision) {
+    public void MidAuto(Swerve s_Swerve, IntakeSubsystem i_Intake, LauncherSubsystem l_LauncherSubsystem) {
         System.out.println("move auto");  
 
-        String trajectoryJSON = "paths/Unnamed2.wpilib.json"; //TODO: set path name to auton path
+        String trajectoryJSON = "paths/MoveBackPickup.wpilib.json";
         Trajectory trajectory = new Trajectory(); 
         try {
             Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
@@ -71,8 +104,272 @@ public class Autos extends SequentialCommandGroup {
             
         addCommands(
             new InstantCommand(() -> s_Swerve.resetOdometry(Trajectory.getInitialPose())),
+            new LauncherAimCommand(l_LauncherSubsystem, () -> 50),
+            new AutonShootCommand(i_Intake, l_LauncherSubsystem, 0.5, 0.6, 0.4),
+            new LauncherAimCommand(l_LauncherSubsystem, () -> 33.5),
+            new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0.5, 0.5)),
             swerveControllerCommand,
-            s_Vision.AimAtApril(s_Swerve, 4,0)
+            new IntakeAssemblyCommand(i_Intake, 0.5, 0.5),
+            // new LauncherAimCommand(l_LauncherSubsystem, 33.5),
+            new AutonShootCommand(i_Intake, l_LauncherSubsystem, 0.5, 0.6, 0.4),
+            new LauncherAimCommand(l_LauncherSubsystem, () -> 0)
+        );
+    }
+
+
+//----- Red Allience Autons -----
+
+    public void RedLeftAuto(Swerve s_Swerve, IntakeSubsystem i_Intake, LauncherSubsystem l_LauncherSubsystem) {
+        System.out.println("Red Allience Left Speaker Auto");  
+
+        String trajectoryJSON = "paths/RedAlliLeft.wpilib.json";
+        Trajectory trajectory = new Trajectory(); 
+        try {
+            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+            trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+            System.out.println("Path " + trajectoryPath);
+        } catch (IOException ex) {
+            DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+            };
+        // An example trajectory to follow.  All units in meters.
+        Trajectory Trajectory = trajectory;
+        
+        var thetaController =
+        new ProfiledPIDController(Constants.AutoConstants.kPThetaController, 0, 0, Constants.AutoConstants.kThetaControllerConstraints);
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        
+        SwerveControllerCommand swerveControllerCommand =
+        new SwerveControllerCommand(
+            Trajectory,
+            s_Swerve::getPose,
+            Constants.Swerve.swerveKinematics,
+            new PIDController(Constants.AutoConstants.kPXController, 0, 0),
+            new PIDController(Constants.AutoConstants.kPYController, 0, 0),
+            thetaController,
+            s_Swerve::setModuleStates,
+            s_Swerve
+        );
+            
+        addCommands(
+            new InstantCommand(() -> s_Swerve.resetOdometry(Trajectory.getInitialPose())),
+            new LauncherAimCommand(l_LauncherSubsystem, () -> 50),
+            new AutonShootCommand(i_Intake, l_LauncherSubsystem, 0.5, 0.6, 0.4),
+            new LauncherAimCommand(l_LauncherSubsystem, () -> 33.5),
+            new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0.5, 0.5)),
+            swerveControllerCommand,
+            new IntakeAssemblyCommand(i_Intake, 0.5, 0.5)
+        );
+    }
+
+    public void RedRightPickupAuto(Swerve s_Swerve, IntakeSubsystem i_Intake, LauncherSubsystem l_LauncherSubsystem) {
+        System.out.println("Red Allience Right Speaker Note Pickup Auto");  
+
+        String trajectoryJSON = "paths/RedAlliRightNotePickup.wpilib.json";
+        Trajectory trajectory = new Trajectory(); 
+        try {
+            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+            trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+            System.out.println("Path " + trajectoryPath);
+        } catch (IOException ex) {
+            DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+            };
+        // An example trajectory to follow.  All units in meters.
+        Trajectory Trajectory = trajectory;
+        
+        var thetaController =
+        new ProfiledPIDController(Constants.AutoConstants.kPThetaController, 0, 0, Constants.AutoConstants.kThetaControllerConstraints);
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        
+        SwerveControllerCommand swerveControllerCommand =
+        new SwerveControllerCommand(
+            Trajectory,
+            s_Swerve::getPose,
+            Constants.Swerve.swerveKinematics,
+            new PIDController(Constants.AutoConstants.kPXController, 0, 0),
+            new PIDController(Constants.AutoConstants.kPYController, 0, 0),
+            thetaController,
+            s_Swerve::setModuleStates,
+            s_Swerve
+        );
+            
+        addCommands(
+            new InstantCommand(() -> s_Swerve.resetOdometry(Trajectory.getInitialPose())),
+            new LauncherAimCommand(l_LauncherSubsystem, () -> 50),
+            new AutonShootCommand(i_Intake, l_LauncherSubsystem, 0.5, 0.6, 0.4),
+            new LauncherAimCommand(l_LauncherSubsystem, () -> 33.5),
+            new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0.5, 0.5)),
+            swerveControllerCommand,
+            new IntakeAssemblyCommand(i_Intake, 0.5, 0.5)
+        );
+    }
+
+    public void RedRightMovementAuto(Swerve s_Swerve, IntakeSubsystem i_Intake, LauncherSubsystem l_LauncherSubsystem) {
+        System.out.println("Red Allience Right Speaker Move Auto");  
+
+        String trajectoryJSON = "paths/RedAlliRightMove.wpilib.json";
+        Trajectory trajectory = new Trajectory(); 
+        try {
+            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+            trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+            System.out.println("Path " + trajectoryPath);
+        } catch (IOException ex) {
+            DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+            };
+        // An example trajectory to follow.  All units in meters.
+        Trajectory Trajectory = trajectory;
+        
+        var thetaController =
+        new ProfiledPIDController(Constants.AutoConstants.kPThetaController, 0, 0, Constants.AutoConstants.kThetaControllerConstraints);
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        
+        SwerveControllerCommand swerveControllerCommand =
+        new SwerveControllerCommand(
+            Trajectory,
+            s_Swerve::getPose,
+            Constants.Swerve.swerveKinematics,
+            new PIDController(Constants.AutoConstants.kPXController, 0, 0),
+            new PIDController(Constants.AutoConstants.kPYController, 0, 0),
+            thetaController,
+            s_Swerve::setModuleStates,
+            s_Swerve
+        );
+            
+        addCommands(
+            new InstantCommand(() -> s_Swerve.resetOdometry(Trajectory.getInitialPose())),
+            new LauncherAimCommand(l_LauncherSubsystem, () -> 50),
+            new AutonShootCommand(i_Intake, l_LauncherSubsystem, 0.5, 0.6, 0.4),
+            new LauncherAimCommand(l_LauncherSubsystem, () -> 33.5),
+            new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0.5, 0.5)),
+            swerveControllerCommand,
+            new IntakeAssemblyCommand(i_Intake, 0.5, 0.5)
+        );
+    }
+
+    //----- Blue Alliance Autons
+
+    public void BlueRightAuto(Swerve s_Swerve, IntakeSubsystem i_Intake, LauncherSubsystem l_LauncherSubsystem) {
+        System.out.println("Blue Allience Right Speaker Auto");  
+
+        String trajectoryJSON = "paths/BlueAlliRight.wpilib.json";
+        Trajectory trajectory = new Trajectory(); 
+        try {
+            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+            trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+            System.out.println("Path " + trajectoryPath);
+        } catch (IOException ex) {
+            DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+            };
+        // An example trajectory to follow.  All units in meters.
+        Trajectory Trajectory = trajectory;
+        
+        var thetaController =
+        new ProfiledPIDController(Constants.AutoConstants.kPThetaController, 0, 0, Constants.AutoConstants.kThetaControllerConstraints);
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        
+        SwerveControllerCommand swerveControllerCommand =
+        new SwerveControllerCommand(
+            Trajectory,
+            s_Swerve::getPose,
+            Constants.Swerve.swerveKinematics,
+            new PIDController(Constants.AutoConstants.kPXController, 0, 0),
+            new PIDController(Constants.AutoConstants.kPYController, 0, 0),
+            thetaController,
+            s_Swerve::setModuleStates,
+            s_Swerve
+        );
+            
+        addCommands(
+            new InstantCommand(() -> s_Swerve.resetOdometry(Trajectory.getInitialPose())),
+            new LauncherAimCommand(l_LauncherSubsystem, () -> 50),
+            new AutonShootCommand(i_Intake, l_LauncherSubsystem, 0.5, 0.6, 0.4),
+            new LauncherAimCommand(l_LauncherSubsystem, () -> 33.5),
+            new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0.5, 0.5)),
+            swerveControllerCommand,
+            new IntakeAssemblyCommand(i_Intake, 0.5, 0.5)
+        );
+    }
+
+    public void BlueLeftPickupAuto(Swerve s_Swerve, IntakeSubsystem i_Intake, LauncherSubsystem l_LauncherSubsystem) {
+        System.out.println("Blue Allience Left Speaker Note Pickup Auto");  
+
+        String trajectoryJSON = "paths/BlueAlliLeftNotePickup.wpilib.json";
+        Trajectory trajectory = new Trajectory(); 
+        try {
+            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+            trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+            System.out.println("Path " + trajectoryPath);
+        } catch (IOException ex) {
+            DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+            };
+        // An example trajectory to follow.  All units in meters.
+        Trajectory Trajectory = trajectory;
+        
+        var thetaController =
+        new ProfiledPIDController(Constants.AutoConstants.kPThetaController, 0, 0, Constants.AutoConstants.kThetaControllerConstraints);
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        
+        SwerveControllerCommand swerveControllerCommand =
+        new SwerveControllerCommand(
+            Trajectory,
+            s_Swerve::getPose,
+            Constants.Swerve.swerveKinematics,
+            new PIDController(Constants.AutoConstants.kPXController, 0, 0),
+            new PIDController(Constants.AutoConstants.kPYController, 0, 0),
+            thetaController,
+            s_Swerve::setModuleStates,
+            s_Swerve
+        );
+            
+        addCommands(
+            new InstantCommand(() -> s_Swerve.resetOdometry(Trajectory.getInitialPose())),
+            new LauncherAimCommand(l_LauncherSubsystem, () -> 50),
+            new AutonShootCommand(i_Intake, l_LauncherSubsystem, 0.5, 0.6, 0.4),
+            new LauncherAimCommand(l_LauncherSubsystem, () -> 33.5),
+            new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0.5, 0.5)),
+            swerveControllerCommand,
+            new IntakeAssemblyCommand(i_Intake, 0.5, 0.5)
+        );
+    }
+
+    public void BlueLeftMovementAuto(Swerve s_Swerve, IntakeSubsystem i_Intake, LauncherSubsystem l_LauncherSubsystem) {
+        System.out.println("Blue Allience Left Speaker Move Auto");  
+
+        String trajectoryJSON = "paths/BlueAlliLeftMove.wpilib.json";
+        Trajectory trajectory = new Trajectory(); 
+        try {
+            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+            trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+            System.out.println("Path " + trajectoryPath);
+        } catch (IOException ex) {
+            DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+            };
+        // An example trajectory to follow.  All units in meters.
+        Trajectory Trajectory = trajectory;
+        
+        var thetaController =
+        new ProfiledPIDController(Constants.AutoConstants.kPThetaController, 0, 0, Constants.AutoConstants.kThetaControllerConstraints);
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        
+        SwerveControllerCommand swerveControllerCommand =
+        new SwerveControllerCommand(
+            Trajectory,
+            s_Swerve::getPose,
+            Constants.Swerve.swerveKinematics,
+            new PIDController(Constants.AutoConstants.kPXController, 0, 0),
+            new PIDController(Constants.AutoConstants.kPYController, 0, 0),
+            thetaController,
+            s_Swerve::setModuleStates,
+            s_Swerve
+        );
+            
+        addCommands(
+            new InstantCommand(() -> s_Swerve.resetOdometry(Trajectory.getInitialPose())),
+            new LauncherAimCommand(l_LauncherSubsystem, () -> 50),
+            new AutonShootCommand(i_Intake, l_LauncherSubsystem, 0.5, 0.6, 0.4),
+            new LauncherAimCommand(l_LauncherSubsystem, () -> 33.5),
+            new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0.5, 0.5)),
+            swerveControllerCommand,
+            new IntakeAssemblyCommand(i_Intake, 0.5, 0.5)
         );
     }
 }
