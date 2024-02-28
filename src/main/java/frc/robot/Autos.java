@@ -61,8 +61,6 @@ public class Autos extends SequentialCommandGroup {
                         break;
                 }
                 break;
-            case 1:
-                //testAuto(s_Swerve);
             default:
                 doNothingAuto(s_Swerve);
                 break;
