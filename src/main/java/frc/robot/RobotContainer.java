@@ -159,8 +159,8 @@ public class RobotContainer {
                        .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)))
                        .onFalse(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.0)));
                  
-      ZeroAngle.onTrue(l_Launcher.launcherRotateCommand(() -> 0))
-               .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));
+      // ZeroAngle.onTrue(l_Launcher.launcherRotateCommand(() -> 0))
+      //          .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));
                  
       AmpAngle.onTrue(l_Launcher.launcherRotateCommand(() -> 125))
               .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));   
