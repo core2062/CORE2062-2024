@@ -77,6 +77,10 @@ public class SwerveTrackingSubsystem extends SubsystemBase {
             );
         return setPipelineCommand.alongWith(rotateSwerveCommand);
     }
+
+    public void setPipelineSpeaker(){
+        pipeline.setDouble(Constants.VisionConstants.SpeakerID);
+    }
     
     public double getDistance(){
         double area = ta.getDouble(0.0);

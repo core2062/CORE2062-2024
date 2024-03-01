@@ -34,7 +34,6 @@ public class ScoreAssembly extends SubsystemBase{
     }
     
     public static boolean getPhotoeye(){
-        SmartDashboard.putBoolean("Piece Ready", photoeye.get());
         return photoeye.get();
     }
 }

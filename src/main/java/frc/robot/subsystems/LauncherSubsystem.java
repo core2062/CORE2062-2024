@@ -92,6 +92,7 @@ public class LauncherSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("Right Encoder Value", getRightEncoderValue());
         SmartDashboard.putNumber("Left Encoder Value", getLeftEncoderValue());
         SmartDashboard.putNumber("Average Encoder Value: ", getAverageEncoderValue());
+        SmartDashboard.putBoolean("Piece Ready", !ScoreAssembly.getPhotoeye());
     }
 
     public double getAverageEncoderValue(){
