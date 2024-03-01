@@ -209,7 +209,7 @@ public final class Constants {
 
         public static final int kIntakeMotorPort = 14;//TODO: planned on one, may be more
 
-        public static final COREConstants kIntakeSpeed = new COREConstants("intake Speed", 0.5); //TODO: needs to be tuned
+        public static final COREConstants kIntakeSpeed = new COREConstants("intake Speed", 0.8); //TODO: needs to be tuned
     }
 
     public static class VisionConstants{
