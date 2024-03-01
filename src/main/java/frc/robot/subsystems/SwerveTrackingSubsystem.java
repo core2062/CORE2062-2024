@@ -21,7 +21,7 @@ import frc.robot.constants.Constants;
 
 public class SwerveTrackingSubsystem extends SubsystemBase {
     // double angle;
-    double x ;
+    public double x ;
     double id ;
     double y ;
     double area ;

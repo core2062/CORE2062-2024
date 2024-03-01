@@ -23,6 +23,7 @@ public class ScoreAssembly extends SubsystemBase{
 
         Command stopCommand = stopIntake.andThen(stopFeed);
         stopCommand.addRequirements(i_Intake, this);
+        System.out.println("setting feed speed");
         return stopCommand;
     }
 

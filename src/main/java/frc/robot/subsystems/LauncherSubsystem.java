@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.LauncherAimCommand;
+import frc.robot.commands.ZeroLauncherCommand;
 import frc.robot.constants.Constants;
 
 public class LauncherSubsystem extends SubsystemBase{
@@ -52,6 +53,11 @@ public class LauncherSubsystem extends SubsystemBase{
     public Command launcherRotateCommand(DoubleSupplier desiredangle){
         Command launch = new LauncherAimCommand(this, desiredangle);
         return launch;
+    }
+
+    public Command zeroLauncherCommand(){
+        Command zero = new ZeroLauncherCommand(this);
+        return zero;
     }
 
     public static double getRightEncoderValue(){
@@ -96,5 +102,9 @@ public class LauncherSubsystem extends SubsystemBase{
     void resetEncoder(){
         launcherLeftPitchEncoder.reset();
         launcherRightPitchEncoder.reset();
+    }
+
+    public boolean getLimitSwitch(){
+        return leftRotationMotor.isFwdLimitSwitchClosed() == 1;
     }
 }

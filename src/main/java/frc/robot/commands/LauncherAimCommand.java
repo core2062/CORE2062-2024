@@ -65,7 +65,7 @@ public class LauncherAimCommand extends Command{
     public boolean isFinished(){
         if (Math.abs(DifferenceOfAngle) <= 0.5){
             return true;
-        } else {
+        } else{
             return false;
         }
     }

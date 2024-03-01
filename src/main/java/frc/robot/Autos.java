@@ -1,8 +1,13 @@
 package frc.robot;
 
+import frc.robot.commands.AutonAlignmentCommand;
 import frc.robot.commands.AutonShootCommand;
+import frc.robot.commands.FeedAssemblyCommand;
 import frc.robot.commands.IntakeAssemblyCommand;
 import frc.robot.commands.LauncherAimCommand;
+import frc.robot.commands.LauncherAssemblyCommand;
+import frc.robot.commands.TrackingLauncherAimCommand;
+import frc.robot.commands.ZeroLauncherCommand;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
 import java.io.IOException;
@@ -19,7 +24,7 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 public class Autos extends SequentialCommandGroup {    
 
-    public Autos(String side, int cases, Swerve s_Swerve, IntakeSubsystem i_Intake, LauncherSubsystem l_LauncherSubsystem){
+    public Autos(String side, int cases, Swerve s_Swerve, IntakeSubsystem i_Intake, LauncherSubsystem l_LauncherSubsystem, SwerveTrackingSubsystem st_SwerveTrackingSubsystem, LauncherTrackingSubsystem lt_LauncherTrackingSubsystem){
         System.out.printf("autos selection: %d\n", cases);
         System.out.println("Selecte Side: " + side);
         switch(side) {
@@ -32,7 +37,7 @@ public class Autos extends SequentialCommandGroup {
                         RedLeftAuto(s_Swerve, i_Intake, l_LauncherSubsystem);
                         break;
                     case 2:
-                        RedRightPickupAuto(s_Swerve, i_Intake, l_LauncherSubsystem);
+                        RedRightPickupAuto(s_Swerve, i_Intake, l_LauncherSubsystem, st_SwerveTrackingSubsystem, lt_LauncherTrackingSubsystem);
                         break;
                     case 3:
                         RedRightMovementAuto(s_Swerve, i_Intake, l_LauncherSubsystem);
@@ -51,7 +56,7 @@ public class Autos extends SequentialCommandGroup {
                         BlueRightAuto(s_Swerve, i_Intake, l_LauncherSubsystem);
                         break;
                     case 2:
-                        BlueLeftPickupAuto(s_Swerve, i_Intake, l_LauncherSubsystem);
+                        BlueLeftPickupAuto(s_Swerve, i_Intake, l_LauncherSubsystem, st_SwerveTrackingSubsystem, lt_LauncherTrackingSubsystem);
                         break;
                     case 3:
                         BlueLeftMovementAuto(s_Swerve, i_Intake, l_LauncherSubsystem);
@@ -68,7 +73,7 @@ public class Autos extends SequentialCommandGroup {
     }
 
     public void doNothingAuto(Swerve s_Swerve) {}
-                    
+    
     public void MidAuto(Swerve s_Swerve, IntakeSubsystem i_Intake, LauncherSubsystem l_LauncherSubsystem) {
         System.out.println("move auto");  
 
@@ -101,6 +106,7 @@ public class Autos extends SequentialCommandGroup {
         );
             
         addCommands(
+            new ZeroLauncherCommand(l_LauncherSubsystem),
             new InstantCommand(() -> s_Swerve.resetOdometry(Trajectory.getInitialPose())),
             new LauncherAimCommand(l_LauncherSubsystem, () -> 50),
             new AutonShootCommand(i_Intake, l_LauncherSubsystem, 0.5, 0.6, 0.4),
@@ -129,8 +135,8 @@ public class Autos extends SequentialCommandGroup {
         } catch (IOException ex) {
             DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
             };
-        // An example trajectory to follow.  All units in meters.
-        Trajectory Trajectory = trajectory;
+            // An example trajectory to follow.  All units in meters.
+            Trajectory Trajectory = trajectory;
         
         var thetaController =
         new ProfiledPIDController(Constants.AutoConstants.kPThetaController, 0, 0, Constants.AutoConstants.kThetaControllerConstraints);
@@ -146,20 +152,21 @@ public class Autos extends SequentialCommandGroup {
             thetaController,
             s_Swerve::setModuleStates,
             s_Swerve
-        );
+            );
             
-        addCommands(
-            new InstantCommand(() -> s_Swerve.resetOdometry(Trajectory.getInitialPose())),
-            new LauncherAimCommand(l_LauncherSubsystem, () -> 50),
-            new AutonShootCommand(i_Intake, l_LauncherSubsystem, 0.5, 0.6, 0.4),
-            new LauncherAimCommand(l_LauncherSubsystem, () -> 33.5),
-            new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0.5, 0.5)),
-            swerveControllerCommand,
-            new IntakeAssemblyCommand(i_Intake, 0.5, 0.5)
+            addCommands(
+                new ZeroLauncherCommand(l_LauncherSubsystem),
+                new InstantCommand(() -> s_Swerve.resetOdometry(Trajectory.getInitialPose())),
+                new LauncherAimCommand(l_LauncherSubsystem, () -> 50),
+                new AutonShootCommand(i_Intake, l_LauncherSubsystem, 0.5, 0.6, 0.4),
+                new LauncherAimCommand(l_LauncherSubsystem, () -> 33.5),
+                new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0.5, 0.5)),
+                swerveControllerCommand,
+                new IntakeAssemblyCommand(i_Intake, 0.5, 0.5)
         );
     }
 
-    public void RedRightPickupAuto(Swerve s_Swerve, IntakeSubsystem i_Intake, LauncherSubsystem l_LauncherSubsystem) {
+    public void RedRightPickupAuto(Swerve s_Swerve, IntakeSubsystem i_Intake, LauncherSubsystem l_LauncherSubsystem, SwerveTrackingSubsystem st_TrackingSubsystem, LauncherTrackingSubsystem lt_TrackingSubsystem) {
         System.out.println("Red Allience Right Speaker Note Pickup Auto");  
 
         String trajectoryJSON = "paths/RedAlliRightNotePickup.wpilib.json";
@@ -191,13 +198,16 @@ public class Autos extends SequentialCommandGroup {
         );
             
         addCommands(
+            new ZeroLauncherCommand(l_LauncherSubsystem),
             new InstantCommand(() -> s_Swerve.resetOdometry(Trajectory.getInitialPose())),
             new LauncherAimCommand(l_LauncherSubsystem, () -> 50),
             new AutonShootCommand(i_Intake, l_LauncherSubsystem, 0.5, 0.6, 0.4),
             new LauncherAimCommand(l_LauncherSubsystem, () -> 33.5),
             new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0.5, 0.5)),
             swerveControllerCommand,
-            new IntakeAssemblyCommand(i_Intake, 0.5, 0.5)
+            new IntakeAssemblyCommand(i_Intake, 0.5, 0.5),
+            new AutonAlignmentCommand(st_TrackingSubsystem, s_Swerve),
+            new TrackingLauncherAimCommand(l_LauncherSubsystem, lt_TrackingSubsystem).alongWith(new FeedAssemblyCommand(i_Intake, 0.5, 2))
         );
     }
 
@@ -233,13 +243,12 @@ public class Autos extends SequentialCommandGroup {
         );
             
         addCommands(
+            new ZeroLauncherCommand(l_LauncherSubsystem),
             new InstantCommand(() -> s_Swerve.resetOdometry(Trajectory.getInitialPose())),
             new LauncherAimCommand(l_LauncherSubsystem, () -> 50),
             new AutonShootCommand(i_Intake, l_LauncherSubsystem, 0.5, 0.6, 0.4),
             new LauncherAimCommand(l_LauncherSubsystem, () -> 33.5),
-            new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0.5, 0.5)),
-            swerveControllerCommand,
-            new IntakeAssemblyCommand(i_Intake, 0.5, 0.5)
+            swerveControllerCommand
         );
     }
 
@@ -277,6 +286,7 @@ public class Autos extends SequentialCommandGroup {
         );
             
         addCommands(
+            new ZeroLauncherCommand(l_LauncherSubsystem),
             new InstantCommand(() -> s_Swerve.resetOdometry(Trajectory.getInitialPose())),
             new LauncherAimCommand(l_LauncherSubsystem, () -> 50),
             new AutonShootCommand(i_Intake, l_LauncherSubsystem, 0.5, 0.6, 0.4),
@@ -287,7 +297,7 @@ public class Autos extends SequentialCommandGroup {
         );
     }
 
-    public void BlueLeftPickupAuto(Swerve s_Swerve, IntakeSubsystem i_Intake, LauncherSubsystem l_LauncherSubsystem) {
+    public void BlueLeftPickupAuto(Swerve s_Swerve, IntakeSubsystem i_Intake, LauncherSubsystem l_LauncherSubsystem, SwerveTrackingSubsystem t_Tracking, LauncherTrackingSubsystem lt_TrackingSubsystem) {
         System.out.println("Blue Allience Left Speaker Note Pickup Auto");  
 
         String trajectoryJSON = "paths/BlueAlliLeftNotePickup.wpilib.json";
@@ -319,13 +329,16 @@ public class Autos extends SequentialCommandGroup {
         );
             
         addCommands(
+            new ZeroLauncherCommand(l_LauncherSubsystem),
             new InstantCommand(() -> s_Swerve.resetOdometry(Trajectory.getInitialPose())),
             new LauncherAimCommand(l_LauncherSubsystem, () -> 50),
             new AutonShootCommand(i_Intake, l_LauncherSubsystem, 0.5, 0.6, 0.4),
             new LauncherAimCommand(l_LauncherSubsystem, () -> 33.5),
             new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0.5, 0.5)),
             swerveControllerCommand,
-            new IntakeAssemblyCommand(i_Intake, 0.5, 0.5)
+            new IntakeAssemblyCommand(i_Intake, 0.5, 0.5),
+            new AutonAlignmentCommand(t_Tracking, s_Swerve),
+            new TrackingLauncherAimCommand(l_LauncherSubsystem, lt_TrackingSubsystem).alongWith(new FeedAssemblyCommand(i_Intake, 0.5, 2))
         );
     }
 
@@ -361,13 +374,12 @@ public class Autos extends SequentialCommandGroup {
         );
             
         addCommands(
+            new ZeroLauncherCommand(l_LauncherSubsystem),
             new InstantCommand(() -> s_Swerve.resetOdometry(Trajectory.getInitialPose())),
             new LauncherAimCommand(l_LauncherSubsystem, () -> 50),
             new AutonShootCommand(i_Intake, l_LauncherSubsystem, 0.5, 0.6, 0.4),
             new LauncherAimCommand(l_LauncherSubsystem, () -> 33.5),
-            new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0.5, 0.5)),
-            swerveControllerCommand,
-            new IntakeAssemblyCommand(i_Intake, 0.5, 0.5)
+            swerveControllerCommand
         );
     }
 }

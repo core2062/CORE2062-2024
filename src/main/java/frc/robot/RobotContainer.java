@@ -159,8 +159,8 @@ public class RobotContainer {
                        .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)))
                        .onFalse(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.0)));
                  
-      // ZeroAngle.onTrue(l_Launcher.launcherRotateCommand(() -> 0))
-      //          .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));
+      ZeroAngle.onTrue(l_Launcher.zeroLauncherCommand())
+               .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));
                  
       AmpAngle.onTrue(l_Launcher.launcherRotateCommand(() -> 125))
               .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));   
@@ -189,6 +189,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     //return new Autos(place auto stuff here)
-    return new Autos(Constants.side, Constants.AutoSelected, s_Swerve, i_Intake, l_Launcher);
+    return new Autos(Constants.side, Constants.AutoSelected, s_Swerve, i_Intake, l_Launcher, st_SwerveTrackSubsystem, lt_LaunchTrackSubsystem);
   }
 }
