@@ -106,6 +106,7 @@ public class Robot extends TimedRobot {
 
     StringLogEntry stringLog;
     DataLogManager.start();
+    DriverStation.startDataLog(DataLogManager.getLog());
   }
 
   /**
