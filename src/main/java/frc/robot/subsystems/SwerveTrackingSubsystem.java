@@ -22,7 +22,7 @@ import frc.robot.constants.Constants;
 public class SwerveTrackingSubsystem extends SubsystemBase {
     // double angle;
     public double x ;
-    double id ;
+    public double id ;
     double y ;
     double area ;
   
@@ -101,6 +101,8 @@ public class SwerveTrackingSubsystem extends SubsystemBase {
 
     public double getRotation(double targetAngle){
         // System.out.println("id: " + id);
+        //adjusting for mounting angle offset
+        targetAngle += 2;
         if (id <= 0){
             System.out.println("id is 0");
             return 0;
@@ -112,6 +114,25 @@ public class SwerveTrackingSubsystem extends SubsystemBase {
                 return (tx.getDouble(0.0)-targetAngle)*-0.04;
             } else {
                 return (tx.getDouble(0.0)-targetAngle)*-0.05;
+            }
+        }
+    }
+
+        public double getRotationAuton(double targetAngle){
+        // System.out.println("id: " + id);
+        //adjusting for mounting angle offset
+        targetAngle += 2;
+        if (id <= 0){
+            System.out.println("id is 0");
+            return 0;
+        }
+        else{
+            if (tx.getDouble(0.0) > (targetAngle+10)){
+                return (tx.getDouble(0.0)-targetAngle)*-0.02;
+            } else  if (tx.getDouble(0.0) > (targetAngle+5)){
+                return (tx.getDouble(0.0)-targetAngle)*-0.035;
+            } else {
+                return (tx.getDouble(0.0)-targetAngle)*-0.04;
             }
         }
     }

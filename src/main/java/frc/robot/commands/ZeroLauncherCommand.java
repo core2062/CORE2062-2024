@@ -1,7 +1,7 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.LauncherSubsystem;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class ZeroLauncherCommand extends Command{
@@ -13,6 +13,11 @@ public class ZeroLauncherCommand extends Command{
     }
 
     @Override
+    public void initialize() {
+        SmartDashboard.putString("Auton State", "Beginging Zeroing Launcher");
+    }
+
+    @Override
     public void execute() {
         l_Launcher.LauncherRotationAngle(-0.75);
     }
@@ -20,6 +25,7 @@ public class ZeroLauncherCommand extends Command{
     @Override
     public void end(boolean interrupted) {
         l_Launcher.LauncherRotationAngle(0);
+        SmartDashboard.putString("Auton State", "Zeroing Complete");
     }
 
     @Override

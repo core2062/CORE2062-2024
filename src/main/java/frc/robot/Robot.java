@@ -107,6 +107,7 @@ public class Robot extends TimedRobot {
     StringLogEntry stringLog;
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());
+    SmartDashboard.putString("Auton State", "null");
   }
 
   /**
@@ -200,7 +201,7 @@ public class Robot extends TimedRobot {
     m_speedSelected = m_driveSpeedchooser.getSelected();
     switch (m_speedSelected) {
       case compSpeed:
-        Constants.Swerve.SpeedMod.set(0.8); //TODO: tune to robot
+        Constants.Swerve.SpeedMod.set(0.82); //TODO: tune to robot
         System.out.println("compspeed");
         break;
       case demoSpeed:

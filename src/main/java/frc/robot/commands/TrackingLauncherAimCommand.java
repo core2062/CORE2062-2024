@@ -23,6 +23,11 @@ public class TrackingLauncherAimCommand extends Command{
     }
 
     @Override
+    public void initialize() {
+        SmartDashboard.putString("Auton State", "Beginging tracking");
+    }
+
+    @Override
     public void execute() {
         double currentAngle = l_Launcher.getLeftEncoderValue();
         final double MAX_SPEED_RPM = 3; // Maximum speed of the motor in RPM
@@ -85,6 +90,7 @@ public class TrackingLauncherAimCommand extends Command{
         l_Launcher.LauncherRotationAngle(0);
         l_Launcher.setLauncherSpeed(0.0);
         Constants.LauncherConstants.kSpeakerLaunchSpeed.set(0.6);
+        SmartDashboard.putString("Auton State", "Tracking Complete");
     }
 
     @Override

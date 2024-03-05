@@ -20,6 +20,11 @@ public class LauncherAimCommand extends Command{
     }
 
     @Override
+    public void initialize() {
+        SmartDashboard.putString("Auton State", "Begining Aimming");
+    }
+
+    @Override
     public void execute() {
         System.out.println(desiredAngle.getAsDouble());
         double currentAngle = l_Launcher.getLeftEncoderValue();
@@ -59,6 +64,7 @@ public class LauncherAimCommand extends Command{
     @Override
     public void end(boolean interrupted) {
         l_Launcher.LauncherRotationAngle(0);
+        SmartDashboard.putString("Auton State", "Aimming Complete");
     }
 
     @Override

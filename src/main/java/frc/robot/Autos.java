@@ -198,6 +198,7 @@ public class Autos extends SequentialCommandGroup {
         );
             
         addCommands(
+            new InstantCommand(() -> st_TrackingSubsystem.setPipelineSpeaker()),
             new ZeroLauncherCommand(l_LauncherSubsystem),
             new InstantCommand(() -> s_Swerve.resetOdometry(Trajectory.getInitialPose())),
             new LauncherAimCommand(l_LauncherSubsystem, () -> 50),
@@ -206,8 +207,8 @@ public class Autos extends SequentialCommandGroup {
             new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0.8, 0.65)),
             swerveControllerCommand,
             new IntakeAssemblyCommand(i_Intake, 0.5, 0.5),
-            new AutonAlignmentCommand(st_TrackingSubsystem, s_Swerve),
-            new TrackingLauncherAimCommand(l_LauncherSubsystem, lt_TrackingSubsystem).alongWith(new FeedAssemblyCommand(i_Intake, 0.5, 2))
+            new AutonAlignmentCommand(st_TrackingSubsystem, s_Swerve, 1),
+            new TrackingLauncherAimCommand(l_LauncherSubsystem, lt_TrackingSubsystem).raceWith(new FeedAssemblyCommand(i_Intake, 0.5, 2))
         );
     }
 
@@ -329,6 +330,7 @@ public class Autos extends SequentialCommandGroup {
         );
             
         addCommands(
+            new InstantCommand(() -> t_Tracking.setPipelineSpeaker()),
             new ZeroLauncherCommand(l_LauncherSubsystem),
             new InstantCommand(() -> s_Swerve.resetOdometry(Trajectory.getInitialPose())),
             new LauncherAimCommand(l_LauncherSubsystem, () -> 50),
@@ -337,8 +339,8 @@ public class Autos extends SequentialCommandGroup {
             new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0.8, 0.65)),
             swerveControllerCommand,
             new IntakeAssemblyCommand(i_Intake, 0.5, 0.5),
-            new AutonAlignmentCommand(t_Tracking, s_Swerve),
-            new TrackingLauncherAimCommand(l_LauncherSubsystem, lt_TrackingSubsystem).alongWith(new FeedAssemblyCommand(i_Intake, 0.5, 2))
+            new AutonAlignmentCommand(t_Tracking, s_Swerve, -1),
+            new TrackingLauncherAimCommand(l_LauncherSubsystem, lt_TrackingSubsystem).raceWith(new FeedAssemblyCommand(i_Intake, 0.5, 2))
         );
     }
 

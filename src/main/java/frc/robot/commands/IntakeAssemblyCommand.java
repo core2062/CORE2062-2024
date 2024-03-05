@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -18,6 +19,11 @@ public class IntakeAssemblyCommand extends Command{
     }
 
     @Override
+    public void initialize() {
+        SmartDashboard.putString("Auton State", "Beginging Intake");
+    }
+
+    @Override
     public void execute() {
         i_Intake.setFeedAndIntakeSpeed(intakeSpeed, feedSpeed);
     }
@@ -25,6 +31,7 @@ public class IntakeAssemblyCommand extends Command{
     @Override
     public void end(boolean interrupted) {
         i_Intake.setFeedAndIntakeSpeed(0, 0);
+        SmartDashboard.putString("Auton State", "Intake Complete");
     }
 
     @Override
