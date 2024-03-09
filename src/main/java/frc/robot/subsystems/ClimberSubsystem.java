@@ -8,11 +8,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 
 public class ClimberSubsystem extends SubsystemBase{
-    private TalonSRX LeftClimberMotor = new TalonSRX(Constants.ClimberConstants.kLeftClimberMotorPort);
-    private TalonSRX RightClimberMotor = new TalonSRX(Constants.ClimberConstants.kRightClimberMotorPort);
+    private TalonSRX m_ClimberMotor = new TalonSRX(Constants.ClimberConstants.kClimberMotorPort);
     
     public void setClimberSpeed(double speed){
-        LeftClimberMotor.set(ControlMode.PercentOutput, speed);
-        RightClimberMotor.set(ControlMode.PercentOutput, speed);
+        m_ClimberMotor.set(ControlMode.PercentOutput, speed);
     }
 }
