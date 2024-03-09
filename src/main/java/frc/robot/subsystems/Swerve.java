@@ -59,6 +59,10 @@ public class Swerve extends SubsystemBase {
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
 
         for(SwerveModule mod : mSwerveMods){
+            if (mod.moduleNumber == 1){
+                swerveModuleStates[mod.moduleNumber].speedMetersPerSecond = -swerveModuleStates[mod.moduleNumber].speedMetersPerSecond;
+                mod.setDesiredState(swerveModuleStates[mod.moduleNumber], false);
+            }
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
         }
     }    
@@ -77,7 +81,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public void resetOdometry(Pose2d pose) {
-        swerveOdometry.resetPosition(getYaw(), getModulePositions(), pose);
+        // swerveOdometry.resetPosition(getYaw(), getModulePositions(), pose);
     }
 
     public SwerveModuleState[] getModuleStates(){

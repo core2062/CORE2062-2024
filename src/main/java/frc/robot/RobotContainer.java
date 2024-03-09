@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.*;
 import frc.robot.commands.*;
 import frc.robot.constants.Constants;
@@ -31,6 +32,7 @@ public class RobotContainer {
   /* Controllers */
   private final Joystick driver = new Joystick(0);
   private final Joystick operator = new Joystick(1);
+  private final Joystick test = new Joystick(2);
 
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -65,6 +67,12 @@ public class RobotContainer {
   private final POVButton ZeroAngle = new POVButton(operator, 180);
   private final POVButton AmpAngle = new POVButton(operator, 0);
   private final POVButton SafeZoneAngle = new POVButton(operator, 270);
+
+  /* SysId Test controls */
+  private final JoystickButton QuasForward = new JoystickButton(test, 4);
+  private final JoystickButton QuasBackward = new JoystickButton(test, 1);
+  private final JoystickButton DynamForward = new JoystickButton(test, 3);
+  private final JoystickButton DynamBackward = new JoystickButton(test, 2);
   
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
@@ -180,6 +188,12 @@ public class RobotContainer {
 
       LauncherFeed.onTrue(new InstantCommand(() -> i_Intake.setFeedSpeed(Constants.LauncherConstants.kFeedSpeed.get(0.0))))
                   .onFalse(new InstantCommand(() -> i_Intake.setFeedSpeed(0.0)));
+
+    /* Test SysId Commands */
+      QuasForward.whileTrue(l_Launcher.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+      QuasBackward.whileTrue(l_Launcher.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+      DynamForward.whileTrue(l_Launcher.sysIdDynamic(SysIdRoutine.Direction.kForward));
+      DynamBackward.whileTrue(l_Launcher.sysIdDynamic(SysIdRoutine.Direction.kReverse));
   }
 
   /**
