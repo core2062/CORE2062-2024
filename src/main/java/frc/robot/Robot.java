@@ -177,7 +177,7 @@ public class Robot extends TimedRobot {
         Constants.AutoSelected = 10;
         break;
     }
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {

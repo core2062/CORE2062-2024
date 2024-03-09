@@ -17,6 +17,11 @@ import frc.lib.util.SwerveModuleConstants;
 
 
 public final class Constants {
+    public static final int CANdleID = 1;
+    public static final int MaxBrightnessAngle = 90;
+    public static final int MidBrightnessAngle = 180;
+    public static final int ZeroBrightnessAngle = 270;
+    
     public static final double stickDeadband = 0.1;
 
     public static boolean kTarget = false;
