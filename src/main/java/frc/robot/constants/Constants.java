@@ -231,4 +231,10 @@ public final class Constants {
         public static final COREConstants kUpClimberSpeed = new COREConstants("Climber Speed", 0.5);
         public static final COREConstants kDownClimberSpeed = new COREConstants("Climber Speed", -0.5);
     }
+
+    public static class Light{
+        public static final COREConstants r = new COREConstants("r", 255); //TODO: needs to be tuned
+        public static final COREConstants g = new COREConstants("g", 255); //TODO: needs to be tuned
+        public static final COREConstants b = new COREConstants("b", 255); //TODO: needs to be tuned
+    }
 }

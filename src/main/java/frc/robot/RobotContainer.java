@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.CANdleSystems;
-import frc.robot.commands.CANdleConfigCommands;
+// import frc.robot.commands.CANdleConfigCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -33,6 +33,7 @@ public class RobotContainer {
   /* Controllers */
   private final Joystick driver = new Joystick(0);
   private final Joystick operator = new Joystick(1);
+  private final Joystick test = new Joystick(3);
 
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -76,6 +77,7 @@ public class RobotContainer {
   private final LauncherTrackingSubsystem lt_LaunchTrackSubsystem = new LauncherTrackingSubsystem();
   private final SwerveTrackingSubsystem st_SwerveTrackSubsystem = new SwerveTrackingSubsystem();
   private final ClimberSubsystem c_ClimberSubsystem = new ClimberSubsystem();
+  private final CANdleSystems CANdle = new CANdleSystems(test);
 
   /* double Suppliers */
   public static DoubleSupplier intakeSpeed = () -> Constants.IntakeConstants.kIntakeSpeed.get(0.0);

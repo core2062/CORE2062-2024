@@ -49,7 +49,7 @@ public class COREConstants {
     }
 
     public int get(int defaultValue) {
-        System.out.println("Got default valuer of " + defaultValue);
+        // System.out.println("Got default valuer of " + defaultValue);
         return Preferences.getInt(label, defaultValue);
     }
 
