@@ -86,7 +86,7 @@ public final class Constants {
         public static final double angleKF = chosenModule.angleKF;
 
         /* Drive Motor PID Values */
-        public static final double driveKP = 0.05; //TODO: This must be tuned to specific robot
+        public static final double driveKP = 0.02787525; //TODO: This must be tuned to specific robot
         // public static final double driveKP = 2.9656;
         public static final double driveKI = 0.0;
         public static final double driveKD = 0.0;
@@ -94,9 +94,9 @@ public final class Constants {
 
         /* Drive Motor Characterization Values 
          * Divide SYSID values by 12 to convert from volts to percent output for CTRE */
-        public static final double driveKS = (0.11068 / 12); //TODO: This must be tuned to specific robot
-        public static final double driveKV = (2.7318 / 12);
-        public static final double driveKA = (0.79911 / 12);
+        public static final double driveKS = (1.058778 / 12); //TODO: This must be tuned to specific robot
+        public static final double driveKV = (2.3808 / 12);
+        public static final double driveKA = (0.332436 / 12);
 
         /* Swerve Profiling Values */
         /** Meters per Second */
@@ -114,7 +114,7 @@ public final class Constants {
             public static final int driveMotorID = 0;
             public static final int angleMotorID = 1;
             public static final int canCoderID = 0;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(46.40);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(44.47);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -124,7 +124,7 @@ public final class Constants {
             public static final int driveMotorID = 4;
             public static final int angleMotorID = 5;
             public static final int canCoderID = 2;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(191.07); 
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(198.36); 
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -134,7 +134,7 @@ public final class Constants {
             public static final int driveMotorID = 2;
             public static final int angleMotorID = 3;
             public static final int canCoderID = 1;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(54.31); 
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(56.64); 
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -179,12 +179,12 @@ public final class Constants {
         public static final int kLauncherEncoder = 4;
 
         public static final COREConstants kSpeakerLaunchSpeed = new COREConstants("Speaker Launcher Speed", 0.6); //TODO: needs to be tuned
-        public static final COREConstants kAMPLaunchSpeed = new COREConstants("AMP Launcher Speed", 0.1); //TODO: needs to be tuned
+        public static final COREConstants kAMPLaunchSpeed = new COREConstants("AMP Launcher Speed", 0.2); //TODO: needs to be tuned
         public static final COREConstants kFeedSpeed = new COREConstants("feed Speed", 0.5); //TODO: needs to be tuned
         public static final COREConstants kDelay = new COREConstants("Laucnher Delay", 0.5); //TODO: needs to be tuned
 
-        public static final COREConstants kLeftRotationSpeed = new COREConstants("Left Rotation Speed", 0.2); //TODO: needs to be tuned
-        public static final COREConstants kRightRotationSpeed = new COREConstants("Right Rotation Speed", 0.22); //TODO: needs to be tuned
+        public static final COREConstants kLeftRotationSpeed = new COREConstants("Left Rotation Speed", 0.8); //TODO: needs to be tuned
+        public static final COREConstants kRightRotationSpeed = new COREConstants("Right Rotation Speed", 0.8); //TODO: needs to be tuned
 
         /** Launcher Rotation Motor Constants */
         public static double MotorPos = 0;

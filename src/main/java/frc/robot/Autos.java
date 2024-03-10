@@ -6,6 +6,7 @@ import frc.robot.commands.FeedAssemblyCommand;
 import frc.robot.commands.IntakeAssemblyCommand;
 import frc.robot.commands.LauncherAimCommand;
 import frc.robot.commands.LauncherAssemblyCommand;
+import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.TrackingLauncherAimCommand;
 import frc.robot.commands.ZeroLauncherCommand;
 import frc.robot.constants.Constants;
@@ -72,7 +73,39 @@ public class Autos extends SequentialCommandGroup {
         }
     }
 
-    public void doNothingAuto(Swerve s_Swerve) {}
+    public void doNothingAuto(Swerve s_Swerve) {
+        String trajectoryJSON = "paths/MoveBackPickup.wpilib.json";
+        Trajectory trajectory = new Trajectory(); 
+        try {
+            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+            trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+            System.out.println("Path " + trajectoryPath);
+        } catch (IOException ex) {
+            DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+            };
+        // An example trajectory to follow.  All units in meters.
+        Trajectory Trajectory = trajectory;
+        
+        var thetaController =
+        new ProfiledPIDController(Constants.AutoConstants.kPThetaController, 0, 0, Constants.AutoConstants.kThetaControllerConstraints);
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        
+        SwerveControllerCommand swerveControllerCommand =
+        new SwerveControllerCommand(
+            Trajectory,
+            s_Swerve::getPose,
+            Constants.Swerve.swerveKinematics,
+            new PIDController(Constants.AutoConstants.kPXController, 0, 0),
+            new PIDController(Constants.AutoConstants.kPYController, 0, 0),
+            thetaController,
+            s_Swerve::setModuleStates,
+            s_Swerve
+        );
+        addCommands(
+            new InstantCommand(() -> s_Swerve.resetOdometry(Trajectory.getInitialPose())),
+            swerveControllerCommand
+        );
+    }
     
     public void MidAuto(Swerve s_Swerve, IntakeSubsystem i_Intake, LauncherSubsystem l_LauncherSubsystem) {
         System.out.println("move auto");  
@@ -113,10 +146,8 @@ public class Autos extends SequentialCommandGroup {
             new LauncherAimCommand(l_LauncherSubsystem, () -> 33.5),
             new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0.5, 0.5)),
             swerveControllerCommand,
-            new IntakeAssemblyCommand(i_Intake, 0.5, 0.5),
-            // new LauncherAimCommand(l_LauncherSubsystem, 33.5),
-            new AutonShootCommand(i_Intake, l_LauncherSubsystem, 0.5, 0.6, 0.4),
-            new LauncherAimCommand(l_LauncherSubsystem, () -> 0)
+            new TeleopSwerve(s_Swerve, true, () -> 0, () -> 0, () -> 0, () -> false).raceWith(new IntakeAssemblyCommand(i_Intake, 0.5, 0.5)),
+            new AutonShootCommand(i_Intake, l_LauncherSubsystem, 0.5, 0.6, 0.4)
         );
     }
 

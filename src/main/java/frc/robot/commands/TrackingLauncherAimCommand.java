@@ -31,7 +31,7 @@ public class TrackingLauncherAimCommand extends Command{
     public void execute() {
         double currentAngle = l_Launcher.getLeftEncoderValue();
         final double MAX_SPEED_RPM = 3; // Maximum speed of the motor in RPM
-        final double ANGLE_TOLERANCE = 1.0;
+        final double ANGLE_TOLERANCE = 0.5;
         // Calculate the angle difference
         if (Constants.VisionConstants.DesiredAngle < 10.3724){
             Constants.VisionConstants.DesiredAngle = lastAngle;
@@ -57,28 +57,38 @@ public class TrackingLauncherAimCommand extends Command{
             } else if (speed > 0){
                 speed = 0.5;
             }
-        } else if (Math.abs(angleDifference) > 0.5 && Math.abs(speed) < 0.3){
+        } else if (Math.abs(angleDifference) > 1 && Math.abs(speed) < 0.3){
             if (speed < 0) {
-                speed = -0.3;
+                speed = -0.17;
             } else if (speed > 0){
-                speed = 0.3;
+                speed = 0.17;
+            }
+        } else if (Math.abs(angleDifference) > ANGLE_TOLERANCE && Math.abs(speed) < 0.2){
+            if (speed < 0) {
+                speed = -0.1;
+            } else if (speed > 0){
+                speed = 0.1;
             }
         }
 
         double changeINSpeed = 1.21038 - (0.0191341 * Constants.VisionConstants.DesiredAngle);
 
-        double Dist = ((0.985078 * (lt_LaunchTrack.getDistance() * 12)) + 11.3942) + 19.5;
+        double Dist = ((0.985078 * (lt_LaunchTrack.getDistance() * 12)) + 11.3942) + 18.5;
         double floorToPivot = 15.49;
         double apriltagHeight = 57.125 - floorToPivot;
         double xDist = Math.sqrt(Math.pow(Dist, 2) - Math.pow(apriltagHeight, 2));
 
-        if (xDist > 96){
-            changeINSpeed += (changeINSpeed * 0.045);
+        if (xDist > 220) {
+            changeINSpeed += (changeINSpeed * 0.105);
+        }else if (xDist > 190){
+            changeINSpeed += (changeINSpeed * 0.048);
+        } else if (xDist > 96){
+            changeINSpeed += (changeINSpeed * 0.043);
         } else if (xDist < 36) {
             changeINSpeed -= (changeINSpeed * 0.1);
         }
         Constants.LauncherConstants.kSpeakerLaunchSpeed.set(changeINSpeed); 
-
+        SmartDashboard.putNumber("change in speed: ", changeINSpeed);
         l_Launcher.LauncherRotationAngle(speed);
         l_Launcher.setLauncherSpeed(changeINSpeed);
         SmartDashboard.putNumber("Desired Launcher Rotation Speed: ", speed);
