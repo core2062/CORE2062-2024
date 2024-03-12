@@ -25,6 +25,7 @@ public class SwerveTrackingSubsystem extends SubsystemBase {
     public double id ;
     double y ;
     double area ;
+    double delta ; 
   
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight-front");
     NetworkTableEntry tx = table.getEntry("tx");
@@ -127,12 +128,13 @@ public class SwerveTrackingSubsystem extends SubsystemBase {
             return 0;
         }
         else{
-            if (tx.getDouble(0.0) > (targetAngle+10)){
-                return (tx.getDouble(0.0)-targetAngle)*-0.02;
-            } else  if (tx.getDouble(0.0) > (targetAngle+5)){
-                return (tx.getDouble(0.0)-targetAngle)*-0.035;
+            delta = tx.getDouble(0.0) - targetAngle;
+            if (Math.abs(delta) > 10){
+                return delta*-0.02;
+            } else  if (Math.abs(delta) > 5){
+                return delta*-0.035;
             } else {
-                return (tx.getDouble(0.0)-targetAngle)*-0.04;
+                return delta*-0.04;
             }
         }
     }
