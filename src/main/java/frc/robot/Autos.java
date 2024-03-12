@@ -35,7 +35,7 @@ public class Autos extends SequentialCommandGroup {
                         MidAuto(s_Swerve, i_Intake, l_LauncherSubsystem);
                         break;
                     case 1:
-                        RedLeftAuto(s_Swerve, i_Intake, l_LauncherSubsystem);
+                        RedLeftAuto(s_Swerve, i_Intake, l_LauncherSubsystem, st_SwerveTrackingSubsystem, lt_LauncherTrackingSubsystem);
                         break;
                     case 2:
                         RedRightPickupAuto(s_Swerve, i_Intake, l_LauncherSubsystem, st_SwerveTrackingSubsystem, lt_LauncherTrackingSubsystem);
@@ -154,7 +154,7 @@ public class Autos extends SequentialCommandGroup {
 
 //----- Red Allience Autons -----
 
-    public void RedLeftAuto(Swerve s_Swerve, IntakeSubsystem i_Intake, LauncherSubsystem l_LauncherSubsystem) {
+    public void RedLeftAuto(Swerve s_Swerve, IntakeSubsystem i_Intake, LauncherSubsystem l_LauncherSubsystem, SwerveTrackingSubsystem t_Tracking, LauncherTrackingSubsystem lt_TrackingSubsystem) {
         System.out.println("Red Allience Left Speaker Auto");  
 
         String trajectoryJSON = "paths/RedAlliLeft.wpilib.json";
@@ -193,7 +193,9 @@ public class Autos extends SequentialCommandGroup {
                 new LauncherAimCommand(l_LauncherSubsystem, () -> 33.5),
                 new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0.5, 0.5)),
                 swerveControllerCommand,
-                new IntakeAssemblyCommand(i_Intake, 0.5, 0.5)
+                new IntakeAssemblyCommand(i_Intake, 0.5, 0.5).raceWith(new TeleopSwerve(s_Swerve, true, () -> 0, () -> 0, () -> 0, () -> false)),
+                new AutonAlignmentCommand(t_Tracking, s_Swerve, -1),
+            new TrackingLauncherAimCommand(l_LauncherSubsystem, lt_TrackingSubsystem).raceWith(new FeedAssemblyCommand(i_Intake, 0.5, 2))
         );
     }
 
