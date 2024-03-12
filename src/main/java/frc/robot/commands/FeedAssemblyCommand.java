@@ -40,6 +40,10 @@ public class FeedAssemblyCommand extends Command{
 
     @Override
     public boolean isFinished() {
-        return Constants.assemblyDone;
+        if (feedDelaytime.get() > 4){
+            return true;
+        } else {
+            return false;
+        }
     }
 }

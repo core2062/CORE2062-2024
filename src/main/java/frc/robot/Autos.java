@@ -54,7 +54,7 @@ public class Autos extends SequentialCommandGroup {
                         MidAuto(s_Swerve, i_Intake, l_LauncherSubsystem);
                         break;
                     case 1:
-                        BlueRightAuto(s_Swerve, i_Intake, l_LauncherSubsystem);
+                        BlueRightAuto(s_Swerve, i_Intake, l_LauncherSubsystem, st_SwerveTrackingSubsystem, lt_LauncherTrackingSubsystem);
                         break;
                     case 2:
                         BlueLeftPickupAuto(s_Swerve, i_Intake, l_LauncherSubsystem, st_SwerveTrackingSubsystem, lt_LauncherTrackingSubsystem);
@@ -184,6 +184,36 @@ public class Autos extends SequentialCommandGroup {
             s_Swerve::setModuleStates,
             s_Swerve
             );
+
+
+
+            String trajectoryJSON2 = "paths/RedAmpMidNote.wpilib.json";
+            Trajectory trajectory2 = new Trajectory(); 
+            try {
+                Path trajectoryPath2 = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON2);
+                trajectory2 = TrajectoryUtil.fromPathweaverJson(trajectoryPath2);
+                System.out.println("Path " + trajectoryPath2);
+            } catch (IOException ex) {
+                DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON2, ex.getStackTrace());
+                };
+                // An example trajectory to follow.  All units in meters.
+                Trajectory Trajectory2 = trajectory2;
+            
+            var thetaController2 =
+            new ProfiledPIDController(Constants.AutoConstants.kPThetaController, 0, 0, Constants.AutoConstants.kThetaControllerConstraints);
+            thetaController2.enableContinuousInput(-Math.PI, Math.PI);
+            
+            SwerveControllerCommand swerveControllerCommand2 =
+            new SwerveControllerCommand(
+                Trajectory2,
+                s_Swerve::getPose,
+                Constants.Swerve.swerveKinematics,
+                new PIDController(Constants.AutoConstants.kPXController, 0, 0),
+                new PIDController(Constants.AutoConstants.kPYController, 0, 0),
+                thetaController2,
+                s_Swerve::setModuleStates,
+                s_Swerve
+                );
             
             addCommands(
                 new ZeroLauncherCommand(l_LauncherSubsystem),
@@ -195,7 +225,9 @@ public class Autos extends SequentialCommandGroup {
                 swerveControllerCommand,
                 new IntakeAssemblyCommand(i_Intake, 0.5, 0.5).raceWith(new TeleopSwerve(s_Swerve, true, () -> 0, () -> 0, () -> 0, () -> false)),
                 new AutonAlignmentCommand(t_Tracking, s_Swerve, -1),
-            new TrackingLauncherAimCommand(l_LauncherSubsystem, lt_TrackingSubsystem).raceWith(new FeedAssemblyCommand(i_Intake, 0.5, 2))
+                new TrackingLauncherAimCommand(l_LauncherSubsystem, lt_TrackingSubsystem).raceWith(new FeedAssemblyCommand(i_Intake, 0.5, 2))
+                // new InstantCommand(() -> s_Swerve.resetOdometry(Trajectory.getInitialPose())),
+                // swerveControllerCommand2
         );
     }
 
@@ -288,7 +320,7 @@ public class Autos extends SequentialCommandGroup {
 
     //----- Blue Alliance Autons
 
-    public void BlueRightAuto(Swerve s_Swerve, IntakeSubsystem i_Intake, LauncherSubsystem l_LauncherSubsystem) {
+    public void BlueRightAuto(Swerve s_Swerve, IntakeSubsystem i_Intake, LauncherSubsystem l_LauncherSubsystem, SwerveTrackingSubsystem t_Tracking, LauncherTrackingSubsystem lt_TrackingSubsystem) {
         System.out.println("Blue Allience Right Speaker Auto");  
 
         String trajectoryJSON = "paths/BlueAlliRight.wpilib.json";
@@ -327,7 +359,9 @@ public class Autos extends SequentialCommandGroup {
             new LauncherAimCommand(l_LauncherSubsystem, () -> 33.5),
             new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0.5, 0.5)),
             swerveControllerCommand,
-            new IntakeAssemblyCommand(i_Intake, 0.5, 0.5)
+            new IntakeAssemblyCommand(i_Intake, 0.5, 0.5).raceWith(new TeleopSwerve(s_Swerve, true, () -> 0, () -> 0, () -> 0, () -> false)),
+            new AutonAlignmentCommand(t_Tracking, s_Swerve, 1),
+            new TrackingLauncherAimCommand(l_LauncherSubsystem, lt_TrackingSubsystem).raceWith(new FeedAssemblyCommand(i_Intake, 0.5, 2))
         );
     }
 
