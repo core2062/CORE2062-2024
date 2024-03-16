@@ -60,7 +60,7 @@ public class LauncherSubsystem extends SubsystemBase{
         return zero;
     }
 
-    public static double getRightEncoderValue(){
+    public double getRightEncoderValue(){
         return (launcherRightPitchEncoder.getDistance());
     }
     

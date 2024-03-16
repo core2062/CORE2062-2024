@@ -404,11 +404,11 @@ public class Autos extends SequentialCommandGroup {
             new InstantCommand(() -> s_Swerve.resetOdometry(Trajectory.getInitialPose())),
             new LauncherAimCommand(l_LauncherSubsystem, () -> Constants.LauncherConstants.autoSpeakerAngle.get(0.0)),
             new AutonShootCommand(i_Intake, l_LauncherSubsystem, 0.5, 0.6, 0.4),
-            new LauncherAimCommand(l_LauncherSubsystem, () -> 33.5),
+            new LauncherAimCommand(l_LauncherSubsystem, () -> 5.5),
             new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0.8, 0.65)),
             swerveControllerCommand,
             new IntakeAssemblyCommand(i_Intake, 0.5, 0.5).raceWith(new TeleopSwerve(s_Swerve, true, () -> 0, () -> 0, () -> 0, () -> false)),
-            new AutonMoveForwardCommand(s_Swerve, 0.5),
+            // new AutonMoveForwardCommand(s_Swerve, 0.5),
             new AutonAlignmentCommand(t_Tracking, s_Swerve, -1),
             new TrackingLauncherAimCommand(l_LauncherSubsystem, lt_TrackingSubsystem).raceWith(new FeedAssemblyCommand(i_Intake, 0.5, 2))
         );

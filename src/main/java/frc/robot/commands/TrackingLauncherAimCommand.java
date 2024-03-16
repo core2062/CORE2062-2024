@@ -26,7 +26,7 @@ public class TrackingLauncherAimCommand extends Command{
 
     @Override
     public void execute() {
-        double currentAngle = l_Launcher.getLeftEncoderValue();
+        double currentAngle = l_Launcher.getRightEncoderValue();
         final double MAX_SPEED_RPM = 3; // Maximum speed of the motor in RPM
         final double ANGLE_TOLERANCE = 0.5;
         // Calculate the angle difference

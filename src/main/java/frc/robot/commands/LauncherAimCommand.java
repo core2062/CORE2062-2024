@@ -27,7 +27,7 @@ public class LauncherAimCommand extends Command{
     @Override
     public void execute() {
         // System.out.println(desiredAngle.getAsDouble());
-        double currentAngle = l_Launcher.getLeftEncoderValue();
+        double currentAngle = l_Launcher.getRightEncoderValue();
         final double MAX_SPEED_RPM = 3; // Maximum speed of the motor in RPM
         final double ANGLE_TOLERANCE = 1.0;
         // Calculate the angle difference
