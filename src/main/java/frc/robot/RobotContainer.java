@@ -140,7 +140,7 @@ public class RobotContainer {
                              .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationPercent(0, 0)));
       decreaseLauncherHeading.onTrue(new InstantCommand(() -> l_Launcher.LauncherRotationPercent(leftRotationSpeed.getAsDouble(), rightRotationSpeed.getAsDouble())))
                              .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationPercent(0, 0)));
-      IntakeAssembly.onTrue(c_ScoreAssembly.pickUpPiece(i_Intake, intakeSpeed, feedSpeed));
+      IntakeAssembly.onTrue(c_ScoreAssembly.pickUpPiece(i_Intake, intakeSpeed, feedSpeed, l_Launcher));
 
       backwardsLauncherAngle.onTrue(l_Launcher.launcherRotateCommand(() -> 116))
                         .onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(Constants.LauncherConstants.kSpeakerLaunchSpeed.get(0.0))))
