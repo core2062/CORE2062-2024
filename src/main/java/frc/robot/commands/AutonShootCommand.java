@@ -48,7 +48,7 @@ public class AutonShootCommand extends Command{
 
     @Override
     public boolean isFinished() {
-        if (feedDelaytime.get() > 1){
+        if (feedDelaytime.get() > 2){
             return true;
         } else {
             return false;

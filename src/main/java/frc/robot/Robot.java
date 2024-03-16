@@ -6,8 +6,6 @@ package frc.robot;
 
 import java.util.Optional;
 
-import edu.wpi.first.util.datalog.DataLog;
-import edu.wpi.first.util.datalog.DataLogEntry;
 import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -83,14 +81,14 @@ public class Robot extends TimedRobot {
     m_autoChooser.setDefaultOption("Do Nothing", kDefaultAuto);
     if (ally.get() == Alliance.Red){
       m_autoChooser.addOption("Mid Auto", kMidAuto);
-      m_autoChooser.addOption("Red Left Auto", kRedLeftAuto);
-      m_autoChooser.addOption("Red Right Move Auto", kRedRightMoveAuto);
-      m_autoChooser.addOption("Red Right Pickup Auto", kRedRightPickAuto);
+      m_autoChooser.addOption("Red Amp Me up", kRedLeftAuto);
+      m_autoChooser.addOption("Red Duck and Cover", kRedRightMoveAuto);
+      m_autoChooser.addOption("Red Show Pony", kRedRightPickAuto);
     } else if (ally.get() == Alliance.Blue){
       m_autoChooser.addOption("Mid Auto", kMidAuto);
-      m_autoChooser.addOption("Blue Right Auto", kBlueRightAuto);
-      m_autoChooser.addOption("Blue Left Move Auto", kBlueLeftMoveAuto);
-      m_autoChooser.addOption("Blue Left Pickup Auto", kBlueLeftPickAuto);
+      m_autoChooser.addOption("Blue Amp Me up", kBlueRightAuto);
+      m_autoChooser.addOption("Blue Duck and Cover", kBlueLeftMoveAuto);
+      m_autoChooser.addOption("Blue Show Pony", kBlueLeftPickAuto);
     }
     SmartDashboard.putData("Auto choices", m_autoChooser);
 
@@ -104,7 +102,6 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
-    StringLogEntry stringLog;
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());
     SmartDashboard.putString("Auton State", "null");
@@ -178,11 +175,11 @@ public class Robot extends TimedRobot {
         break;
     }
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
-    // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    // schedule the autonomous command (example)
   }
 
   /** This function is called periodically during autonomous. */

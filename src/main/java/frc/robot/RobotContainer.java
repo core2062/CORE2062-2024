@@ -6,10 +6,8 @@ package frc.robot;
 
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -154,7 +152,7 @@ public class RobotContainer {
                  .onFalse(new InstantCommand(() -> Constants.endAssembly1 = false));
 
                  
-      CloseSpeakerAngle.onTrue(l_Launcher.launcherRotateCommand(() -> 50))
+      CloseSpeakerAngle.onTrue(l_Launcher.launcherRotateCommand(() -> Constants.LauncherConstants.kSpeakerAngle.get(50)))
                        .onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(Constants.LauncherConstants.kSpeakerLaunchSpeed.get(0.0))))
                        .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)))
                        .onFalse(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.0)));
@@ -162,11 +160,13 @@ public class RobotContainer {
       ZeroAngle.onTrue(l_Launcher.zeroLauncherCommand())
                .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));
                  
-      AmpAngle.onTrue(l_Launcher.launcherRotateCommand(() -> 125))
+      AmpAngle.onTrue(l_Launcher.launcherRotateCommand(() -> Constants.LauncherConstants.kAmpAngle.get(120)))
               .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));   
                  
-      SafeZoneAngle.onTrue(l_Launcher.launcherRotateCommand(() -> 30.5))
-                   .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)));
+      SafeZoneAngle.onTrue(l_Launcher.launcherRotateCommand(() -> 31.5))
+                   .onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.7)))
+                   .onFalse(new InstantCommand(() -> l_Launcher.LauncherRotationAngle(0.0)))
+                   .onFalse(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.0)));
                  
       // SpeakerLaunch.onTrue(new InstantCommand(() -> l_Launcher.setLauncherSpeed(Constants.LauncherConstants.kSpeakerLaunchSpeed.get(0.0))))
       //              .onFalse(new InstantCommand(() -> l_Launcher.setLauncherSpeed(0.0)));

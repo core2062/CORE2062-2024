@@ -6,7 +6,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 
@@ -37,10 +36,6 @@ public class IntakeSubsystem extends SubsystemBase{
         rightFeedMotor.set(ControlMode.PercentOutput, -feedSpeed);
         
         intakeMotor.set(ControlMode.PercentOutput, intakeSpeed);
-        if (feedSpeed == 0){
-            System.out.println("Setting zero in feed and intake function: " + iterations);
-            iterations += 1;
-        }
     }
 
     @Override

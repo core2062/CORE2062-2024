@@ -124,7 +124,7 @@ public final class Constants {
             public static final int driveMotorID = 4;
             public static final int angleMotorID = 5;
             public static final int canCoderID = 2;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(165.23); 
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(143.63); 
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -178,8 +178,12 @@ public final class Constants {
 
         public static final int kLauncherEncoder = 4;
 
+        public static final COREConstants kAmpAngle = new COREConstants("Amp Angle", 120); //TODO: needs to be tuned
+        public static final COREConstants kSpeakerAngle = new COREConstants("Speaker Angle", 50); //TODO: needs to be tuned
+        public static final COREConstants autoSpeakerAngle = new COREConstants("Auto Speaker Angle", 48);
+
         public static final COREConstants kSpeakerLaunchSpeed = new COREConstants("Speaker Launcher Speed", 0.6); //TODO: needs to be tuned
-        public static final COREConstants kAMPLaunchSpeed = new COREConstants("AMP Launcher Speed", 0.2); //TODO: needs to be tuned
+        public static final COREConstants kAMPLaunchSpeed = new COREConstants("AMP Launcher Speed", 0.15); //TODO: needs to be tuned
         public static final COREConstants kFeedSpeed = new COREConstants("feed Speed", 0.5); //TODO: needs to be tuned
         public static final COREConstants kDelay = new COREConstants("Laucnher Delay", 0.5); //TODO: needs to be tuned
 

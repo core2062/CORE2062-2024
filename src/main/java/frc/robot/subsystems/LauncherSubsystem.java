@@ -25,7 +25,7 @@ public class LauncherSubsystem extends SubsystemBase{
     private TalonSRX leftRotationMotor = new TalonSRX(Constants.LauncherConstants.kLeftRotationMotorPort);
     private TalonSRX rightRotationMotor = new TalonSRX(Constants.LauncherConstants.kRightRotationMotorPort);
     
-    private static DutyCycleEncoder launcherRightPitchEncoder = new DutyCycleEncoder(1);
+    private static DutyCycleEncoder  launcherRightPitchEncoder = new DutyCycleEncoder(1);
     private static DutyCycleEncoder launcherLeftPitchEncoder = new DutyCycleEncoder(2);
     public double encoderValue = 0.0;
 
@@ -64,7 +64,7 @@ public class LauncherSubsystem extends SubsystemBase{
         return (launcherRightPitchEncoder.getDistance());
     }
     
-    public static double getLeftEncoderValue(){
+    public double getLeftEncoderValue(){
         return (-launcherLeftPitchEncoder.getDistance());
     }
 

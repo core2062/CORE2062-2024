@@ -1,22 +1,12 @@
 package frc.robot.subsystems;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
-import org.opencv.core.Mat;
-
-import com.fasterxml.jackson.annotation.ObjectIdGenerators.None;
-
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.LauncherAimCommand;
-import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.TrackingLauncherAimCommand;
-import frc.robot.subsystems.LauncherSubsystem;
 import frc.robot.constants.Constants;
 
 public class LauncherTrackingSubsystem extends SubsystemBase {
@@ -119,10 +109,11 @@ public class LauncherTrackingSubsystem extends SubsystemBase {
         // System.out.println("xDist: " + xDist);
         double targetAngle = Math.toDegrees(Math.atan2(targetHeight, xDist));
         double desiredAngle = ((1.0899 * targetAngle) + 2.3724);
-        if (desiredAngle < 19){
-            desiredAngle += 4;
-        } else if (desiredAngle < 21){
-            desiredAngle += 2;
+        // if (desiredAngle < 19){
+        //     desiredAngle += 3;
+        // } else 
+        if (desiredAngle < 21){
+            desiredAngle += 2.75;
         } else if (desiredAngle < 24){
             desiredAngle += 3;
         } else if (desiredAngle > 25.5){

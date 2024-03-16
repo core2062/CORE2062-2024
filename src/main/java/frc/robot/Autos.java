@@ -1,11 +1,11 @@
 package frc.robot;
 
 import frc.robot.commands.AutonAlignmentCommand;
+import frc.robot.commands.AutonMoveForwardCommand;
 import frc.robot.commands.AutonShootCommand;
 import frc.robot.commands.FeedAssemblyCommand;
 import frc.robot.commands.IntakeAssemblyCommand;
 import frc.robot.commands.LauncherAimCommand;
-import frc.robot.commands.LauncherAssemblyCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.TrackingLauncherAimCommand;
 import frc.robot.commands.ZeroLauncherCommand;
@@ -146,7 +146,7 @@ public class Autos extends SequentialCommandGroup {
             new LauncherAimCommand(l_LauncherSubsystem, () -> 33.5),
             new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0.5, 0.5)),
             swerveControllerCommand,
-            new TeleopSwerve(s_Swerve, true, () -> 0, () -> 0, () -> 0, () -> false).raceWith(new IntakeAssemblyCommand(i_Intake, 0.5, 0.5)),
+            new IntakeAssemblyCommand(i_Intake, 0.5, 0.5).raceWith(new TeleopSwerve(s_Swerve, true, () -> 0, () -> 0, () -> 0, () -> false)),
             new AutonShootCommand(i_Intake, l_LauncherSubsystem, 0.5, 0.6, 0.4)
         );
     }
@@ -218,7 +218,7 @@ public class Autos extends SequentialCommandGroup {
             addCommands(
                 new ZeroLauncherCommand(l_LauncherSubsystem),
                 new InstantCommand(() -> s_Swerve.resetOdometry(Trajectory.getInitialPose())),
-                new LauncherAimCommand(l_LauncherSubsystem, () -> 50),
+                new LauncherAimCommand(l_LauncherSubsystem, () -> Constants.LauncherConstants.autoSpeakerAngle.get(0.0)),
                 new AutonShootCommand(i_Intake, l_LauncherSubsystem, 0.5, 0.6, 0.4),
                 new LauncherAimCommand(l_LauncherSubsystem, () -> 33.5),
                 new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0.5, 0.5)),
@@ -271,7 +271,7 @@ public class Autos extends SequentialCommandGroup {
             new LauncherAimCommand(l_LauncherSubsystem, () -> 33.5),
             new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0.8, 0.65)),
             swerveControllerCommand,
-            new IntakeAssemblyCommand(i_Intake, 0.5, 0.5),
+            new IntakeAssemblyCommand(i_Intake, 0.5, 0.5).raceWith(new TeleopSwerve(s_Swerve, true, () -> 0, () -> 0, () -> 0, () -> false)),
             new AutonAlignmentCommand(st_TrackingSubsystem, s_Swerve, 1),
             new TrackingLauncherAimCommand(l_LauncherSubsystem, lt_TrackingSubsystem).raceWith(new FeedAssemblyCommand(i_Intake, 0.5, 2))
         );
@@ -288,6 +288,7 @@ public class Autos extends SequentialCommandGroup {
             System.out.println("Path " + trajectoryPath);
         } catch (IOException ex) {
             DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
+            return;
             };
         // An example trajectory to follow.  All units in meters.
         Trajectory Trajectory = trajectory;
@@ -311,10 +312,11 @@ public class Autos extends SequentialCommandGroup {
         addCommands(
             new ZeroLauncherCommand(l_LauncherSubsystem),
             new InstantCommand(() -> s_Swerve.resetOdometry(Trajectory.getInitialPose())),
-            new LauncherAimCommand(l_LauncherSubsystem, () -> 50),
+            new LauncherAimCommand(l_LauncherSubsystem, () -> Constants.LauncherConstants.autoSpeakerAngle.get(0.0)),
             new AutonShootCommand(i_Intake, l_LauncherSubsystem, 0.5, 0.6, 0.4),
             new LauncherAimCommand(l_LauncherSubsystem, () -> 33.5),
-            swerveControllerCommand
+            swerveControllerCommand,
+            new TeleopSwerve(s_Swerve, true, () -> 0, () -> 0, () -> 0, () -> false)
         );
     }
 
@@ -400,12 +402,13 @@ public class Autos extends SequentialCommandGroup {
             new InstantCommand(() -> t_Tracking.setPipelineSpeaker()),
             new ZeroLauncherCommand(l_LauncherSubsystem),
             new InstantCommand(() -> s_Swerve.resetOdometry(Trajectory.getInitialPose())),
-            new LauncherAimCommand(l_LauncherSubsystem, () -> 50),
+            new LauncherAimCommand(l_LauncherSubsystem, () -> Constants.LauncherConstants.autoSpeakerAngle.get(0.0)),
             new AutonShootCommand(i_Intake, l_LauncherSubsystem, 0.5, 0.6, 0.4),
             new LauncherAimCommand(l_LauncherSubsystem, () -> 33.5),
             new InstantCommand(() -> i_Intake.setFeedAndIntakeSpeed(0.8, 0.65)),
             swerveControllerCommand,
-            new IntakeAssemblyCommand(i_Intake, 0.5, 0.5),
+            new IntakeAssemblyCommand(i_Intake, 0.5, 0.5).raceWith(new TeleopSwerve(s_Swerve, true, () -> 0, () -> 0, () -> 0, () -> false)),
+            new AutonMoveForwardCommand(s_Swerve, 0.5),
             new AutonAlignmentCommand(t_Tracking, s_Swerve, -1),
             new TrackingLauncherAimCommand(l_LauncherSubsystem, lt_TrackingSubsystem).raceWith(new FeedAssemblyCommand(i_Intake, 0.5, 2))
         );
@@ -445,10 +448,11 @@ public class Autos extends SequentialCommandGroup {
         addCommands(
             new ZeroLauncherCommand(l_LauncherSubsystem),
             new InstantCommand(() -> s_Swerve.resetOdometry(Trajectory.getInitialPose())),
-            new LauncherAimCommand(l_LauncherSubsystem, () -> 50),
+            new LauncherAimCommand(l_LauncherSubsystem, () -> Constants.LauncherConstants.autoSpeakerAngle.get(0.0)),
             new AutonShootCommand(i_Intake, l_LauncherSubsystem, 0.5, 0.6, 0.4),
             new LauncherAimCommand(l_LauncherSubsystem, () -> 33.5),
-            swerveControllerCommand
+            swerveControllerCommand,
+            new TeleopSwerve(s_Swerve, true, () -> 0, () -> 0, () -> 0, () -> false)
         );
     }
 

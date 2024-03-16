@@ -4,15 +4,12 @@ import frc.robot.constants.Constants;
 import frc.robot.subsystems.LauncherSubsystem;
 import frc.robot.subsystems.LauncherTrackingSubsystem;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class TrackingLauncherAimCommand extends Command{
     private LauncherSubsystem l_Launcher;
     private LauncherTrackingSubsystem lt_LaunchTrack;
-    private double DifferenceOfAngle;
     private double lastAngle = 0;
 
     public TrackingLauncherAimCommand(LauncherSubsystem l_Launcher,LauncherTrackingSubsystem lt_LaunchTrack){
@@ -39,7 +36,6 @@ public class TrackingLauncherAimCommand extends Command{
             lastAngle = Constants.VisionConstants.DesiredAngle;
         }
         double angleDifference = Constants.VisionConstants.DesiredAngle - currentAngle;
-        DifferenceOfAngle = angleDifference;
         // Calculate the speed based on the angle difference
         double speedPercentage = angleDifference / 180.0; // Scaling the angle difference to [-1, 1]
         double speed = (speedPercentage * MAX_SPEED_RPM);
