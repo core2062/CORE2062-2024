@@ -27,6 +27,7 @@ import frc.robot.constants.Constants;
 public class Robot extends TimedRobot {
 
   private static final String kDefaultAuto = "Do Nothing";
+  private static final String kShootAuto = "Shoot Don't Move Auto";
   private static final String kMidAuto = "Mid Auto";
   private static final String kBlueLeftPickAuto = "Blue Left Pickup Auto";
   private static final String kBlueLeftMoveAuto = "Blue Left Move Auto";
@@ -81,11 +82,13 @@ public class Robot extends TimedRobot {
     m_autoChooser.setDefaultOption("Do Nothing", kDefaultAuto);
     if (ally.get() == Alliance.Red){
       m_autoChooser.addOption("Mid Auto", kMidAuto);
+      m_autoChooser.addOption("Shoot Don't Move", kShootAuto);
       m_autoChooser.addOption("Red Amp Me up", kRedLeftAuto);
       m_autoChooser.addOption("Red Duck and Cover", kRedRightMoveAuto);
       m_autoChooser.addOption("Red Show Pony", kRedRightPickAuto);
     } else if (ally.get() == Alliance.Blue){
       m_autoChooser.addOption("Mid Auto", kMidAuto);
+      m_autoChooser.addOption("Shoot Don't Move", kShootAuto);
       m_autoChooser.addOption("Blue Amp Me up", kBlueRightAuto);
       m_autoChooser.addOption("Blue Duck and Cover", kBlueLeftMoveAuto);
       m_autoChooser.addOption("Blue Show Pony", kBlueLeftPickAuto);
@@ -137,6 +140,9 @@ public class Robot extends TimedRobot {
 
     m_autoSelected = m_autoChooser.getSelected();
     switch (m_autoSelected) {
+      case kShootAuto:
+        Constants.AutoSelected = 4;
+        System.out.println("Shoot Don't Move Auto");
       case kDefaultAuto:
         Constants.AutoSelected = 100;
         System.out.println("Autos Default");

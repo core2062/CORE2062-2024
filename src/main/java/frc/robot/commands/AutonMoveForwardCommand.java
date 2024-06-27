@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AutonMoveForwardCommand extends TeleopSwerve{
     private Swerve s_Swerve;
-    private Timer time;
+    private Timer time = new Timer();
     private double duration;
 
     public AutonMoveForwardCommand(Swerve s_Swerve, double duration){
@@ -29,12 +29,7 @@ public class AutonMoveForwardCommand extends TeleopSwerve{
 
     @Override
     public void execute() {
-        s_Swerve.drive(
-            new Translation2d(0, 0.4).times(Constants.Swerve.maxSpeed), 
-            (0) * Constants.Swerve.maxAngularVelocity, 
-            false, 
-            true
-        );
+        super.execute();
     }
 
     @Override
