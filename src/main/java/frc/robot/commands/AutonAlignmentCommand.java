@@ -22,9 +22,9 @@ public class AutonAlignmentCommand extends TeleopSwerve{
 
     public AutonAlignmentCommand(SwerveTrackingSubsystem t_Tracking, Swerve s_Swerve, double direction){
         super(s_Swerve, false, () -> 0, () -> 0, () -> t_Tracking.getRotationAuton(0), () -> false);
+        addRequirements(s_Swerve, t_Tracking);
         this.t_Tracking = t_Tracking;
         this.s_Swerve = s_Swerve;
-        addRequirements(s_Swerve, t_Tracking);
         this.direction = direction;
     }
 
